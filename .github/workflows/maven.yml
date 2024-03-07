@@ -35,7 +35,7 @@ jobs:
       if: success() || failure()
       with:
         name: Test Results
-        path: ${{ github.workspace }}/src/test/*.xml
+        path: ${{ github.workspace }}/target/surefire-reports/*.xml
         reporter: java-junit
         
     # Example: Saving a state and setting an output (Updated Method)
