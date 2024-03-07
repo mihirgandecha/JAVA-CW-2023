@@ -13,7 +13,7 @@ public class ExampleDBTests {
     private DBServer server;
     @Test
     void demo() {
-        assertTrue(1 == 1);
+        assertTrue(1 == 2);
         assertTrue(2 == 2);
         assertTrue(5 == 5);
     }
