@@ -15,6 +15,7 @@ public class ExampleDBTests {
     void demo() {
         assertTrue(1 == 1);
         assertTrue(2 == 2);
+        assertTrue(5 == 5);
     }
 //    // Create a new server _before_ every @Test
 //    @BeforeEach
