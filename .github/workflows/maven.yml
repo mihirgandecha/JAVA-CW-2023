@@ -35,9 +35,9 @@ jobs:
       if: success() || failure()
       with:
         name: Test Results
-        path: ${{ github.workspace }}/target/surefire-reports/TEST-TestSuite.xml
+        path: ${{ github.workspace }}/src/test/*.xml
         reporter: java-junit
-        java-version: 17
+        
     # Example: Saving a state and setting an output (Updated Method)
     - name: Save build version state
       run: echo "buildVersion=1.0.0" >> $GITHUB_STATE
