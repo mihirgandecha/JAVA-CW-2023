@@ -28,7 +28,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn -B package --file JAVA-CW-2023/cw-db/pom.xml
+      run: mvn -B package --file cw-db/pom.xml
 
     # ADDITION: Saving a state and setting an output (Updated Method)
     - name: Save build version state
