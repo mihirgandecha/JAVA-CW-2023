@@ -37,6 +37,7 @@ jobs:
         name: Test Results
         path: ${{ github.workspace }}/target/surefire-reports/*.xml
         reporter: java-junit
+        token: ${{ secrets.GITHUB_TOKEN }}
         
     # Example: Saving a state and setting an output (Updated Method)
     - name: Save build version state
