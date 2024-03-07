@@ -30,11 +30,11 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
     
-    - name: JUnit Test Report
-      uses: EnricoMi/publish-unit-test-result-action@v1
-      if: always() # The action runs regardless of the previous step's outcome
-      with:
-        files: target/surefire-reports/*.xml
+    - name: Build and Run Tests
+      run: mvn test --batch-mode --fail-at-end
+    - name: Publish Test Report
+      if: success() || failure()
+      uses: scacap/action-surefire-report@v1  
         
     # Example: Saving a state and setting an output (Updated Method)
     - name: Save build version state
