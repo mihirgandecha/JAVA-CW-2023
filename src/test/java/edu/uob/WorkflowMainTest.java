@@ -8,5 +8,6 @@ class DemoTest {
     @Test
     void demo() {
         assertTrue(1 == 1);
+        assertTrue(2 == 2);
     }
 }
