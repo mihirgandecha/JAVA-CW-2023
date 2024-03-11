@@ -14,8 +14,8 @@ import java.nio.file.Files;
 public class DBServer {
 
     private static final char END_OF_TRANSMISSION = 4;
-    private String storageFolderPath;
-    private static final String DBSTORAGE_DIRECTORY = "databases";
+    public String storageFolderPath;
+    // private static final String DBSTORAGE_DIRECTORY = "databases";
 
     public static void main(String args[]) throws IOException {
         DBServer server = new DBServer();
@@ -26,20 +26,28 @@ public class DBServer {
     * KEEP this signature otherwise we won't be able to mark your submission correctly.
     */
     public DBServer() {
+        updateSorageFolderPath("databases");
         if (!createDirectoryIfAbsent()){
             System.err.println("Cannot generate database directory");
         }
     }
 
+
+
     public boolean createDirectoryIfAbsent() {
         try {
             // Create the database storage folder if it doesn't already exist !
-            storageFolderPath = Paths.get(DBSTORAGE_DIRECTORY).toAbsolutePath().toString();
+            //storageFolderPath = Paths.get("databases").toAbsolutePath().toString();
+            // updateSorageFolderPath("databases");
             Files.createDirectories(Paths.get(storageFolderPath));
             return true;
         } catch(IOException ioe) {
             throw new RuntimeException("Can't seem to create database storage folder " + storageFolderPath);
         }
+    }
+
+    public void updateSorageFolderPath(String absPath){
+        storageFolderPath = Paths.get(absPath).toAbsolutePath().toString();
     }
 
     /**
