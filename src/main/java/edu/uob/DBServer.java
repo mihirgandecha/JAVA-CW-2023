@@ -7,15 +7,17 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
+import java.util.logging.Logger;
 
 /** This class implements the DB server. */
 public class DBServer {
 
     private static final char END_OF_TRANSMISSION = 4;
     public String storageFolderPath;
-    // private static final String DBSTORAGE_DIRECTORY = "databases";
+    private static final Logger LOGGER = Logger.getLogger(DBServer.class.getName());
 
     public static void main(String args[]) throws IOException {
         DBServer server = new DBServer();
@@ -32,16 +34,20 @@ public class DBServer {
         }
     }
 
-
-
     public boolean createDirectoryIfAbsent() {
         try {
-            // Create the database storage folder if it doesn't already exist !
-            //storageFolderPath = Paths.get("databases").toAbsolutePath().toString();
-            // updateSorageFolderPath("databases");
-            Files.createDirectories(Paths.get(storageFolderPath));
-            return true;
-        } catch(IOException ioe) {
+            Path dirPath = Paths.get(storageFolderPath);
+            if(Files.exists(dirPath)){
+                LOGGER.info("Directory is present at: " + dirPath);
+                return true;
+            }
+            else{
+                Files.createDirectories(Paths.get(storageFolderPath));
+                LOGGER.info("Directory Created at: " + dirPath);
+                return true;
+            }
+        }
+        catch(IOException ioe) {
             throw new RuntimeException("Can't seem to create database storage folder " + storageFolderPath);
         }
     }

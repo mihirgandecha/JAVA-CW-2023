@@ -1,7 +1,10 @@
 package edu.uob;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,6 +17,14 @@ class DBServerTest {
     @BeforeEach
     public void setup() {
         server = new DBServer();
+        server.updateSorageFolderPath("dbtest");
+    }
+
+    @AfterEach
+    public void cleanUp() throws IOException {
+        if (Files.exists(Path.of(("dbtest")))){
+            Files.delete(Path.of("dbtest"));
+        }
     }
 
     @Test
@@ -22,39 +33,24 @@ class DBServerTest {
         assertEquals("/home/mihirgany/IdeaProjects/cw-db/dbtestfolder", server.storageFolderPath);
     }
 
-//   @Test
-//    void createDirectoryIfAbsent_Existing() {
-//        // Prepare
-//        String dirPath = "existingDir";
-//        Path path = Paths.get(dirPath);
-//        Files.createDirectory(path);
-//
-//        // Execute
-//        DBServer.createDirectoryIfAbsent(dirPath);
-//
-//        // Assert
-//        assertTrue(Files.exists(path));
-//
-//        // Cleanup
-//        Files.delete(path);
-//    }
-//
-//    @Test
-//    void createDirectoryIfAbsent_NotExisting() {
-//        // Prepare
-//        String dirPath = "notExistingDir";
-//        Path path = Paths.get(dirPath);
-//
-//        // Place code here, you must assert that the folder did not exist before running the method
-//        assertFalse(Files.exists(path));
-//
-//        // Execute
-//        DBServer.createDirectoryIfAbsent(dirPath);
-//
-//        // Assert
-//        assertTrue(Files.exists(path));
-//
-//        // Cleanup
-//        Files.delete(path);
-//    }
+    @Test
+    void testAbsentDirectory() throws IOException {
+        server.updateSorageFolderPath("dbtest");
+        Path testAbsDir = Path.of(server.storageFolderPath);
+        if (Files.exists(testAbsDir)) {
+            Files.delete(testAbsDir);
+        }
+        server.createDirectoryIfAbsent();
+        assertTrue(Files.exists(testAbsDir));
+    }
+
+    @Test
+    void testExistingDirectory() {
+        server.updateSorageFolderPath("databases");
+        Path testAbsDir = Path.of(server.storageFolderPath);
+        server.createDirectoryIfAbsent();
+        assertTrue(Files.exists(testAbsDir));
+
+    }
+
 }
