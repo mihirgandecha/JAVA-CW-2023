@@ -42,7 +42,9 @@ public class DBServer {
     * <p>This method handles all incoming DB commands and carries out the required actions.
     */
     public String handleCommand(String command) {
-        // TODO implement your server logic here
+        System.out.println(command);
+        // TODO implement your server logic here - return a string output -> client
+        // Different reponse for query, ie Query OK if parsed and interpreted OK, else return error tag + description of problem
         return "";
     }
 
