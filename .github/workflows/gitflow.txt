@@ -6,15 +6,7 @@
 6. git rebase newBranch
 7. git push (sends to remote (production))
 
-How to Write a Patch Update
-Creating a patch in Git involves generating a file that contains the differences between two branches or commits, which can then be applied to another branch or repository. Here's how you can create and apply a patch:
-Create the Patch: Navigate to your Git repository and use the git diff command to create a patch file. For example, to create a patch with the changes between the main branch and your feature branch:
-
-git diff main feature > feature.patch
-Apply the Patch: To apply the patch to another branch or repository, first ensure you are on the branch where you want to apply the patch. Then use the git apply command:
-
-git apply feature.patch
-Verify and Commit: After applying the patch, verify that the changes are as expected. Then, commit the changes to make them permanent in the branch:
-
-git add .
-git commit -m "Applied feature patch"
+Tips:
+1. Be smart with msg, treat like button
+2. Group commits and dont just always use git add . (ie stage changes at a time)
+3. If big commit - dont use inline (-m) option, just git commit and use multiple lines
