@@ -2,7 +2,6 @@ package edu.uob;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -26,13 +25,30 @@ public class DBServer {
     * KEEP this signature otherwise we won't be able to mark your submission correctly.
     */
     public DBServer() {
+
         storageFolderPath = Paths.get("databases").toAbsolutePath().toString();
+        boolean directoryCreated = generateDirectoryDB();
+        if (!directoryCreated){
+            System.err.println("Cannot generate database directory");
+        }
+
+//        try {
+//            // Create the database storage folder if it doesn't already exist !
+//            Files.createDirectories(Paths.get(storageFolderPath));
+//        } catch(IOException ioe) {
+//            System.out.println("Can't seem to create database storage folder " + storageFolderPath);
+//        }
+    }
+
+    public boolean generateDirectoryDB() {
         try {
             // Create the database storage folder if it doesn't already exist !
             Files.createDirectories(Paths.get(storageFolderPath));
+            return true;
         } catch(IOException ioe) {
             System.out.println("Can't seem to create database storage folder " + storageFolderPath);
         }
+        return false;
     }
 
     /**
