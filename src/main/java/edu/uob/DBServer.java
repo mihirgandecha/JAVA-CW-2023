@@ -15,6 +15,7 @@ public class DBServer {
 
     private static final char END_OF_TRANSMISSION = 4;
     private String storageFolderPath;
+    private static final String DBSTORAGE_DIRECTORY = "databases";
 
     public static void main(String args[]) throws IOException {
         DBServer server = new DBServer();
@@ -25,30 +26,20 @@ public class DBServer {
     * KEEP this signature otherwise we won't be able to mark your submission correctly.
     */
     public DBServer() {
-
-        storageFolderPath = Paths.get("databases").toAbsolutePath().toString();
-        boolean directoryCreated = generateDirectoryDB();
-        if (!directoryCreated){
+        if (!createDirectoryIfAbsent()){
             System.err.println("Cannot generate database directory");
         }
-
-//        try {
-//            // Create the database storage folder if it doesn't already exist !
-//            Files.createDirectories(Paths.get(storageFolderPath));
-//        } catch(IOException ioe) {
-//            System.out.println("Can't seem to create database storage folder " + storageFolderPath);
-//        }
     }
 
-    public boolean generateDirectoryDB() {
+    public boolean createDirectoryIfAbsent() {
         try {
             // Create the database storage folder if it doesn't already exist !
+            storageFolderPath = Paths.get(DBSTORAGE_DIRECTORY).toAbsolutePath().toString();
             Files.createDirectories(Paths.get(storageFolderPath));
             return true;
         } catch(IOException ioe) {
-            System.out.println("Can't seem to create database storage folder " + storageFolderPath);
+            throw new RuntimeException("Can't seem to create database storage folder " + storageFolderPath);
         }
-        return false;
     }
 
     /**
