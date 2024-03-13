@@ -4,12 +4,14 @@ import java.io.*;
 public class DBFileDirectory {
 /*
 DBStructure: .tab file (TEST: could be empty, or may need to generate new), or to read from provided .tab file.
+
 1. Handle 'databases' directory exists in DBServer (consider moving here)
 2. Initialise databasePath variable and pass into DBDataHandling class
 ^ now we know where data is stored.
 ^ (Q) do we accept .tab file as well as usr input?
 3. Use File.seperator to make code platform-ind
 
+DBStructure:
 1. Define a class named ‘DBServer’.
 2. In `DBServer`, define `storageFolderPath` and initialize it to 'databases'.
    Note: Use File.separator constant of Java to make your code platform-independent.
