@@ -1,10 +1,6 @@
 package edu.uob;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Path;
@@ -32,6 +28,7 @@ public class DBServer {
         if (!createDirectoryIfAbsent()){
             System.err.println("Cannot generate database directory");
         }
+        convertToPlatformIndependant(storageFolderPath);
     }
 
     public boolean createDirectoryIfAbsent() {
@@ -54,6 +51,10 @@ public class DBServer {
 
     public void updateSorageFolderPath(String absPath){
         storageFolderPath = Paths.get(absPath).toAbsolutePath().toString();
+    }
+
+    public String convertToPlatformIndependant(String absIndependentPath){
+        return storageFolderPath + File.separator;
     }
 
     /**

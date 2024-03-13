@@ -53,4 +53,21 @@ class DBServerTest {
 
     }
 
+    //test for File.seperator
+    public class FilePathConverter {
+        public String convertToWindowsPath(String unixPath) {
+            return unixPath.replace('/', '\\');
+        }
+    }
+
+    @Test
+    void testWindowsAbsPath() {
+        FilePathConverter converter = new FilePathConverter();
+        converter.convertToWindowsPath(server.storageFolderPath);
+        System.out.println(server.storageFolderPath);
+        server.convertToPlatformIndependant(server.storageFolderPath);
+        assertEquals("/home/mihirgany/IdeaProjects/cw-db/dbtest", server.storageFolderPath);
+    }
+
+
 }
