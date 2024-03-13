@@ -29,8 +29,10 @@ class DBServerTest {
 
     @Test
     void testUpdateStorageFolderPath() {
+        String basePath = System.getProperty("user.dir");
+        System.out.println(basePath);
         server.updateSorageFolderPath("dbtestfolder");
-        assertEquals("/home/mihirgany/IdeaProjects/cw-db/dbtestfolder", server.storageFolderPath);
+        assertEquals(basePath + "/dbtestfolder", server.storageFolderPath);
     }
 
     @Test
@@ -66,7 +68,8 @@ class DBServerTest {
         converter.convertToWindowsPath(server.storageFolderPath);
         System.out.println(server.storageFolderPath);
         server.convertToPlatformIndependant(server.storageFolderPath);
-        assertEquals("/home/mihirgany/IdeaProjects/cw-db/dbtest", server.storageFolderPath);
+        String basePath = System.getProperty("user.dir");
+        assertEquals(basePath + "/dbtest", server.storageFolderPath);
     }
 
 
