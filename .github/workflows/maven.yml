@@ -21,20 +21,29 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    
     - name: Build with Maven
-      run: mvn -B package --file cw-db/pom.xml
+      run: mvn -B package --file pom.xml
+      working-directory: cw-db
     
     - name: Build and Run Tests
       run: mvn test --batch-mode --fail-at-end
+      working-directory: cw-db
+    
     - name: Publish Test Report
       if: success() || failure()
       uses: scacap/action-surefire-report@v1  
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: cw-db  # Ensure this step runs in the correct directory if needed. Adjust based on action capabilities.
+       
         
     # Example: Saving a state and setting an output (Updated Method)
     - name: Save build version state
@@ -45,4 +54,11 @@ jobs:
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     # - name: Maven Dependency Tree Dependency Submission
     #   uses: advanced-security/maven-dependency-submission-action@v4.0.1
+
+    # Corrected: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
+    - name: Maven Dependency Tree Dependency Submission
+      uses: advanced-security/maven-dependency-submission-action@v4.0.1
+      with:
+        # Set the working directory to 'cw-db' where the pom.xml file resides
+        working-directory: cw-db
 
