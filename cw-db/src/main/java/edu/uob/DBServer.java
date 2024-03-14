@@ -8,6 +8,8 @@ import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.util.logging.Logger;
 
+import edu.uob.DBParse.*;
+
 /** This class implements the DB server. */
 public class DBServer {
 
@@ -64,9 +66,11 @@ public class DBServer {
     * <p>This method handles all incoming DB commands and carries out the required actions.
     */
     public String handleCommand(String command) {
-        System.out.println(command);
+        //System.out.println(command);
         // TODO implement your server logic here - return a string output -> client
         // Different reponse for query, ie Query OK if parsed and interpreted OK, else return error tag + description of problem
+        Parser p = new Parser(command);
+
         return "";
     }
 
