@@ -16,7 +16,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -42,8 +41,7 @@ jobs:
       uses: scacap/action-surefire-report@v1  
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        working-directory: cw-db  # Ensure this step runs in the correct directory if needed. Adjust based on action capabilities.
-       
+        directory: 'cw-db/target/surefire-reports'
         
     # Example: Saving a state and setting an output (Updated Method)
     - name: Save build version state
@@ -55,10 +53,10 @@ jobs:
     # - name: Maven Dependency Tree Dependency Submission
     #   uses: advanced-security/maven-dependency-submission-action@v4.0.1
 
-    # Corrected: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
-    - name: Maven Dependency Tree Dependency Submission
-      uses: advanced-security/maven-dependency-submission-action@v4.0.1
-      with:
-        # Set the working directory to 'cw-db' where the pom.xml file resides
-        working-directory: cw-db
+    # # Corrected: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
+    # - name: Maven Dependency Tree Dependency Submission
+    #   uses: advanced-security/maven-dependency-submission-action@v4.0.1
+    #   with:
+    #     # Set the working directory to 'cw-db' where the pom.xml file resides
+    #     working-directory: cw-db
 
