@@ -11,37 +11,31 @@ import java.time.Duration;
 public class ExampleDBTests {
 
     private DBServer server;
-    @Test
-    void demo() {
-        assertTrue(1 == 1);
-        assertTrue(2 == 2);
-        assertTrue(5 == 5);
+    // Create a new server _before_ every @Test
+    @BeforeEach
+    public void setup() {
+        server = new DBServer();
     }
-//    // Create a new server _before_ every @Test
-//    @BeforeEach
-//    public void setup() {
-//        server = new DBServer();
-//    }
-//
-//    // Random name generator - useful for testing "bare earth" queries (i.e. where tables don't previously exist)
-//    private String generateRandomName() {
-//        String randomName = "";
-//        for(int i=0; i<10 ;i++) randomName += (char)( 97 + (Math.random() * 25.0));
-//        return randomName;
-//    }
-//
-//    private String sendCommandToServer(String command) {
-//        // Try to send a command to the server - this call will timeout if it takes too long (in case the server enters an infinite loop)
-//        return assertTimeoutPreemptively(Duration.ofMillis(1000), () -> { return server.handleCommand(command);},
-//        "Server took too long to respond (probably stuck in an infinite loop)");
-//    }
-//
-//    // A basic test that creates a database, creates a table, inserts some test data, then queries it.
-//    // It then checks the response to see that a couple of the entries in the table are returned as expected
-//    @Test
-//    public void testBasicCreateAndQuery() {
-//        String randomName = generateRandomName();
-//        sendCommandToServer("CREATE DATABASE " + randomName + ";");
+
+    // Random name generator - useful for testing "bare earth" queries (i.e. where tables don't previously exist)
+    private String generateRandomName() {
+        String randomName = "";
+        for(int i=0; i<10 ;i++) randomName += (char)( 97 + (Math.random() * 25.0));
+        return randomName;
+    }
+
+    private String sendCommandToServer(String command) {
+        // Try to send a command to the server - this call will timeout if it takes too long (in case the server enters an infinite loop)
+        return assertTimeoutPreemptively(Duration.ofMillis(1000), () -> { return server.handleCommand(command);},
+        "Server took too long to respond (probably stuck in an infinite loop)");
+    }
+
+    // A basic test that creates a database, creates a table, inserts some test data, then queries it.
+    // It then checks the response to see that a couple of the entries in the table are returned as expected
+    @Test
+    public void testBasicCreateAndQuery() {
+        String randomName = generateRandomName();
+        sendCommandToServer("CREATE DATABASE " + randomName + ";");
 //        sendCommandToServer("USE " + randomName + ";");
 //        sendCommandToServer("CREATE TABLE marks (name, mark, pass);");
 //        sendCommandToServer("INSERT INTO marks VALUES ('Simon', 65, TRUE);");
@@ -53,7 +47,7 @@ public class ExampleDBTests {
 //        assertFalse(response.contains("[ERROR]"), "A valid query was made, however an [ERROR] tag was returned");
 //        assertTrue(response.contains("Simon"), "An attempt was made to add Simon to the table, but they were not returned by SELECT *");
 //        assertTrue(response.contains("Chris"), "An attempt was made to add Chris to the table, but they were not returned by SELECT *");
-//    }
+    }
 //
 //    // A test to make sure that querying returns a valid ID (this test also implicitly checks the "==" condition)
 //    // (these IDs are used to create relations between tables, so it is essential that suitable IDs are being generated and returned !)
