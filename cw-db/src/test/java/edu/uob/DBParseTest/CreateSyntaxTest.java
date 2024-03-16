@@ -20,7 +20,6 @@ class CreateSyntaxTest {
         });
         assertEquals("[ERROR]", exception.errorTag);
         assertEquals("CREATE command too short", exception.getMessage());
-
     }
 
 }
