@@ -1,10 +1,7 @@
 package edu.uob.DBParse;
 
-public abstract class handleSQLCmnd {
+public interface handleSQLCmnd {
 
-    boolean isParsedOk;
-
-    // void interpret (Parser parsedCmnd) throws IOException;
-    public abstract boolean Parser();
+    void parse(String cmndIN) throws SyntaxException;
 
 }
