@@ -1,7 +1,7 @@
 package edu.uob.DBParse;
 
 public class SyntaxException extends Exception {
-    String errorTag;
+    public String errorTag;
     String errorMsg;
 
     public SyntaxException(String errorTag, String errorMsg){

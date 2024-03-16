@@ -5,11 +5,11 @@ import java.util.*;
 
 public class CreateSyntax {
 
-    void parse(Parser p) throws SyntaxException, IOException {
+    public void parse(Parser p) throws SyntaxException, IOException {
         ArrayList<String> cmdCreateTokens = p.getTokens();
 
         if (cmdCreateTokens.size() <= 2){
-            throw new SyntaxException("[ERROR]", "CREATE command too stort");
+            throw new SyntaxException("[ERROR]", "CREATE command too short");
         }
 
 //        <List>String firstToken = cmdCreateTokens.get(0);
