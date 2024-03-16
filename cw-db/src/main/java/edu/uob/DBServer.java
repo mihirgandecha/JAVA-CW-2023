@@ -69,7 +69,7 @@ public class DBServer {
         //System.out.println(command);
         // TODO implement your server logic here - return a string output -> client
         // Different reponse for query, ie Query OK if parsed and interpreted OK, else return error tag + description of problem
-        Parser p = new Parser(command);
+        // Parser p = new Parser(command);
 
         return "";
     }
