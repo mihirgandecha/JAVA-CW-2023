@@ -4,11 +4,11 @@ import java.util.Arrays;
 
 public class Tokenizer {
 
-    String query = "  INSERT  INTO  people   VALUES(  'Simon Lock'  ,35, 'simon@bristol.ac.uk' , 1.8  ) ; ";
+    public String query = "  INSERT  INTO  people   VALUES(  'Simon Lock'  ,35, 'simon@bristol.ac.uk' , 1.8  ) ; ";
     String[] specialCharacters = {"(",")",",",";"};
-    ArrayList<String> tokens = new ArrayList<String>();
+    public ArrayList<String> tokens = new ArrayList<String>();
 
-    void setup()
+    public void setup()
     {
         // Remove any whitespace at the beginning and end of the query
         query = query.trim();
@@ -26,10 +26,10 @@ public class Tokenizer {
             }
         }
         // Finally, loop through the result array list, printing out each token a line at a time
-        for(int i=0; i<tokens.size(); i++) System.out.println(tokens.get(i));
+        // for(int i=0; i<tokens.size(); i++) System.out.println(tokens.get(i));
     }
 
-    String[] tokenise(String input)
+    public String[] tokenise(String input)
     {
         // Add in some extra padding spaces around the "special characters"
         // so we can be sure that they are separated by AT LEAST one space (possibly more)
