@@ -1,6 +1,6 @@
 package edu.uob.DBParse;
 
-public class Parser {
+public class Parser extends handleSQLCmnd {
     public String userInCmnd;
     Tokenizer tokenizer;
 
