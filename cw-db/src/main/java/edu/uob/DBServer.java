@@ -16,6 +16,7 @@ public class DBServer {
     private static final char END_OF_TRANSMISSION = 4;
     public String storageFolderPath;
     private static final Logger LOGGER = Logger.getLogger(DBServer.class.getName());
+    private Parser p;
 
     public static void main(String args[]) throws IOException {
         DBServer server = new DBServer();
@@ -70,8 +71,16 @@ public class DBServer {
         // TODO implement your server logic here - return a string output -> client
         // Different reponse for query, ie Query OK if parsed and interpreted OK, else return error tag + description of problem
         // Parser p = new Parser(command);
-        //Parser p = new Parser();
-        return "";
+        try{
+            p = new Parser();
+            p.setTokens(command);
+            p.parse(p);
+            return "OK";
+        } catch (SyntaxException e){
+            return e.toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //  === Methods below handle networking aspects of the project - you will not need to change these ! ===

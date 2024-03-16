@@ -11,7 +11,6 @@ public class CreateSyntax {
         if (cmdCreateTokens.size() <= 2){
             throw new SyntaxException("[ERROR]", "CREATE command too short");
         }
-
 //        <List>String firstToken = cmdCreateTokens.get(0);
 //        String secondToken = cmdCreateTokens.get(1);
 //
