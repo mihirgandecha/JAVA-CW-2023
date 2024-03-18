@@ -42,8 +42,7 @@ class ParserTest {
 
         //Check that Parser does same:
         String query = "CREATE DATABASE db;";
-        Parser parser = new Parser();
-        parser.setTokens(query);
+        Parser parser = new Parser(query);
         assertIterableEquals(expectedTokens, parser.getTokens());
 
     }

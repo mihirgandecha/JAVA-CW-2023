@@ -9,6 +9,10 @@ public class Parser implements handleSQLCmnd{
     public ArrayList<String> tokens;
     static int index = 0;
 
+    public Parser(String command) {
+        setTokens(command);
+    }
+
     public void setTokens(String userInCmnd){
         this.tokenizer = new Tokenizer();
         this.tokenizer.query = userInCmnd;
@@ -67,14 +71,11 @@ public class Parser implements handleSQLCmnd{
         return false;
     }
 
-    //eg handle("COMMAND")
-    //return error
     @Override
-    public String parse(Parser p) throws SyntaxException, IOException {
-        //TODO change to = p.tokent
-        String toString = p.tokenizer.tokens.toString();
+    public String parse() throws SyntaxException, IOException {
+        String tokenCmnd = getCurrentToken();
         try{
-            if (toString.contains("CREATE")){
+            if (tokenCmnd.contains("CREATE")){
                 handleCreateCommand();
             }
         } catch (SyntaxException e){
@@ -93,7 +94,6 @@ public class Parser implements handleSQLCmnd{
         return isPlainText(databaseName);
     }
 
-    //TestCase: Consider if CREATE can be run twice
     public void handleCreateCommand() throws SyntaxException, IOException{
         if (isTokensEmpty() || checkTokensLen(4)) {
             throw new SyntaxException(1, "CREATE command syntax error. Bad token len.");
