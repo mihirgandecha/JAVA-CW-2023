@@ -124,9 +124,7 @@ public class Parser implements handleSQLCmnd{
 
     public void InterpretCreateCmnd(String dbName) throws SyntaxException, IOException{
         Create database = new Create(dbName);
-        if(!database.checkCreateRoot()){
-            throw new SyntaxException(1, "Failed to initiate root at cw-db/databases/");
-        }
+        database.checkCreateRoot();
         if(!database.createDB()){
             throw new SyntaxException(1, "Failed to initiate:" + dbName + "at cw-db/databases/" + dbName);
         }
