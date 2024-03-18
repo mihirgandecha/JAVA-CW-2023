@@ -38,12 +38,12 @@ public class DBServer {
         try {
             Path dirPath = Paths.get(storageFolderPath);
             if(Files.exists(dirPath)){
-                LOGGER.info("Directory is present at: " + dirPath);
+                // LOGGER.info("Directory is present at: " + dirPath);
                 return true;
             }
             else{
                 Files.createDirectories(Paths.get(storageFolderPath));
-                LOGGER.info("Directory Created at: " + dirPath);
+                // LOGGER.info("Directory Created at: " + dirPath);
                 return true;
             }
         }
@@ -66,21 +66,14 @@ public class DBServer {
     *
     * <p>This method handles all incoming DB commands and carries out the required actions.
     */
-    public String handleCommand(String command) {
-        //System.out.println(command);
+    public String handleCommand(String command) throws IOException {
         // TODO implement your server logic here - return a string output -> client
         // Different reponse for query, ie Query OK if parsed and interpreted OK, else return error tag + description of problem
-        // Parser p = new Parser(command);
-        try{
-            p = new Parser();
-            p.setTokens(command);
-            p.parse(p);
-            return "OK";
-        } catch (SyntaxException e){
-            return e.toString();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        p = new Parser();
+        p.setTokens(command);
+        String result = p.parse(p);
+        p.clear();
+        return result;
     }
 
     //  === Methods below handle networking aspects of the project - you will not need to change these ! ===
