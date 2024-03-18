@@ -1,5 +1,7 @@
 package edu.uob.DBDataHandling;
 
+import edu.uob.DBParse.SyntaxException;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,10 +10,11 @@ import java.nio.file.Paths;
 
 public class Create {
     private String dbName;
-    private final String rootDir = "cw-db" + File.separator + "databases";
+    private String rootDir;
 
     public Create(String createDbDirName){
         this.dbName = createDbDirName;
+        this.rootDir = "cw-db" + File.separator + "databases" + File.separator + dbName;
     }
 
     //Check if cw-db/databases is present
@@ -57,6 +60,35 @@ public class Create {
     //Returns UNIX+Windows compatible path
     public String convertToPlatformIndependant(String directory){
         return directory + File.separator;
+    }
+
+    //Deletion:
+    // Deletes an empty directory at the specified path within the root directory
+    public boolean deleteEmptyDir(String directoryName) throws IOException {
+        Path dirPath = Paths.get(rootDir, directoryName);
+        try {
+            return Files.deleteIfExists(dirPath);
+        } catch (SyntaxException e) {
+            System.out.println("Directory is not empty.");
+            return false;
+        }
+    }
+
+    // Deletes a directory and all its contents
+    public void deleteSpecificDir(String directoryName) throws IOException {
+        Path dirPath = Paths.get(rootDir, directoryName);
+        deleteDirectoryRecursively(dirPath.toFile());
+    }
+
+    // Helper method to delete a directory recursively
+    private void deleteDirectoryRecursively(File dir) throws IOException {
+        File[] allContents = dir.listFiles();
+        if (allContents != null) {
+            for (File file : allContents) {
+                deleteDirectoryRecursively(file);
+            }
+        }
+        Files.delete(dir.toPath());
     }
 
 }
