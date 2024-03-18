@@ -72,5 +72,7 @@ class DBServerTest {
         assertEquals(basePath + "/dbtest", server.storageFolderPath);
     }
 
-
+// name tests: cannot have :, what if space? what is valid name for dir?
+    // test for branch cov + add to CI/DC
+    //copy table
 }
