@@ -4,7 +4,5 @@ import java.io.IOException;
 
 
 public interface handleSQLCmnd {
-
-    String parse(Parser p) throws SyntaxException, IOException;
-
+    String parse() throws SyntaxException, IOException;
 }

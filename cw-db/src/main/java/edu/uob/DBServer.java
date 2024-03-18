@@ -68,10 +68,8 @@ public class DBServer {
     */
     public String handleCommand(String command) throws IOException {
         // TODO implement your server logic here - return a string output -> client
-        // Different reponse for query, ie Query OK if parsed and interpreted OK, else return error tag + description of problem
-        p = new Parser();
-        p.setTokens(command);
-        String result = p.parse(p);
+        p = new Parser(command);
+        String result = p.parse();
         p.clear();
         return result;
     }
