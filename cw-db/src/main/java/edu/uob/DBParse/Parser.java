@@ -1,5 +1,6 @@
 package edu.uob.DBParse;
 
+import java.io.IOError;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,12 +41,17 @@ public class Parser implements handleSQLCmnd{
         return false;
     }
 
+    //eg handle("COMMAND")
+    //return error
     @Override
-    public void parse(Parser p) throws SyntaxException, IOException {
+    public void parse(Parser p) throws SyntaxException, Exception {
         String toString = p.tokenizer.tokens.toString();
         if (toString.contains("CREATE")){
             CreateSyntax createSyntax = new CreateSyntax();
             createSyntax.parse(p);
+        }
+        else{
+            throw new Exception("[ERROR]");
         }
     }
 }

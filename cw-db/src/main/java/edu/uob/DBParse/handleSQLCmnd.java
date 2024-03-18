@@ -6,6 +6,6 @@ import java.util.*;
 
 public interface handleSQLCmnd {
 
-    void parse(Parser p) throws SyntaxException, IOException;
+    void parse(Parser p) throws SyntaxException, Exception;
 
 }
