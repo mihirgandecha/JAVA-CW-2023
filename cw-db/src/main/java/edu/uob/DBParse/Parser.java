@@ -34,13 +34,6 @@ public class Parser implements handleSQLCmnd{
         return index++;
     }
 
-    public boolean isTokensEmpty (){
-        if (tokens.isEmpty()){
-            return true;
-        }
-        return false;
-    }
-
     public String getCurrentToken(){
         return tokens.get(index);
     }
@@ -48,13 +41,6 @@ public class Parser implements handleSQLCmnd{
     public String getNextToken(){
         incrementIndex();
         return tokens.get(index);
-    }
-
-    public boolean isUpperCase(String token){
-        if (token.equals(token.toUpperCase())){
-            return true;
-        }
-        return false;
     }
 
     public boolean isSpecialCharacter(String token) {
@@ -88,13 +74,72 @@ public class Parser implements handleSQLCmnd{
         return "[OK]";
     }
 
-    public boolean isPlainText(String token){
-        return token.matches(("^[a-zA-Z][a-zA-Z0-9_]*$"));
+    //Naming Parser Methods:
+
+    public boolean isEmpty (String token){
+        return (token == null) || token.isEmpty();
     }
+
+    public boolean isDigit(String token){
+        return token.matches("[0-9]");
+    }
+
+    public boolean isUpperCase(String token){
+        return token.matches("[A-Z]");
+    }
+
+    public boolean isLowerCase(String token){
+        return token.matches("[a-z]");
+    }
+
+    public boolean isLetter(String token){
+        return (isUpperCase(token) || isLowerCase(token));
+    }
+
+    // TODO why isn't underscore allowed
+    public boolean isPlainText(String token){
+        if (isEmpty(token)){
+            return false;
+        }
+        for (int i = 0; i < token.length(); i++){
+            String currentChar = String.valueOf(token.charAt(i));
+            // Check if each character is either a letter or a digit
+            if (!(isLetter(currentChar) || isDigit(currentChar))){
+                return false;
+            }
+        }
+        return true;
+    }
+
+//    public boolean isPlainText(String token){
+//        if (isEmpty(token)){
+//            return false;
+//        }
+//        for (int i = 0; i < token.length(); i++){
+//            String currentTChar = String.valueOf(token.charAt(i));
+//            //First char only allowing letter & underscore
+//            if (i == 0 && !((isLetter(currentTChar)) || "_".equals(currentTChar))){
+//                return false;
+//            }
+//            //Allowing anything else for rest:
+//            if (i > 0 && !(isLetter(currentTChar) || isDigit(currentTChar) || "_".equals(currentTChar))){
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
+
+
+
+//    public boolean isPlainText(String token){
+//        return token.matches(("^[a-zA-Z][a-zA-Z0-9_]*$"));
+//    }
 
     public boolean isValidDatabaseName(String databaseName){
         return isPlainText(databaseName);
     }
+
+    //Handling Logic:
 
     public void handleCreateCommand() throws SyntaxException, IOException{
         if (isTokensEmpty() || checkTokensLen(4)) {
