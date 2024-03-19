@@ -1,4 +1,4 @@
-package edu.uob.DBParse;
+package edu.uob.DBCmnd;
 
 import java.io.IOException;
 import java.io.Serial;

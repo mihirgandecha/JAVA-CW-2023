@@ -1,13 +1,10 @@
-package edu.uob.DBParse;
+package edu.uob.DBCmnd;
 
-import edu.uob.DBDataHandling.Create;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Parser implements handleSQLCmnd{
+public class Parser {
     public String userInCmnd;
     Tokenizer tokenizer;
     public ArrayList<String> tokens;
@@ -17,11 +14,12 @@ public class Parser implements handleSQLCmnd{
         setTokens(command);
     }
 
-    public void setTokens(String userInCmnd){
+    public void setTokens(String command){
         this.tokenizer = new Tokenizer();
-        this.tokenizer.query = userInCmnd;
+        this.tokenizer.query = command;
         tokenizer.setup();
         this.tokens = this.tokenizer.tokens;
+        this.userInCmnd = command;
     }
 
     public ArrayList<String> getTokens(){
@@ -61,21 +59,6 @@ public class Parser implements handleSQLCmnd{
         return false;
     }
 
-    @Override
-    public String parse() throws SyntaxException, IOException {
-        String tokenCmnd = getCurrentToken();
-        try{
-            if (tokenCmnd.contains("CREATE")){
-                handleCreateCommand();
-            }
-        } catch (SyntaxException e){
-            if("[ERROR]".equals(e.getErrorTag())){
-                throw new IOException(" Error during Parsing: " + e.getErrorMsg());
-            }
-        }
-        return "[OK]";
-    }
-
     //Naming Parser Methods:
 
     public boolean isEmpty (String token){
@@ -109,7 +92,6 @@ public class Parser implements handleSQLCmnd{
         }
         for (int i = 0; i < token.length(); i++){
             String currentChar = String.valueOf(token.charAt(i));
-            // Check if each character is either a letter or a digit
             if (!(isLetter(currentChar) || isDigit(currentChar))){
                 return false;
             }
@@ -149,12 +131,10 @@ public class Parser implements handleSQLCmnd{
     }
 
     public boolean isCharLiteral(String token) {
-        // Includes space, letters, digits, and symbols
         return isSpace(token) || isLetter(token) || isDigit(token) || isSymbol(token);
     }
 
     public boolean isStringLiteral(String token) {
-        // Assuming string literals are enclosed in single quotes for this context
         if (!token.startsWith("'") || !token.endsWith("'")) return false;
         String innerContent = token.substring(1, token.length() - 1);
         for (int i = 0; i < innerContent.length(); i++) {
@@ -191,6 +171,7 @@ public class Parser implements handleSQLCmnd{
         return true;
     }
 
+    //TODO move to CONDITION class
     private boolean isCondition(ArrayList<String> expression) {
         for (int i = 0; i < expression.size(); i++) {
             String token = expression.get(i);
@@ -208,53 +189,6 @@ public class Parser implements handleSQLCmnd{
     public boolean isValidComparator(String token) {
         return token.matches("==|>|<|>=|<=|!=|LIKE");
     }
-
-
-
-    public void handleCreateCommand() throws SyntaxException, IOException{
-        if (isCmndEmpty(tokens) || checkTokensLen(4)) {
-            throw new SyntaxException(1, "CREATE command syntax error. Bad token len.");
-        }
-        String cmndToken = getCurrentToken();
-        String expectedToken = "CREATE";
-        if (!expectedToken.equals(cmndToken)) {
-            throw new SyntaxException(1, "CREATE command syntax error. No 'CREATE' token found.");
-        }
-        cmndToken = getNextToken();
-        expectedToken = "DATABASE";
-        if (!expectedToken.equals(cmndToken)) {
-            throw new SyntaxException(1,"CREATE command syntax error. No 'DATABASE' token found.");
-        }
-        String databaseName = getNextToken();
-        if (!isTbAtrDbName(databaseName)) {
-            throw new SyntaxException(1,"CREATE command syntax error. Database name not plain text.");
-        }
-        cmndToken = getNextToken();
-        expectedToken = ";";
-        if (!expectedToken.equals(cmndToken)) {
-            throw new SyntaxException(1,"CREATE command syntax error. No ';' token found.");
-        }
-        InterpretCreateCmnd(databaseName);
-    }
-
-
-//    public boolean handleCondition() throws SyntaxException {
-//        if (tokens.isEmpty() || !tokens.contains("WHERE")) {
-//            throw new SyntaxException(1, "No 'WHERE' clause found.");
-//        }
-//        index = tokens.indexOf("WHERE") + 1;
-//        ArrayList<String> conditionExpression = new ArrayList<>(tokens.subList(index, tokens.size()));
-//        return isCondition(conditionExpression);
-//    }
-
-    public void InterpretCreateCmnd(String dbName) throws SyntaxException, IOException{
-        Create database = new Create(dbName);
-        database.checkCreateRoot();
-        if(!database.createDB()){
-            throw new SyntaxException(1, "Failed to initiate:" + dbName + "at cw-db/databases/" + dbName);
-        }
-    }
-
     public void clear() {
         this.userInCmnd = null;
         this.tokenizer = null;

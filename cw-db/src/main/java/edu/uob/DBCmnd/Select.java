@@ -1,0 +1,18 @@
+package edu.uob.DBCmnd;
+
+import java.io.IOException;
+
+public class Select implements DBCmnd {
+    public Select(Parser p) {
+    }
+
+    @Override
+    public void parse(Parser p) throws SyntaxException, IOException {
+
+    }
+
+    @Override
+    public String execute() throws SyntaxException, IOException {
+        return null;
+    }
+}

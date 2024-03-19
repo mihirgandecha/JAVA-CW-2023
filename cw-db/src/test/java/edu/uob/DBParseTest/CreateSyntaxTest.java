@@ -1,7 +1,6 @@
 package edu.uob.DBParseTest;
 
-import edu.uob.DBParse.Parser;
-import edu.uob.DBParse.SyntaxException;
+import edu.uob.DBCmnd.Parser;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

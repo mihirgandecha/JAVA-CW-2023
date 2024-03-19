@@ -1,9 +1,7 @@
 package edu.uob.DBParseTest;
 
-import edu.uob.DBParse.Parser;
-import edu.uob.DBParse.Tokenizer;
-import edu.uob.ExampleDBTests;
-import org.junit.jupiter.api.BeforeEach;
+import edu.uob.DBCmnd.Parser;
+import edu.uob.DBCmnd.Tokenizer;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
