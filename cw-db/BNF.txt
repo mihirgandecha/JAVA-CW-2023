@@ -25,6 +25,7 @@
 
 <Join>            ::=  "JOIN " [TableName] " AND " [TableName] " ON " [AttributeName] " AND " [AttributeName]
 
+//Naming methods:
 [Digit]           ::=  "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 
 [Uppercase]       ::=  "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
@@ -71,7 +72,11 @@
 
 <AttributeList>   ::=  [AttributeName] | [AttributeName] "," <AttributeList>
 
-<Condition>       ::=  "(" <Condition> <BoolOperator> <Condition> ")" | <Condition> <BoolOperator> <Condition> | "(" [AttributeName] <Comparator> [Value] ")" | [AttributeName] <Comparator> [Value]
+<Condition>
+       ::=  "(" <Condition> <BoolOperator> <Condition> ")" | <Condition> <BoolOperator> <Condition> | "(" [AttributeName] <Comparator> [Value] ")" | [AttributeName] <Comparator> [Value]
+example:
+SELECT * FROM employees
+WHERE (age >= 30 AND salary < 60000) OR (name LIKE 'John%' AND (id > 100 OR age <= 25));
 
 <BoolOperator>    ::= "AND" | "OR"
 
