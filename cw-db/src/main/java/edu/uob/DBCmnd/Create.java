@@ -1,6 +1,4 @@
-package edu.uob.DBDataHandling;
-
-import edu.uob.DBParse.SyntaxException;
+package edu.uob.DBCmnd;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,13 +6,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class Create {
-    private String dbName;
-    private String rootDir;
+public class Create implements DBCmnd {
+    private static String dbName;
+    private static String rootDir;
 
-    public Create(String createDbDirName){
-        this.dbName = createDbDirName;
-        this.rootDir = "cw-db" + File.separator + "databases" + File.separator + dbName;
+    public void setDbName(String dbName) {
+        dbName = dbName;
+        rootDir = "cw-db" + File.separator + "databases" + File.separator + dbName;
     }
 
     //Check if cw-db/databases is present
@@ -23,11 +21,10 @@ public class Create {
     }
 
     //Check if exists -> cw/db/databases
-    public boolean checkCreateRoot() throws IOException {
+    public void checkCreateRoot() throws IOException {
         if (!isRootPresent()){
-            return createDir("databases");
+            createDir("databases");
         }
-        return false;
     }
 
     //Creates directory
@@ -91,4 +88,39 @@ public class Create {
         Files.delete(dir.toPath());
     }
 
+    @Override
+    public void parse(Parser p) throws SyntaxException, IOException {
+        if (p.isCmndEmpty(p.tokens) || p.checkTokensLen(4)) {
+            throw new SyntaxException(1, "CREATE command syntax error. Bad token len.");
+        }
+        String createToken = p.getCurrentToken();
+        String createExpectedToken = "CREATE";
+        if (!createExpectedToken.equals(createToken)) {
+            throw new SyntaxException(1, "CREATE command syntax error. No 'CREATE' token found.");
+        }
+        String dbToken = p.getNextToken();
+        String dbExpectedToken = "DATABASE";
+        if (!dbExpectedToken.equals(dbToken)) {
+            throw new SyntaxException(1,"CREATE command syntax error. No 'DATABASE' token found.");
+        }
+        String databaseName = p.getNextToken();
+        if (!p.isTbAtrDbName(databaseName)) {
+            throw new SyntaxException(1,"CREATE command syntax error. Database name not plain text.");
+        }
+        String symbolToken = p.getNextToken();
+        String symExpectedToken = ";";
+        if (!symExpectedToken.equals(symbolToken)) {
+            throw new SyntaxException(1,"CREATE command syntax error. No ';' token found.");
+        }
+        setDbName(databaseName);
+    }
+
+    @Override
+    public String execute() throws SyntaxException, IOException {
+        this.checkCreateRoot();
+        if(!this.createDB()){
+            throw new SyntaxException(1, "Failed to initiate:" + dbName + "at cw-db/databases/" + dbName);
+        }
+        return "[OK]";
+    }
 }

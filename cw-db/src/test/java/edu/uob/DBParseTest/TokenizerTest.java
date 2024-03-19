@@ -1,6 +1,6 @@
 package edu.uob.DBParseTest;
 
-import edu.uob.DBParse.Tokenizer;
+import edu.uob.DBCmnd.Tokenizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;

@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.util.logging.Logger;
 
-import edu.uob.DBParse.*;
+import edu.uob.DBCmnd.*;
 
 /** This class implements the DB server. */
 public class DBServer {
@@ -69,9 +69,27 @@ public class DBServer {
     public String handleCommand(String command) throws IOException {
         // TODO implement your server logic here - return a string output -> client
         p = new Parser(command);
-        String result = p.parse();
-        p.clear();
-        return result;
+        String firstToken = p.getCurrentToken();
+        DBCmnd cmd;
+        switch (firstToken){
+            case "USE" -> cmd = (DBCmnd)new Use(p);
+            case "CREATE" -> cmd = (DBCmnd) new Create();
+            case "DROP" -> cmd = (DBCmnd) new Drop(p);
+            case "ALTER" -> cmd = (DBCmnd) new Alter(p);
+            case "INSERT" -> cmd = (DBCmnd) new Insert(p);
+            case "SELECT" -> cmd = (DBCmnd) new Select(p);
+            case "UPDATE" -> cmd = (DBCmnd) new Update(p);
+            case "DELETE" -> cmd = (DBCmnd) new Delete(p);
+            case "JOIN" -> cmd = (DBCmnd) new Join(p);
+            default -> throw new SyntaxException(1, "Unidentified command");
+        }
+        cmd.parse(p);
+        return cmd.execute();
+//        String result = p.parse();
+//        p.clear();
+//        // d = new Execute()
+//        return result;
+
     }
 
     //  === Methods below handle networking aspects of the project - you will not need to change these ! ===
