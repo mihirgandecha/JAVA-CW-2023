@@ -72,7 +72,11 @@
 
 <AttributeList>   ::=  [AttributeName] | [AttributeName] "," <AttributeList>
 
-<Condition>       ::=  "(" <Condition> <BoolOperator> <Condition> ")" | <Condition> <BoolOperator> <Condition> | "(" [AttributeName] <Comparator> [Value] ")" | [AttributeName] <Comparator> [Value]
+<Condition>
+       ::=  "(" <Condition> <BoolOperator> <Condition> ")" | <Condition> <BoolOperator> <Condition> | "(" [AttributeName] <Comparator> [Value] ")" | [AttributeName] <Comparator> [Value]
+example:
+SELECT * FROM employees
+WHERE (age >= 30 AND salary < 60000) OR (name LIKE 'John%' AND (id > 100 OR age <= 25));
 
 <BoolOperator>    ::= "AND" | "OR"
 
