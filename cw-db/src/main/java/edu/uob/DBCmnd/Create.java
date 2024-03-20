@@ -30,7 +30,7 @@ public class Create implements DBCmnd {
         String createToken = p.getCurrentToken();
         String createExpectedToken = "CREATE";
         if (!createExpectedToken.equals(createToken)) {
-            throw new SyntaxException(1, "CREATE command syntax error. No 'CREATE' token found.");
+            throw new SyntaxException(1, "");
         }
         String nextToken = p.getNextToken();
         switch (nextToken) {
