@@ -13,7 +13,7 @@ public class Alter extends Database implements DBCmnd {
 
     @Override
     public String execute(Parser p) throws SyntaxException, IOException {
-        return null;
+        return "[OK]";
     }
 
 }
