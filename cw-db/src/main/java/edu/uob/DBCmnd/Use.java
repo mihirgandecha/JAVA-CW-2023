@@ -1,12 +1,16 @@
 package edu.uob.DBCmnd;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Use extends Database implements DBCmnd {
-    public static String dbName;
+    private String dbName = null;
+    private Database dbStore;
 
-    public void Use (String dbTkn){
-        dbName = dbTkn;
+    public Use(Database database) {
+        this.dbStore = database;
     }
 
     @Override
@@ -26,17 +30,17 @@ public class Use extends Database implements DBCmnd {
         if (!p.ensureCmdEnd(lastTkn)){
             throw new SyntaxException(1, "';' Token not found.");
         }
-//        setDb(dbNameTkn);
+        dbName = dbNameTkn;
     }
 
     @Override
     public String execute(Parser p) throws SyntaxException, IOException {
-
-        return "[OK]";
+        String newPath = String.valueOf(dbStore.setPathUseCmd(dbName));
+        if (Files.exists(Paths.get(newPath))) {
+            dbStore.currentDbPath = Path.of(newPath);
+            return "[OK]";
+        } else {
+            throw new IOException("Directory does not exist at path: " + newPath);
+        }
     }
-
-//    private void setDb(String dbNameTkn) {
-//        dbName = dbNameTkn;
-//    }
-
 }
