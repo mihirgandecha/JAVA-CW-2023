@@ -40,7 +40,7 @@ public class Use extends Database implements DBCmnd {
             dbStore.currentDbPath = Path.of(newPath);
             return "[OK]";
         } else {
-            throw new IOException("Directory does not exist at path: " + newPath);
+            throw new SyntaxException(1, "");
         }
     }
 }
