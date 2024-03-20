@@ -72,6 +72,7 @@ public class DBServer {
         Parser p = new Parser(command);
         String firstToken = p.getCurrentToken();
         DBCmnd cmd;
+        //check if uppercase
         switch (firstToken){
             case "USE" -> cmd = (DBCmnd)new Use();
             case "CREATE" -> {
@@ -88,6 +89,7 @@ public class DBServer {
             default -> throw new SyntaxException(1, "Unidentified command");
         }
         cmd.parse(p);
+        p.clear();
         return cmd.execute(p);
     }
 

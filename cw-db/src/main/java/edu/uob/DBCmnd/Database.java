@@ -25,6 +25,10 @@ public class Database {
         dbName = dbToken;
     }
 
+    public Path getAbsPath(String directory){
+        return Paths.get(directory).toAbsolutePath();
+    }
+
     //Check if exists -> cw/db/databases
     public void checkCreateRoot() throws IOException {
         if (!isRootPresent()){
@@ -51,8 +55,8 @@ public class Database {
     }
 
     //Testing methods:
-    public Path getAbsPath(String directory){
-        return Paths.get(directory).toAbsolutePath();
+    public void setPath(){
+        dbPath = Paths.get(dbName).toAbsolutePath();
     }
 
     public String pathToString(String directory){
