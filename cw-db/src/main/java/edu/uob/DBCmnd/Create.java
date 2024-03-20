@@ -12,6 +12,11 @@ public class Create implements DBCmnd {
     private boolean isDb = false;
     private boolean isTb = false;
     private static String dbName = null;
+    private Database dbStore;
+
+    public Create(Database dbStore) {
+        this.dbStore = dbStore;
+    }
 
     @Override
     public void parse(Parser p) throws SyntaxException, IOException {
@@ -88,12 +93,11 @@ public class Create implements DBCmnd {
 
     @Override
     public String execute(Parser p) throws SyntaxException, IOException {
-        Database d = new Database();
-        d.setDbName(dbName);
-        d.setPath();
+//        Database d = new Database();
+        dbStore.setDbName(dbName);
+        dbStore.setPath();
         if (isDb) {
-            d.checkCreateRoot();
-            if (!d.createDB()) {
+            if (!dbStore.createDB()) {
                 throw new SyntaxException(1, "Failed to initiate:" + dbName + "at cw-db/databases/" + dbName);
             }
         }

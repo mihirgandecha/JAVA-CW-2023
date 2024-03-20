@@ -5,6 +5,10 @@ import java.io.IOException;
 public class Use extends Database implements DBCmnd {
     public static String dbName;
 
+    public void Use (String dbTkn){
+        dbName = dbTkn;
+    }
+
     @Override
     public void parse(Parser p) throws SyntaxException, IOException {
         p.firstCheck();
@@ -27,6 +31,7 @@ public class Use extends Database implements DBCmnd {
 
     @Override
     public String execute(Parser p) throws SyntaxException, IOException {
+
         return "[OK]";
     }
 

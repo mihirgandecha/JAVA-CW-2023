@@ -7,9 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Database {
-    protected String dbName;
-    protected Path dbPath;
-    // private final String rootDir;
+    public String dbName;
+    public Path dbPath;
 
 //    public Database(){
 //        this.rootDir = "databases";
@@ -17,12 +16,23 @@ public class Database {
 //    }
 
     //Check if cw-db/databases is present
-    public boolean isRootPresent(){
-        return Files.exists(getAbsPath("databases"));
+    public boolean isDatabasesDirPresent(){
+        boolean isDatabasesExists = Files.exists(getAbsPath("databases"));
+        return isDatabasesExists;
     }
 
-    public void setDbName(String dbToken){
+    public void setDbName(String dbToken) throws IOException {
+        if (dbToken == null){
+            throw new IOException("dbName is empty!");
+        }
         dbName = dbToken;
+    }
+
+    public void setPath() throws IOException {
+        dbPath = Paths.get("databases", dbName).toAbsolutePath();
+        if (!checkCreateRoot()){
+            throw new IOException("[ERROR]");
+        }
     }
 
     public Path getAbsPath(String directory){
@@ -30,34 +40,38 @@ public class Database {
     }
 
     //Check if exists -> cw/db/databases
-    public void checkCreateRoot() throws IOException {
-        if (!isRootPresent()){
-            createDir("databases");
+    public boolean checkCreateRoot() throws IOException {
+        if (!isDatabasesDirPresent()){
+            createDir();
+            return true;
         }
+        else if (isDatabasesDirPresent()){
+            return true;
+        }
+        return false;
     }
 
     //Creates directory
-    public boolean createDir(String directory) throws IOException{
-        return Files.createDirectories(getAbsPath(directory)).isAbsolute();
+    public boolean createDir() throws IOException{
+        boolean createExecuted = Files.createDirectories(dbPath).toFile().exists();
+        return createExecuted;
     }
 
     //Check if cw/databases/<DATABASE_NAME> already exists
     private boolean isDBPresent(){
-        return Files.exists(getAbsPath(String.valueOf(dbPath)));
+        boolean isDBPres = Files.exists(dbPath);
+        return isDBPres;
     }
 
     //Check if exists -> Creates cw/databases/<DATABASE_NAME>
     public boolean createDB() throws IOException {
         if (!isDBPresent()) {
-            return createDir(String.valueOf(dbPath));
+            return createDir();
         }
         return false;
     }
 
     //Testing methods:
-    public void setPath(){
-        dbPath = Paths.get(dbName).toAbsolutePath();
-    }
 
     public String pathToString(String directory){
         return getAbsPath(directory).toString();

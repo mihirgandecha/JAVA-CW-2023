@@ -14,6 +14,7 @@ import javax.xml.crypto.Data;
 
 /** This class implements the DB server. */
 public class DBServer {
+    public Database dbStore = new Database();
 
     private static final char END_OF_TRANSMISSION = 4;
     public String storageFolderPath;
@@ -28,6 +29,7 @@ public class DBServer {
     * KEEP this signature otherwise we won't be able to mark your submission correctly.
     */
     public DBServer() {
+        //TODO get rid of:
         updateSorageFolderPath("databases");
         if (!createDirectoryIfAbsent()){
             System.err.println("Cannot generate database directory");
@@ -76,7 +78,7 @@ public class DBServer {
         switch (firstToken){
             case "USE" -> cmd = (DBCmnd)new Use();
             case "CREATE" -> {
-                cmd = (DBCmnd) new Create();
+                cmd = (DBCmnd) new Create(dbStore);
                 break;
             }
             case "DROP" -> cmd = (DBCmnd) new Drop(p);
