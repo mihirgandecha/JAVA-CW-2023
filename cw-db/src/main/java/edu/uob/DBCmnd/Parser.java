@@ -31,7 +31,8 @@ public class Parser {
     }
 
     public int incrementIndex(){
-        return index++;
+        index++;
+        return getIndex();
     }
 
     public String getCurrentToken(){
@@ -40,9 +41,45 @@ public class Parser {
 
     public String getNextToken(){
         incrementIndex();
+        if (index < tokens.size()){
+            return tokens.get(index);
+        }
+        return null;
+    }
+
+    public String getTokenGivenIndx(int index){
         return tokens.get(index);
     }
 
+
+    public int getTokenLen() {
+        return tokens.size();
+    }
+
+    public String getLastToken(){
+        int tokenLen = getTokenLen();
+        if(!tokens.isEmpty()){
+            return tokens.get(tokenLen - 1);
+        }
+        return null;
+    }
+
+    public boolean isValidCommand(){
+        String lastTkn = getLastToken();
+        if (lastTkn == null){
+            return false;
+        }
+        return ";".equals(lastTkn);
+    }
+
+    public boolean ensureCmdEnd(String lastTkn){
+        if (!";".equals(lastTkn)){
+            return false;
+        }
+        return true;
+    }
+
+    //TODO is this repeated?
     public boolean isSpecialCharacter(String token) {
         String[] specialCharacters = {"(",")",",",";"};
         for (String specialChar : specialCharacters) {
@@ -189,6 +226,7 @@ public class Parser {
     public boolean isValidComparator(String token) {
         return token.matches("==|>|<|>=|<=|!=|LIKE");
     }
+
     public void clear() {
         this.userInCmnd = null;
         this.tokenizer = null;

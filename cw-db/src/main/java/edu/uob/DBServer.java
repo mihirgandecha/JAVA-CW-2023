@@ -84,12 +84,8 @@ public class DBServer {
             default -> throw new SyntaxException(1, "Unidentified command");
         }
         cmd.parse(p);
+        p.clear();
         return cmd.execute();
-//        String result = p.parse();
-//        p.clear();
-//        // d = new Execute()
-//        return result;
-
     }
 
     //  === Methods below handle networking aspects of the project - you will not need to change these ! ===

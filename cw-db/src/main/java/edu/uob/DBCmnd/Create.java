@@ -9,10 +9,14 @@ import java.nio.file.Paths;
 public class Create implements DBCmnd {
     private static String dbName;
     private static String rootDir;
+    private static boolean isDatabase;
+    private static boolean isTable;
 
-    public void setDbName(String dbName) {
-        dbName = dbName;
+    public void setDbName(String dirName) {
+        dbName = dirName;
         rootDir = "cw-db" + File.separator + "databases" + File.separator + dbName;
+        isDatabase = false;
+        isTable = true;
     }
 
     //Check if cw-db/databases is present
@@ -90,37 +94,85 @@ public class Create implements DBCmnd {
 
     @Override
     public void parse(Parser p) throws SyntaxException, IOException {
-        if (p.isCmndEmpty(p.tokens) || p.checkTokensLen(4)) {
-            throw new SyntaxException(1, "CREATE command syntax error. Bad token len.");
+        if (p.isCmndEmpty(p.tokens) || (!p.isValidCommand())) {
+            throw new SyntaxException(1, "Command Empty or missing ';' at end.");
         }
         String createToken = p.getCurrentToken();
         String createExpectedToken = "CREATE";
         if (!createExpectedToken.equals(createToken)) {
             throw new SyntaxException(1, "CREATE command syntax error. No 'CREATE' token found.");
         }
-        String dbToken = p.getNextToken();
-        String dbExpectedToken = "DATABASE";
-        if (!dbExpectedToken.equals(dbToken)) {
-            throw new SyntaxException(1,"CREATE command syntax error. No 'DATABASE' token found.");
+        String nextToken = p.getNextToken();
+        switch (nextToken) {
+            case "DATABASE":
+                parseDb(p);
+                isDatabase = true;
+                break;
+            case "TABLE":
+                parseTb(p);
+                isTable = true;
+                break;
+            default:
+                throw new SyntaxException(1, "Expected 'DATABASE' or 'TABLE' after 'CREATE'");
         }
+    }
+
+    public void parseDb(Parser p) throws SyntaxException, IOException {
         String databaseName = p.getNextToken();
         if (!p.isTbAtrDbName(databaseName)) {
             throw new SyntaxException(1,"CREATE command syntax error. Database name not plain text.");
         }
-        String symbolToken = p.getNextToken();
-        String symExpectedToken = ";";
-        if (!symExpectedToken.equals(symbolToken)) {
-            throw new SyntaxException(1,"CREATE command syntax error. No ';' token found.");
+        String lastTkn = p.getLastToken();
+        if (!p.ensureCmdEnd(lastTkn)){
+            throw new SyntaxException(1, "';' Token not found.");
         }
         setDbName(databaseName);
     }
 
+    public void parseTb(Parser p) throws SyntaxException, IOException {
+        String tableName = p.getNextToken();
+        if (!p.isTbAtrDbName(tableName)) {
+            throw new SyntaxException(1, "CREATE command syntax error. Table name not plain text.");
+        }
+        String nextTkn = p.getNextToken();
+        if (!p.ensureCmdEnd(nextTkn)){
+            throw new SyntaxException(1, "Error.");
+        }
+    }
+
+    private void parseTbAtrb(Parser p) throws SyntaxException, IOException {
+        String firstBrkt = p.getNextToken();
+        if (!"(".equals(firstBrkt)){
+            throw new SyntaxException(1, "Opening bracket missing.");
+        }
+        String nextToken = p.getNextToken();
+        while (nextToken != null && !")".equals(nextToken)) {
+            nextToken = p.getNextToken();
+            if (!p.isPlainText(nextToken)) {
+                throw new SyntaxException(1, "Invalid Attribute List");
+            }
+            nextToken = p.getNextToken();
+            if (",".equals(nextToken)) {
+                p.getNextToken();
+            }
+        }
+        p.getNextToken();
+
+    }
+
     @Override
     public String execute() throws SyntaxException, IOException {
-        this.checkCreateRoot();
-        if(!this.createDB()){
-            throw new SyntaxException(1, "Failed to initiate:" + dbName + "at cw-db/databases/" + dbName);
+        if (isDatabase){
+            this.checkCreateRoot();
+            if(!this.createDB()){
+                throw new SyntaxException(1, "Failed to initiate:" + dbName + "at cw-db/databases/" + dbName);
+            }
         }
+        if (isTable){
+
+        }
+        isTable = false;
+        isDatabase = false;
         return "[OK]";
     }
 }
