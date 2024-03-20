@@ -36,7 +36,7 @@ public class ExampleDBTests {
     public void testBasicCreateAndQuery() {
         String randomName = generateRandomName();
         sendCommandToServer("CREATE DATABASE " + randomName + ";");
-//        sendCommandToServer("USE " + randomName + ";");
+        sendCommandToServer("USE " + randomName + ";");
 //        sendCommandToServer("CREATE TABLE marks (name, mark, pass);");
 //        sendCommandToServer("INSERT INTO marks VALUES ('Simon', 65, TRUE);");
 //        sendCommandToServer("INSERT INTO marks VALUES ('Sion', 55, TRUE);");
@@ -47,6 +47,22 @@ public class ExampleDBTests {
 //        assertFalse(response.contains("[ERROR]"), "A valid query was made, however an [ERROR] tag was returned");
 //        assertTrue(response.contains("Simon"), "An attempt was made to add Simon to the table, but they were not returned by SELECT *");
 //        assertTrue(response.contains("Chris"), "An attempt was made to add Chris to the table, but they were not returned by SELECT *");
+    }
+
+    @Test
+    public void testCreateDbOk() {
+        String randomName = generateRandomName();
+        String response = sendCommandToServer("CREATE DATABASE " + randomName + ";");
+        assertTrue(response.contains("[OK]"));
+        assertTrue(randomName.equals(server.dbStore.dbName));
+        System.out.println(server.storageFolderPath);
+    }
+
+    @Test
+    public void testUseOk() {
+        String randomName = generateRandomName();
+        String response = sendCommandToServer("USE " + randomName + ";");
+        assertTrue(response.contains("[OK]"));
     }
 //
 //    // A test to make sure that querying returns a valid ID (this test also implicitly checks the "==" condition)
