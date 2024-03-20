@@ -10,13 +10,14 @@ import java.util.logging.Logger;
 
 import edu.uob.DBCmnd.*;
 
+import javax.xml.crypto.Data;
+
 /** This class implements the DB server. */
 public class DBServer {
 
     private static final char END_OF_TRANSMISSION = 4;
     public String storageFolderPath;
     private static final Logger LOGGER = Logger.getLogger(DBServer.class.getName());
-    private Parser p;
 
     public static void main(String args[]) throws IOException {
         DBServer server = new DBServer();
@@ -68,12 +69,15 @@ public class DBServer {
     */
     public String handleCommand(String command) throws IOException {
         // TODO implement your server logic here - return a string output -> client
-        p = new Parser(command);
+        Parser p = new Parser(command);
         String firstToken = p.getCurrentToken();
         DBCmnd cmd;
         switch (firstToken){
-            case "USE" -> cmd = (DBCmnd)new Use(p);
-            case "CREATE" -> cmd = (DBCmnd) new Create();
+            case "USE" -> cmd = (DBCmnd)new Use();
+            case "CREATE" -> {
+                cmd = (DBCmnd) new Create();
+                break;
+            }
             case "DROP" -> cmd = (DBCmnd) new Drop(p);
             case "ALTER" -> cmd = (DBCmnd) new Alter(p);
             case "INSERT" -> cmd = (DBCmnd) new Insert(p);
@@ -84,8 +88,7 @@ public class DBServer {
             default -> throw new SyntaxException(1, "Unidentified command");
         }
         cmd.parse(p);
-        p.clear();
-        return cmd.execute();
+        return cmd.execute(p);
     }
 
     //  === Methods below handle networking aspects of the project - you will not need to change these ! ===
@@ -107,8 +110,8 @@ public class DBServer {
 
     private void blockingHandleConnection(ServerSocket serverSocket) throws IOException {
         try (Socket s = serverSocket.accept();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()))) {
+             BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
+             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()))) {
 
             System.out.println("Connection established: " + serverSocket.getInetAddress());
             while (!Thread.interrupted()) {

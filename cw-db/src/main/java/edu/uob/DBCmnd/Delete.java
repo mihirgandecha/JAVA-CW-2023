@@ -2,7 +2,7 @@ package edu.uob.DBCmnd;
 
 import java.io.IOException;
 
-public class Delete implements DBCmnd {
+public class Delete extends Database implements DBCmnd {
     public Delete(Parser p) {
     }
 
@@ -12,7 +12,7 @@ public class Delete implements DBCmnd {
     }
 
     @Override
-    public String execute() throws SyntaxException, IOException {
+    public String execute(Parser p) throws SyntaxException, IOException {
         return null;
     }
 }

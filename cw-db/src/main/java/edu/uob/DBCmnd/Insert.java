@@ -2,7 +2,7 @@ package edu.uob.DBCmnd;
 
 import java.io.IOException;
 
-public class Insert implements DBCmnd {
+public class Insert extends Database implements DBCmnd {
     public Insert(Parser p) {
     }
 
@@ -12,7 +12,7 @@ public class Insert implements DBCmnd {
     }
 
     @Override
-    public String execute() throws SyntaxException, IOException {
+    public String execute(Parser p) throws SyntaxException, IOException {
         return null;
     }
 }
