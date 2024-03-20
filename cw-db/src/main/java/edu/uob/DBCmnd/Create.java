@@ -105,6 +105,7 @@ public class Create implements DBCmnd {
         if (isTb){
             isTb = false;
         }
+        p.clear();
         return "[OK]";
     }
 }

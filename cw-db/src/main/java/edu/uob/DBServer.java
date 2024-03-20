@@ -76,7 +76,7 @@ public class DBServer {
         DBCmnd cmd;
         //check if uppercase
         switch (firstToken){
-            case "USE" -> cmd = (DBCmnd)new Use();
+            case "USE" -> cmd = (DBCmnd) new Use(dbStore);
             case "CREATE" -> {
                 cmd = (DBCmnd) new Create(dbStore);
                 break;
@@ -91,7 +91,6 @@ public class DBServer {
             default -> throw new SyntaxException(1, "Unidentified command");
         }
         cmd.parse(p);
-        p.clear();
         return cmd.execute(p);
     }
 

@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 public class Database {
     public String dbName;
     public Path dbPath;
+    public Path currentDbPath;
 
 //    public Database(){
 //        this.rootDir = "databases";
@@ -33,6 +34,14 @@ public class Database {
         if (!checkCreateRoot()){
             throw new IOException("[ERROR]");
         }
+    }
+
+    public Path setPathUseCmd(String useCmdPath) throws IOException {
+        Path usePath = Paths.get("databases", useCmdPath).toAbsolutePath();
+        if (!checkCreateRoot()){
+            throw new IOException("[ERROR]");
+        }
+        return usePath;
     }
 
     public Path getAbsPath(String directory){
@@ -61,6 +70,11 @@ public class Database {
     private boolean isDBPresent(){
         boolean isDBPres = Files.exists(dbPath);
         return isDBPres;
+    }
+
+    public boolean isDbPresentUseCmnd(String dbToken){
+        boolean isdbTknPres = Files.exists(Path.of(dbToken).toAbsolutePath());
+        return isdbTknPres;
     }
 
     //Check if exists -> Creates cw/databases/<DATABASE_NAME>

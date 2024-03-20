@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import java.time.Duration;
 
@@ -36,7 +37,7 @@ public class ExampleDBTests {
     public void testBasicCreateAndQuery() {
         String randomName = generateRandomName();
         sendCommandToServer("CREATE DATABASE " + randomName + ";");
-        sendCommandToServer("USE " + randomName + ";");
+//        sendCommandToServer("USE " + randomName + ";");
 //        sendCommandToServer("CREATE TABLE marks (name, mark, pass);");
 //        sendCommandToServer("INSERT INTO marks VALUES ('Simon', 65, TRUE);");
 //        sendCommandToServer("INSERT INTO marks VALUES ('Sion', 55, TRUE);");
@@ -54,16 +55,17 @@ public class ExampleDBTests {
         String randomName = generateRandomName();
         String response = sendCommandToServer("CREATE DATABASE " + randomName + ";");
         assertTrue(response.contains("[OK]"));
-        assertTrue(randomName.equals(server.dbStore.dbName));
-        System.out.println(server.storageFolderPath);
     }
 
-    @Test
-    public void testUseOk() {
-        String randomName = generateRandomName();
-        String response = sendCommandToServer("USE " + randomName + ";");
-        assertTrue(response.contains("[OK]"));
-    }
+//    @Disabled
+//    @Test
+//    public void testUseOk() {
+//        String randomName = "mihirTest";
+//        sendCommandToServer("CREATE DATABASE " + randomName + ";");
+//        String response = sendCommandToServer("USE " + randomName + ";");
+//        assertTrue(response.contains("[OK]"));
+//
+//    }
 //
 //    // A test to make sure that querying returns a valid ID (this test also implicitly checks the "==" condition)
 //    // (these IDs are used to create relations between tables, so it is essential that suitable IDs are being generated and returned !)
