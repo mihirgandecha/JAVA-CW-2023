@@ -98,7 +98,7 @@ public class Create implements DBCmnd {
         dbStore.setPath();
         if (isDb) {
             if (!dbStore.createDB()) {
-                throw new SyntaxException(1, "Failed to initiate:" + dbName + "at cw-db/databases/" + dbName);
+                throw new SyntaxException(1, "");
             }
             isDb = false;
         }
