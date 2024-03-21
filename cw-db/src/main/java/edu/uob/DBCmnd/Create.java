@@ -93,7 +93,6 @@ public class Create implements DBCmnd {
 
     @Override
     public String execute(Parser p) throws SyntaxException, IOException {
-//        Database d = new Database();
         dbStore.setDbName(dbName);
         dbStore.setPath();
         if (isDb) {
@@ -101,11 +100,15 @@ public class Create implements DBCmnd {
                 throw new SyntaxException(1, "");
             }
             isDb = false;
+            p.clear();
+            return "[OK]" + dbName + "Database Created";
         }
         if (isTb){
             isTb = false;
+            p.clear();
+            return "[OK]" + "Table created";
         }
         p.clear();
-        return "[OK]";
+        throw new SyntaxException(1, "Could not execute CREATE command");
     }
 }
