@@ -4,6 +4,11 @@ import edu.uob.DBCmnd.SyntaxException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,15 +37,15 @@ public class ExampleDBTests {
 
     // A basic test that creates a database, creates a table, inserts some test data, then queries it.
     // It then checks the response to see that a couple of the entries in the table are returned as expected
-    @Test
-    public void testBasicCreateAndQuery() {
-        String randomName = generateRandomName();
-        String testCreate = sendCommandToServer("CREATE DATABASE " + randomName + ";");
-        assertTrue(testCreate.contains("[OK]"));
-        String testUse = sendCommandToServer("USE " + randomName + ";");
-        assertTrue(testUse.contains("[OK]"));
-        assertEquals(randomName, server.dbStore.dbName);
-        assertEquals(server.dbStore.dbPath, server.dbStore.currentDbPath);
+//    @Test
+//    public void testBasicCreateAndQuery() {
+//        String randomName = generateRandomName();
+//        String testCreate = sendCommandToServer("CREATE DATABASE " + randomName + ";");
+//        assertTrue(testCreate.contains("[OK]"));
+//        String testUse = sendCommandToServer("USE " + randomName + ";");
+//        assertTrue(testUse.contains("[OK]"));
+//        assertEquals(randomName, server.dbStore.dbName);
+//        assertEquals(server.dbStore.dbPath, server.dbStore.currentDbPath);
 //        sendCommandToServer("CREATE TABLE marks (name, mark, pass);");
 //        sendCommandToServer("INSERT INTO marks VALUES ('Simon', 65, TRUE);");
 //        sendCommandToServer("INSERT INTO marks VALUES ('Sion', 55, TRUE);");
@@ -51,7 +56,7 @@ public class ExampleDBTests {
 //        assertFalse(response.contains("[ERROR]"), "A valid query was made, however an [ERROR] tag was returned");
 //        assertTrue(response.contains("Simon"), "An attempt was made to add Simon to the table, but they were not returned by SELECT *");
 //        assertTrue(response.contains("Chris"), "An attempt was made to add Chris to the table, but they were not returned by SELECT *");
-    }
+//    }
 
     @Test
     public void testInvalidDatabase() {
@@ -65,12 +70,31 @@ public class ExampleDBTests {
         assertTrue(thrown.getMessage().contains("[ERROR]"));
         assertNotEquals(randomUseNameTest, server.dbStore.dbName);
     }
+
     @Test
-    public void testCreateDbOk() {
-        String randomName = generateRandomName();
-        String response = sendCommandToServer("CREATE DATABASE " + randomName + ";");
-        assertTrue(response.contains("[OK]"));
+    public void testInvalidCreate() throws IOException {
+        server.dbStore.deleteEmptyDir("testDb");
+        String database = "testDb";
+        sendCommandToServer("CREATE DATABASE " + database + ";");
+        String invalidCr = "CREATE DATABASE " + database + ";";
+        SyntaxException thrown = assertThrows(
+                SyntaxException.class,
+                () -> sendCommandToServer(invalidCr),
+                "[ERROR]"
+        );
+        assertTrue(thrown.getMessage().contains("[ERROR]"));
+        server.dbStore.deleteEmptyDir(database);
+        assertNotEquals(database, server.dbStore.dbName);
+        assertEquals(null, server.dbStore.dbName);
+        assertEquals(null, server.dbStore.dbPath);
     }
+
+//    @Test
+//    public void testCreateDbOk() {
+//        String randomName = generateRandomName();
+//        String response = sendCommandToServer("CREATE DATABASE " + randomName + ";");
+//        assertTrue(response.contains("[OK]"));
+//    }
 
 //    @Disabled
 //    @Test

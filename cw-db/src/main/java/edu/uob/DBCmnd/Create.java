@@ -97,6 +97,8 @@ public class Create implements DBCmnd {
         dbStore.setPath();
         if (isDb) {
             if (!dbStore.createDB()) {
+                dbStore.dbPath = null;
+                dbStore.dbName = null;
                 throw new SyntaxException(1, "");
             }
             isDb = false;
@@ -108,6 +110,8 @@ public class Create implements DBCmnd {
             p.clear();
             return "[OK]" + " Table created";
         }
+        dbStore.dbPath = null;
+        dbStore.dbName = null;
         p.clear();
         throw new SyntaxException(1, "Could not execute CREATE command");
     }
