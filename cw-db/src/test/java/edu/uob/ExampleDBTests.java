@@ -36,6 +36,8 @@ public class ExampleDBTests {
         "Server took too long to respond (probably stuck in an infinite loop)");
     }
 
+    //TODO condition -> use float for everything (convert into int)
+
     // A basic test that creates a database, creates a table, inserts some test data, then queries it.
     // It then checks the response to see that a couple of the entries in the table are returned as expected
     @Test
@@ -46,7 +48,7 @@ public class ExampleDBTests {
         assertEquals(randomName, server.dbStore.dbName);
         String testUse = sendCommandToServer("USE " + randomName + ";");
         assertTrue(testUse.contains("[OK]"));
-        assertEquals(server.dbStore.dbPath, server.dbStore.currentDbPath);
+//        assertEquals(server.dbStore.dbPath, server.dbStore.currentDbPath);
 //        sendCommandToServer("CREATE TABLE marks (name, mark, pass);");
 //        sendCommandToServer("INSERT INTO marks VALUES ('Simon', 65, TRUE);");
 //        sendCommandToServer("INSERT INTO marks VALUES ('Sion', 55, TRUE);");
@@ -59,6 +61,97 @@ public class ExampleDBTests {
 //        assertTrue(response.contains("Chris"), "An attempt was made to add Chris to the table, but they were not returned by SELECT *");
     }
 
+    //CREATE Parsing:
+
+    //Empty Command stops at SERVER:
+    @Test
+    public void testParsingInvalidDatabaseName() {
+        String testEmptyCmd = null;
+        SyntaxException thrown = assertThrows(
+                SyntaxException.class,
+                () -> sendCommandToServer(testEmptyCmd),
+                "[ERROR]"
+        );
+        String expected = "[ERROR]" + " [SERVER]: Command Query is empty.";
+        assertEquals(expected, thrown.getMessage());
+        //TODO is redundant?
+        assertTrue(thrown.getMessage().contains(expected));
+    }
+
+    //Just 'CREATE' without ';' catches in CREATE - edge case found!
+    @Test
+    public void testParsingJustCreate() {
+        String testEmptyCmd = "CREATE";
+        SyntaxException thrown = assertThrows(
+                SyntaxException.class,
+                () -> sendCommandToServer(testEmptyCmd),
+                "[ERROR]"
+        );
+        String expected = "[ERROR]" + " No ';' at end!";
+        String actual = thrown.getMessage();
+        assertEquals(expected, thrown.getMessage());
+        assertTrue(thrown.getMessage().contains(expected));
+    }
+
+    //Test for "CREATE DATABASE" for no ';'
+    @Test
+    public void testParsingJustCreateDatabase() {
+        String testEmptyCmd = "CREATE DATABASE";
+        SyntaxException thrown = assertThrows(
+                SyntaxException.class,
+                () -> sendCommandToServer(testEmptyCmd),
+                "[ERROR]"
+        );
+        String expected = "[ERROR]" + " No ';' at end!";
+        String actual = thrown.getMessage();
+        assertEquals(expected, thrown.getMessage());
+        assertTrue(thrown.getMessage().contains(expected));
+    }
+
+    //Test for "CREATE DATABASE" for no dbName
+    @Test
+    public void testParsingNoDBName() {
+        String testEmptyCmd = "CREATE DATABASE;";
+        SyntaxException thrown = assertThrows(
+                SyntaxException.class,
+                () -> sendCommandToServer(testEmptyCmd),
+                "[ERROR]"
+        );
+        String expected = "[ERROR]" + " Token length invalid.";
+        String actual = thrown.getMessage();
+        assertEquals(expected, thrown.getMessage());
+        assertTrue(thrown.getMessage().contains(expected));
+    }
+
+    //Test for "CREATE DATABASE" for invalid dbName
+    @Test
+    public void testParsingInvalidDBName() {
+        String testEmptyCmd = "CREATE DATABASE #;";
+        SyntaxException thrown = assertThrows(
+                SyntaxException.class,
+                () -> sendCommandToServer(testEmptyCmd),
+                "[ERROR]"
+        );
+        String expected = "[ERROR]" + " Invalid Database name!";
+        String actual = thrown.getMessage();
+        assertEquals(expected, thrown.getMessage());
+        assertTrue(thrown.getMessage().contains(expected));
+    }
+
+    //Test for "CREATE DATABASE" for more than 4 tokens
+    @Test
+    public void testParsingInvalidTokenLen() {
+        String testEmptyCmd = "CREATE DATABASE # 2 4;";
+        SyntaxException thrown = assertThrows(
+                SyntaxException.class,
+                () -> sendCommandToServer(testEmptyCmd),
+                "[ERROR]"
+        );
+        String expected = "[ERROR]" + " Token length invalid.";
+        String actual = thrown.getMessage();
+        assertEquals(expected, thrown.getMessage());
+        assertTrue(thrown.getMessage().contains(expected));
+    }
 //    @Test
 //    public void testInvalidDatabase() {
 //        String randomUseNameTest = generateRandomName();

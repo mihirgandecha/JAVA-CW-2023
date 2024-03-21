@@ -20,18 +20,10 @@ public class Create implements DBCmnd {
 
     @Override
     public void parse(Parser p) throws SyntaxException, IOException {
-        if (p.isCmndEmpty(p.tokens) || (!p.isValidCommand())) {
-            throw new SyntaxException(" Parsing [CREATE]: Empty cmnd / ';' not found!");
-        }
-        int tokenLen = p.getTokenLen();
-        if (tokenLen < 4) {
-            throw new SyntaxException(" Parsing [CREATE]: Token length invalid.");
-        }
-        String createToken = p.getCurrentToken();
-        String createExpectedToken = "CREATE";
-        if (!createExpectedToken.equals(createToken)) {
-            throw new SyntaxException(" Parsing [CREATE]: Token 'CREATE' not found!");
-        }
+//        int tokenLen = p.getTokenLen();
+//        if (tokenLen < 4) {
+//            throw new SyntaxException(" Token length invalid.");
+//        }
         String nextToken = p.getNextToken();
         switch (nextToken) {
             case "DATABASE":
@@ -48,18 +40,22 @@ public class Create implements DBCmnd {
     }
 
     private void parseDb(Parser p) throws SyntaxException, IOException {
+        int tokenLen = p.getTokenLen();
+        if (tokenLen != 4) {
+            throw new SyntaxException(" Token length invalid.");
+        }
         String databaseName = p.getNextToken();
         if (!p.isTbAtrDbName(databaseName)) {
-            throw new SyntaxException(" Parsing [CREATE]/[DATABASE]: Database name not valid!");
-        }
-        String lastTkn = p.getLastToken();
-        if (!p.ensureCmdEnd(lastTkn)) {
-            throw new SyntaxException(" Parsing [CREATE]/[DATABASE]: No ';' found!");
+            throw new SyntaxException(" Invalid Database name!");
         }
         dbName = databaseName;
     }
 
     private void parseTb(Parser p) throws SyntaxException, IOException {
+        int tokenLen = p.getTokenLen();
+        if (tokenLen < 4) {
+            throw new SyntaxException(" Token length invalid.");
+        }
         String tableName = p.getNextToken();
         if (!p.isTbAtrDbName(tableName)) {
             throw new SyntaxException(" Parsing [CREATE]/[TABLE]: Invalid table name!");

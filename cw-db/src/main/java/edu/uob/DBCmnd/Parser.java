@@ -10,16 +10,26 @@ public class Parser {
     public ArrayList<String> tokens;
     static int index = 0;
 
-    public Parser(String command) {
+    public Parser(String command) throws SyntaxException {
         setTokens(command);
     }
 
-    public void setTokens(String command){
+    public void setTokens(String command) throws SyntaxException {
+        if (queryEmpty(command)){
+            throw new SyntaxException(" [SERVER]: Command Query is empty.");
+        }
         this.tokenizer = new Tokenizer();
         this.tokenizer.query = command;
         tokenizer.setup();
         this.tokens = this.tokenizer.tokens;
         this.userInCmnd = command;
+    }
+
+    public boolean queryEmpty(String query){
+        if (query == null){
+            return true;
+        }
+        return false;
     }
 
     public ArrayList<String> getTokens(){
@@ -58,8 +68,10 @@ public class Parser {
 
     public String getLastToken(){
         int tokenLen = getTokenLen();
-        if(!tokens.isEmpty()){
-            return tokens.get(tokenLen - 1);
+        tokenLen--;
+        if(!tokens.isEmpty() && tokenLen > 0){
+            String lastTkn = tokens.get(tokenLen);
+            return lastTkn;
         }
         return null;
     }
@@ -96,11 +108,17 @@ public class Parser {
         return false;
     }
     public void firstCheck() throws SyntaxException {
-        if (isCmndEmpty(this.tokens) || (!this.isValidCommand())) {
-            throw new SyntaxException("");
+        ArrayList<String> tokenChk = this.tokens;
+        if(isUpperCase(getCurrentToken())){
+            clear();
+            throw new SyntaxException(" [SERVER]: Token cmnd NOT uppercase!");
         }
+        if(!isValidCommand()){
+            clear();
+            throw new SyntaxException(" No ';' at end!");
+        }
+        index = 0;
     }
-    //Naming Parser Methods:
 
     public boolean isEmpty (String token){
         return (token == null) || token.isEmpty();
