@@ -21,16 +21,16 @@ public class Create implements DBCmnd {
     @Override
     public void parse(Parser p) throws SyntaxException, IOException {
         if (p.isCmndEmpty(p.tokens) || (!p.isValidCommand())) {
-            throw new SyntaxException(1, "Command Empty or missing ';' at end.");
+            throw new SyntaxException("");
         }
         int tokenLen = p.getTokenLen();
         if (tokenLen < 4) {
-            throw new SyntaxException(1, "Command length too short");
+            throw new SyntaxException("");
         }
         String createToken = p.getCurrentToken();
         String createExpectedToken = "CREATE";
         if (!createExpectedToken.equals(createToken)) {
-            throw new SyntaxException(1, "");
+            throw new SyntaxException("");
         }
         String nextToken = p.getNextToken();
         switch (nextToken) {
@@ -43,18 +43,18 @@ public class Create implements DBCmnd {
                 isTb = true;
                 break;
             default:
-                throw new SyntaxException(1, "Expected 'DATABASE' or 'TABLE' after 'CREATE'");
+                throw new SyntaxException("");
         }
     }
 
     private void parseDb(Parser p) throws SyntaxException, IOException {
         String databaseName = p.getNextToken();
         if (!p.isTbAtrDbName(databaseName)) {
-            throw new SyntaxException(1, "CREATE command syntax error. Database name not plain text.");
+            throw new SyntaxException("");
         }
         String lastTkn = p.getLastToken();
         if (!p.ensureCmdEnd(lastTkn)) {
-            throw new SyntaxException(1, "';' Token not found.");
+            throw new SyntaxException("");
         }
         dbName = databaseName;
     }
@@ -62,25 +62,20 @@ public class Create implements DBCmnd {
     private void parseTb(Parser p) throws SyntaxException, IOException {
         String tableName = p.getNextToken();
         if (!p.isTbAtrDbName(tableName)) {
-            throw new SyntaxException(1, "CREATE command syntax error. Table name not plain text.");
+            throw new SyntaxException("");
         }
         parseTbAtrb(p);
-
-//        String nextTkn = p.getNextToken();
-//        if (!p.ensureCmdEnd(nextTkn)) {
-//            throw new SyntaxException(1, "Error.");
-//        }
     }
 
     private void parseTbAtrb(Parser p) throws SyntaxException, IOException {
         String firstBrkt = p.getNextToken();
         if (!"(".equals(firstBrkt)) {
-            throw new SyntaxException(1, "Opening bracket missing.");
+            throw new SyntaxException("");
         }
         String nextToken = p.getNextToken();
         while (nextToken != null && !")".equals(nextToken)) {
             if (!p.isPlainText(nextToken)) {
-                throw new SyntaxException(1, "Invalid Attribute List");
+                throw new SyntaxException("");
             }
             nextToken = p.getNextToken();
             if (",".equals(nextToken)) {
@@ -93,19 +88,26 @@ public class Create implements DBCmnd {
 
     @Override
     public String execute(Parser p) throws SyntaxException, IOException {
-//        Database d = new Database();
         dbStore.setDbName(dbName);
         dbStore.setPath();
         if (isDb) {
             if (!dbStore.createDB()) {
-                throw new SyntaxException(1, "");
+                dbStore.dbPath = null;
+                dbStore.dbName = null;
+                throw new SyntaxException("");
             }
             isDb = false;
+            p.clear();
+            return "[OK]" + dbName + " Database Created";
         }
         if (isTb){
             isTb = false;
+            p.clear();
+            return "[OK]" + " Table created";
         }
+        dbStore.dbPath = null;
+        dbStore.dbName = null;
         p.clear();
-        return "[OK]";
+        throw new SyntaxException("");
     }
 }

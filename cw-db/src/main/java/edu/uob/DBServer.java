@@ -6,7 +6,6 @@ import java.net.Socket;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
-import java.util.logging.Logger;
 
 import edu.uob.DBCmnd.*;
 
@@ -17,8 +16,7 @@ public class DBServer {
     public Database dbStore = new Database();
 
     private static final char END_OF_TRANSMISSION = 4;
-    public String storageFolderPath;
-    private static final Logger LOGGER = Logger.getLogger(DBServer.class.getName());
+    private String storageFolderPath;
 
     public static void main(String args[]) throws IOException {
         DBServer server = new DBServer();
@@ -26,61 +24,33 @@ public class DBServer {
     }
 
     /**
-    * KEEP this signature otherwise we won't be able to mark your submission correctly.
-    */
+     * KEEP this signature otherwise we won't be able to mark your submission correctly.
+     */
     public DBServer() {
-        //TODO get rid of:
-        updateSorageFolderPath("databases");
-        if (!createDirectoryIfAbsent()){
-            System.err.println("Cannot generate database directory");
-        }
-        convertToPlatformIndependant(storageFolderPath);
-    }
-
-    public boolean createDirectoryIfAbsent() {
+        storageFolderPath = Paths.get("databases").toAbsolutePath().toString();
         try {
-            Path dirPath = Paths.get(storageFolderPath);
-            if(Files.exists(dirPath)){
-                // LOGGER.info("Directory is present at: " + dirPath);
-                return true;
-            }
-            else{
-                Files.createDirectories(Paths.get(storageFolderPath));
-                // LOGGER.info("Directory Created at: " + dirPath);
-                return true;
-            }
+            // Create the database storage folder if it doesn't already exist !
+            Files.createDirectories(Paths.get(storageFolderPath));
+        } catch(IOException ioe) {
+            System.out.println("Can't seem to create database storage folder " + storageFolderPath);
         }
-        catch(IOException ioe) {
-            throw new RuntimeException("Can't seem to create database storage folder " + storageFolderPath);
-        }
-    }
-
-    public void updateSorageFolderPath(String absPath){
-        storageFolderPath = Paths.get(absPath).toAbsolutePath().toString();
-    }
-
-    public String convertToPlatformIndependant(String absIndependentPath){
-        return storageFolderPath + File.separator;
     }
 
     /**
-    * KEEP this signature (i.e. {@code edu.uob.DBServer.handleCommand(String)}) otherwise we won't be
-    * able to mark your submission correctly.
-    *
-    * <p>This method handles all incoming DB commands and carries out the required actions.
-    */
+     * KEEP this signature (i.e. {@code edu.uob.DBServer.handleCommand(String)}) otherwise we won't be
+     * able to mark your submission correctly.
+     *
+     * <p>This method handles all incoming DB commands and carries out the required actions.
+     */
     public String handleCommand(String command) throws IOException {
         // TODO implement your server logic here - return a string output -> client
         Parser p = new Parser(command);
         String firstToken = p.getCurrentToken();
         DBCmnd cmd;
-        //check if uppercase
+        //TODO Do I need to convert if lowercase?
         switch (firstToken){
             case "USE" -> cmd = (DBCmnd) new Use(dbStore);
-            case "CREATE" -> {
-                cmd = (DBCmnd) new Create(dbStore);
-                break;
-            }
+            case "CREATE" -> cmd = (DBCmnd) new Create(dbStore);
             case "DROP" -> cmd = (DBCmnd) new Drop(p);
             case "ALTER" -> cmd = (DBCmnd) new Alter(p);
             case "INSERT" -> cmd = (DBCmnd) new Insert(p);
@@ -88,7 +58,7 @@ public class DBServer {
             case "UPDATE" -> cmd = (DBCmnd) new Update(p);
             case "DELETE" -> cmd = (DBCmnd) new Delete(p);
             case "JOIN" -> cmd = (DBCmnd) new Join(p);
-            default -> throw new SyntaxException(1, "");
+            default -> throw new SyntaxException("");
         }
         cmd.parse(p);
         return cmd.execute(p);

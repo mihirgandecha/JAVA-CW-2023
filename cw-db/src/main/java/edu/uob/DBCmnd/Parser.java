@@ -79,7 +79,7 @@ public class Parser {
         return true;
     }
 
-    //TODO is this repeated?
+    //TODO Redundant?
     public boolean isSpecialCharacter(String token) {
         String[] specialCharacters = {"(",")",",",";"};
         for (String specialChar : specialCharacters) {
@@ -97,7 +97,7 @@ public class Parser {
     }
     public void firstCheck() throws SyntaxException {
         if (isCmndEmpty(this.tokens) || (!this.isValidCommand())) {
-            throw new SyntaxException(1, "Command Empty or missing ';' at end.");
+            throw new SyntaxException("");
         }
     }
     //Naming Parser Methods:
@@ -144,7 +144,7 @@ public class Parser {
         return token.matches("[!#$%&()*+,\\-./:;<=>?@\\[\\]\\^_`{|}~]");
     }
 
-    //TODO Do we need? If so how can we do for taking tokenS and method (eg isSpace) as a parameter
+    //TODO Redundant?
     public boolean stringContainsSymbol(String token) {
         Pattern pattern = Pattern.compile("[!#$%&()*+,\\-./:;<=>?@\\[\\]\\^_`{|}~]");
         Matcher matcher = pattern.matcher(token);
@@ -212,7 +212,7 @@ public class Parser {
         return true;
     }
 
-    //TODO move to CONDITION class
+    //TODO Method: Array<list>String as parameter as well as String
     private boolean isCondition(ArrayList<String> expression) {
         for (int i = 0; i < expression.size(); i++) {
             String token = expression.get(i);

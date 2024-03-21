@@ -8,11 +8,10 @@ public class Update extends Database implements DBCmnd {
 
     @Override
     public void parse(Parser p) throws SyntaxException, IOException {
-
     }
 
     @Override
     public String execute(Parser p) throws SyntaxException, IOException {
-        throw new IOException("[ERROR]");
+        throw new SyntaxException("");
     }
 }

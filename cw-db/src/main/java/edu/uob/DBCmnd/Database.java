@@ -2,6 +2,7 @@ package edu.uob.DBCmnd;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -99,9 +100,13 @@ public class Database {
     //Deletion:
     // Deletes an empty directory at the specified path within the root directory
     public boolean deleteEmptyDir(String directoryName) throws IOException {
-        Path dirPath = Paths.get(String.valueOf(dbPath), directoryName);
+        Path dPath = getAbsPath("databases" + File.separator + directoryName);
+        if (!Files.exists(dPath)){
+            return false;
+        }
+//        Path dirPath = Paths.get(String.valueOf(dbPath), directoryName);
         try {
-            return Files.deleteIfExists(dirPath);
+            return Files.deleteIfExists(dPath);
         } catch (SyntaxException e) {
             System.out.println("Directory is not empty.");
             return false;
