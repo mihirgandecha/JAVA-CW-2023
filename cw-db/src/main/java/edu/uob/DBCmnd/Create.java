@@ -21,16 +21,16 @@ public class Create implements DBCmnd {
     @Override
     public void parse(Parser p) throws SyntaxException, IOException {
         if (p.isCmndEmpty(p.tokens) || (!p.isValidCommand())) {
-            throw new SyntaxException("");
+            throw new SyntaxException(" Parsing [CREATE]: Empty cmnd / ';' not found!");
         }
         int tokenLen = p.getTokenLen();
         if (tokenLen < 4) {
-            throw new SyntaxException("");
+            throw new SyntaxException(" Parsing [CREATE]: Token length invalid.");
         }
         String createToken = p.getCurrentToken();
         String createExpectedToken = "CREATE";
         if (!createExpectedToken.equals(createToken)) {
-            throw new SyntaxException("");
+            throw new SyntaxException(" Parsing [CREATE]: Token 'CREATE' not found!");
         }
         String nextToken = p.getNextToken();
         switch (nextToken) {
@@ -43,18 +43,18 @@ public class Create implements DBCmnd {
                 isTb = true;
                 break;
             default:
-                throw new SyntaxException("");
+                throw new SyntaxException(" Parsing [CREATE]: Token 'DATABASE'/'TABLE' not found!");
         }
     }
 
     private void parseDb(Parser p) throws SyntaxException, IOException {
         String databaseName = p.getNextToken();
         if (!p.isTbAtrDbName(databaseName)) {
-            throw new SyntaxException("");
+            throw new SyntaxException(" Parsing [CREATE]/[DATABASE]: Database name not valid!");
         }
         String lastTkn = p.getLastToken();
         if (!p.ensureCmdEnd(lastTkn)) {
-            throw new SyntaxException("");
+            throw new SyntaxException(" Parsing [CREATE]/[DATABASE]: No ';' found!");
         }
         dbName = databaseName;
     }
@@ -62,7 +62,7 @@ public class Create implements DBCmnd {
     private void parseTb(Parser p) throws SyntaxException, IOException {
         String tableName = p.getNextToken();
         if (!p.isTbAtrDbName(tableName)) {
-            throw new SyntaxException("");
+            throw new SyntaxException(" Parsing [CREATE]/[TABLE]: Invalid table name!");
         }
         parseTbAtrb(p);
     }
@@ -70,12 +70,12 @@ public class Create implements DBCmnd {
     private void parseTbAtrb(Parser p) throws SyntaxException, IOException {
         String firstBrkt = p.getNextToken();
         if (!"(".equals(firstBrkt)) {
-            throw new SyntaxException("");
+            throw new SyntaxException(" Parsing [CREATE]/[TABLE]: Token '(' not found!");
         }
         String nextToken = p.getNextToken();
         while (nextToken != null && !")".equals(nextToken)) {
             if (!p.isPlainText(nextToken)) {
-                throw new SyntaxException("");
+                throw new SyntaxException(" Parsing [CREATE]/[TABLE]: Invalid Table Attribute!");
             }
             nextToken = p.getNextToken();
             if (",".equals(nextToken)) {
@@ -94,7 +94,7 @@ public class Create implements DBCmnd {
             if (!dbStore.createDB()) {
                 dbStore.dbPath = null;
                 dbStore.dbName = null;
-                throw new SyntaxException("");
+                throw new SyntaxException(" Executing [CREATE]/[DATABASE]: Database already existing!");
             }
             isDb = false;
             p.clear();
@@ -108,6 +108,6 @@ public class Create implements DBCmnd {
         dbStore.dbPath = null;
         dbStore.dbName = null;
         p.clear();
-        throw new SyntaxException("");
+        throw new SyntaxException(" Executing [CREATE]/[TABLE]: Table execution invalid!");
     }
 }

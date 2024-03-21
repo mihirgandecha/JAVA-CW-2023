@@ -38,15 +38,15 @@ public class ExampleDBTests {
 
     // A basic test that creates a database, creates a table, inserts some test data, then queries it.
     // It then checks the response to see that a couple of the entries in the table are returned as expected
-//    @Test
-//    public void testBasicCreateAndQuery() {
-//        String randomName = generateRandomName();
-//        String testCreate = sendCommandToServer("CREATE DATABASE " + randomName + ";");
-//        assertTrue(testCreate.contains("[OK]"));
-//        String testUse = sendCommandToServer("USE " + randomName + ";");
-//        assertTrue(testUse.contains("[OK]"));
-//        assertEquals(randomName, server.dbStore.dbName);
-//        assertEquals(server.dbStore.dbPath, server.dbStore.currentDbPath);
+    @Test
+    public void testBasicCreateAndQuery() {
+        String randomName = generateRandomName();
+        String testCreate = sendCommandToServer("CREATE DATABASE " + randomName + ";");
+        assertTrue(testCreate.contains("[OK]"));
+        assertEquals(randomName, server.dbStore.dbName);
+        String testUse = sendCommandToServer("USE " + randomName + ";");
+        assertTrue(testUse.contains("[OK]"));
+        assertEquals(server.dbStore.dbPath, server.dbStore.currentDbPath);
 //        sendCommandToServer("CREATE TABLE marks (name, mark, pass);");
 //        sendCommandToServer("INSERT INTO marks VALUES ('Simon', 65, TRUE);");
 //        sendCommandToServer("INSERT INTO marks VALUES ('Sion', 55, TRUE);");
@@ -57,7 +57,7 @@ public class ExampleDBTests {
 //        assertFalse(response.contains("[ERROR]"), "A valid query was made, however an [ERROR] tag was returned");
 //        assertTrue(response.contains("Simon"), "An attempt was made to add Simon to the table, but they were not returned by SELECT *");
 //        assertTrue(response.contains("Chris"), "An attempt was made to add Chris to the table, but they were not returned by SELECT *");
-//    }
+    }
 
 //    @Test
 //    public void testInvalidDatabase() {
