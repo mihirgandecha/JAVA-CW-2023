@@ -79,11 +79,8 @@ public class ExampleDBTests {
 //        String validCr = sendCommandToServer("CREATE DATABASE " + database + ";");
 //        assertTrue(validCr.contains("[OK]"));
         //String invalidCr = "CREATE DATABASE " + database + ";";
-        SyntaxException thrown = assertThrows(
-                SyntaxException.class,
-                () -> sendCommandToServer("CREATE DATABASE testDb;")
-        );
-        System.out.println(thrown.getMessage());
+        SyntaxException thrown = assertThrows(SyntaxException.class, () -> sendCommandToServer("CREATE DATABASE testDb;"));
+        //System.out.println(thrown.getMessage());
         assertTrue(thrown.getMessage().contains("[ERROR]"));
 //        server.dbStore.deleteEmptyDir(database);
 //        assertNotEquals(database, server.dbStore.dbName);
