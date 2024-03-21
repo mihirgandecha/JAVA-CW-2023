@@ -77,10 +77,7 @@ public class DBServer {
         //check if uppercase
         switch (firstToken){
             case "USE" -> cmd = (DBCmnd) new Use(dbStore);
-            case "CREATE" -> {
-                cmd = (DBCmnd) new Create(dbStore);
-                break;
-            }
+            case "CREATE" -> cmd = (DBCmnd) new Create(dbStore);
             case "DROP" -> cmd = (DBCmnd) new Drop(p);
             case "ALTER" -> cmd = (DBCmnd) new Alter(p);
             case "INSERT" -> cmd = (DBCmnd) new Insert(p);
@@ -90,7 +87,6 @@ public class DBServer {
             case "JOIN" -> cmd = (DBCmnd) new Join(p);
             default -> throw new SyntaxException(1);
         }
-        //TODO Surround in try-catch
         cmd.parse(p);
         return cmd.execute(p);
     }
