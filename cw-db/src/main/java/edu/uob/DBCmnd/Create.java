@@ -101,12 +101,12 @@ public class Create implements DBCmnd {
             }
             isDb = false;
             p.clear();
-            return "[OK]" + dbName + "Database Created";
+            return "[OK]" + dbName + " Database Created";
         }
         if (isTb){
             isTb = false;
             p.clear();
-            return "[OK]" + "Table created";
+            return "[OK]" + " Table created";
         }
         p.clear();
         throw new SyntaxException(1, "Could not execute CREATE command");

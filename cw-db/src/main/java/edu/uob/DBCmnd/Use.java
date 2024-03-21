@@ -38,7 +38,7 @@ public class Use extends Database implements DBCmnd {
         String newPath = String.valueOf(dbStore.setPathUseCmd(dbName));
         if (Files.exists(Paths.get(newPath))) {
             dbStore.currentDbPath = Path.of(newPath);
-            return "[OK]";
+            return "[OK]" + dbName + " is an existing database. " + "USE Executed Successfully";
         } else {
             throw new SyntaxException(1, "");
         }
