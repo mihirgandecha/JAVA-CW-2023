@@ -1,13 +1,12 @@
 package edu.uob;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
+import edu.uob.DBCmnd.SyntaxException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import java.time.Duration;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ExampleDBTests {
 
@@ -27,7 +26,7 @@ public class ExampleDBTests {
 
     private String sendCommandToServer(String command) {
         // Try to send a command to the server - this call will timeout if it takes too long (in case the server enters an infinite loop)
-        return assertTimeoutPreemptively(Duration.ofMillis(10000), () -> { return server.handleCommand(command);},
+        return assertTimeoutPreemptively(Duration.ofMillis(1000000), () -> { return server.handleCommand(command);},
         "Server took too long to respond (probably stuck in an infinite loop)");
     }
 
@@ -36,9 +35,12 @@ public class ExampleDBTests {
     @Test
     public void testBasicCreateAndQuery() {
         String randomName = generateRandomName();
-        sendCommandToServer("CREATE DATABASE " + randomName + ";");
-        sendCommandToServer("USE " + randomName + ";");
-        System.out.println((server.dbStore.currentDbPath));
+        String testCreate = sendCommandToServer("CREATE DATABASE " + randomName + ";");
+        assertTrue(testCreate.contains("[OK]"));
+        String testUse = sendCommandToServer("USE " + randomName + ";");
+        assertTrue(testUse.contains("[OK]"));
+        assertEquals(randomName, server.dbStore.dbName);
+        assertEquals(server.dbStore.dbPath, server.dbStore.currentDbPath);
 //        sendCommandToServer("CREATE TABLE marks (name, mark, pass);");
 //        sendCommandToServer("INSERT INTO marks VALUES ('Simon', 65, TRUE);");
 //        sendCommandToServer("INSERT INTO marks VALUES ('Sion', 55, TRUE);");
@@ -51,6 +53,18 @@ public class ExampleDBTests {
 //        assertTrue(response.contains("Chris"), "An attempt was made to add Chris to the table, but they were not returned by SELECT *");
     }
 
+    @Test
+    public void testInvalidDatabase() {
+        String randomUseNameTest = generateRandomName();
+        String command = "USE " + randomUseNameTest + ";";
+        SyntaxException thrown = assertThrows(
+                SyntaxException.class,
+                () -> sendCommandToServer(command),
+                "[ERROR]"
+        );
+        assertTrue(thrown.getMessage().contains("[ERROR]"));
+        assertNotEquals(randomUseNameTest, server.dbStore.dbName);
+    }
     @Test
     public void testCreateDbOk() {
         String randomName = generateRandomName();

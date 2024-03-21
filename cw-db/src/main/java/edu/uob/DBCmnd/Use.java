@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 
 public class Use extends Database implements DBCmnd {
     private String dbName = null;
-    private Database dbStore;
+    private Database dbStore = null;
 
     public Use(Database database) {
         this.dbStore = database;
@@ -34,13 +34,18 @@ public class Use extends Database implements DBCmnd {
     }
 
     @Override
-    public String execute(Parser p) throws SyntaxException, IOException {
-        String newPath = String.valueOf(dbStore.setPathUseCmd(dbName));
-        if (Files.exists(Paths.get(newPath))) {
-            dbStore.currentDbPath = Path.of(newPath);
-            return "[OK]" + dbName + " is an existing database. " + "USE Executed Successfully";
-        } else {
-            throw new SyntaxException(1, "");
+    public String execute(Parser p) throws IOException {
+        try {
+            String newPath = String.valueOf(dbStore.setPathUseCmd(dbName));
+            if (Files.exists(Paths.get(newPath))) {
+                dbStore.currentDbPath = Path.of(newPath);
+                return "[OK]" + dbName + " is an existing database. " + "USE Executed Successfully";
+            } else {
+                throw new SyntaxException(1, dbName + " database cannot be found.");
+            }
+        } catch (SyntaxException se) {
+            System.err.println(se.getErrorTag());
+            throw se;
         }
     }
 }
