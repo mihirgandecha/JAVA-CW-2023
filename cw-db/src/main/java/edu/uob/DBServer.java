@@ -74,7 +74,7 @@ public class DBServer {
         Parser p = new Parser(command);
         String firstToken = p.getCurrentToken();
         DBCmnd cmd;
-        //check if uppercase
+        //TODO Do I need to convert if lowercase?
         switch (firstToken){
             case "USE" -> cmd = (DBCmnd) new Use(dbStore);
             case "CREATE" -> cmd = (DBCmnd) new Create(dbStore);
@@ -87,8 +87,12 @@ public class DBServer {
             case "JOIN" -> cmd = (DBCmnd) new Join(p);
             default -> throw new SyntaxException(1);
         }
-        cmd.parse(p);
-        return cmd.execute(p);
+        try{
+            cmd.parse(p);
+            return cmd.execute(p);
+        }catch (SyntaxException e){
+            return e.getMessage();
+        }
     }
 
     //  === Methods below handle networking aspects of the project - you will not need to change these ! ===

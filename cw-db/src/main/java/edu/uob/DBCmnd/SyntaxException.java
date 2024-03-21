@@ -9,7 +9,7 @@ public class SyntaxException extends IOException {
     private final String errorTag;
 
     public SyntaxException(int Tag){
-        super(tagToString(Tag));
+        super.getMessage();
         this.errorTag = tagToString(Tag);
     }
 
@@ -24,12 +24,12 @@ public class SyntaxException extends IOException {
         }
     }
 
-    public String getErrorTag(){
+    public String getMessage(){
         return this.errorTag;
     }
 
     @Override
     public String toString() {
-        return getErrorTag();
+        return getMessage();
     }
 }

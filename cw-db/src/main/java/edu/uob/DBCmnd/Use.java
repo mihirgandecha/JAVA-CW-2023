@@ -35,17 +35,18 @@ public class Use extends Database implements DBCmnd {
 
     @Override
     public String execute(Parser p) throws IOException {
-        try {
+//        try {
             String newPath = String.valueOf(dbStore.setPathUseCmd(dbName));
             if (Files.exists(Paths.get(newPath))) {
                 dbStore.currentDbPath = Path.of(newPath);
                 return "[OK]" + dbName + " is an existing database. " + "USE Executed Successfully";
-            } else {
+            }
+            else {
                 throw new SyntaxException(1);
             }
-        } catch (SyntaxException se) {
-            System.err.println(se.getErrorTag());
-            throw se;
-        }
+//        } catch (SyntaxException se) {
+//            System.err.println(se.getErrorTag());
+//            throw se;
+//        }
     }
 }
