@@ -10,12 +10,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ParserTest {
 
-    private static String command;
     private Parser p;
 
     @BeforeEach
     void setUp() throws SyntaxException {
-        command = "TEMP COMMAND;";
+        String command = "TEMP COMMAND;";
         p = new Parser(command);
     }
 
@@ -24,9 +23,9 @@ class ParserTest {
         p.clear();
     }
 
-    //Test for PlainText:
+    //Test for DB-Name:
     @Test
-    void testValidDatabaseNameWithLettersOnly() throws SyntaxException {
+    void testValidDatabaseNameWithLettersOnly() {
         assertTrue(p.isTbAtrDbName("DatabaseName"));
     }
 
