@@ -20,15 +20,15 @@ public class Use extends Database implements DBCmnd {
         String firstTkn = p.getCurrentToken();
         String expectedFirstTkn = "USE";
         if (!expectedFirstTkn.equals(firstTkn)){
-            throw new SyntaxException(1);
+            throw new SyntaxException("");
         }
         String dbNameTkn = p.getNextToken();
         if (!p.isTbAtrDbName(dbNameTkn)) {
-            throw new SyntaxException(1);
+            throw new SyntaxException("");
         }
         String lastTkn = p.getLastToken();
         if (!p.ensureCmdEnd(lastTkn)){
-            throw new SyntaxException(1);
+            throw new SyntaxException("");
         }
         dbName = dbNameTkn;
     }
@@ -41,7 +41,7 @@ public class Use extends Database implements DBCmnd {
             return "[OK]" + dbName + " is an existing database. " + "USE Executed Successfully";
         }
         else {
-            throw new SyntaxException(1);
+            throw new SyntaxException("");
         }
     }
 }

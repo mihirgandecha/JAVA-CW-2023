@@ -21,16 +21,16 @@ public class Create implements DBCmnd {
     @Override
     public void parse(Parser p) throws SyntaxException, IOException {
         if (p.isCmndEmpty(p.tokens) || (!p.isValidCommand())) {
-            throw new SyntaxException(1);
+            throw new SyntaxException("");
         }
         int tokenLen = p.getTokenLen();
         if (tokenLen < 4) {
-            throw new SyntaxException(1);
+            throw new SyntaxException("");
         }
         String createToken = p.getCurrentToken();
         String createExpectedToken = "CREATE";
         if (!createExpectedToken.equals(createToken)) {
-            throw new SyntaxException(1);
+            throw new SyntaxException("");
         }
         String nextToken = p.getNextToken();
         switch (nextToken) {
@@ -43,18 +43,18 @@ public class Create implements DBCmnd {
                 isTb = true;
                 break;
             default:
-                throw new SyntaxException(1);
+                throw new SyntaxException("");
         }
     }
 
     private void parseDb(Parser p) throws SyntaxException, IOException {
         String databaseName = p.getNextToken();
         if (!p.isTbAtrDbName(databaseName)) {
-            throw new SyntaxException(1);
+            throw new SyntaxException("");
         }
         String lastTkn = p.getLastToken();
         if (!p.ensureCmdEnd(lastTkn)) {
-            throw new SyntaxException(1);
+            throw new SyntaxException("");
         }
         dbName = databaseName;
     }
@@ -62,7 +62,7 @@ public class Create implements DBCmnd {
     private void parseTb(Parser p) throws SyntaxException, IOException {
         String tableName = p.getNextToken();
         if (!p.isTbAtrDbName(tableName)) {
-            throw new SyntaxException(1);
+            throw new SyntaxException("");
         }
         parseTbAtrb(p);
     }
@@ -70,12 +70,12 @@ public class Create implements DBCmnd {
     private void parseTbAtrb(Parser p) throws SyntaxException, IOException {
         String firstBrkt = p.getNextToken();
         if (!"(".equals(firstBrkt)) {
-            throw new SyntaxException(1);
+            throw new SyntaxException("");
         }
         String nextToken = p.getNextToken();
         while (nextToken != null && !")".equals(nextToken)) {
             if (!p.isPlainText(nextToken)) {
-                throw new SyntaxException(1);
+                throw new SyntaxException("");
             }
             nextToken = p.getNextToken();
             if (",".equals(nextToken)) {
@@ -94,7 +94,7 @@ public class Create implements DBCmnd {
             if (!dbStore.createDB()) {
                 dbStore.dbPath = null;
                 dbStore.dbName = null;
-                throw new SyntaxException(1);
+                throw new SyntaxException("");
             }
             isDb = false;
             p.clear();
@@ -108,6 +108,6 @@ public class Create implements DBCmnd {
         dbStore.dbPath = null;
         dbStore.dbName = null;
         p.clear();
-        throw new SyntaxException(1);
+        throw new SyntaxException("");
     }
 }

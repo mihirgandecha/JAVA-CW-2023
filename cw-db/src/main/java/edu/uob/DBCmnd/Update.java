@@ -12,6 +12,6 @@ public class Update extends Database implements DBCmnd {
 
     @Override
     public String execute(Parser p) throws SyntaxException, IOException {
-        throw new SyntaxException(1);
+        throw new SyntaxException("");
     }
 }

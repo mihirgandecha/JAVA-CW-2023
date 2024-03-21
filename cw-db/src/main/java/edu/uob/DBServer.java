@@ -58,7 +58,7 @@ public class DBServer {
             case "UPDATE" -> cmd = (DBCmnd) new Update(p);
             case "DELETE" -> cmd = (DBCmnd) new Delete(p);
             case "JOIN" -> cmd = (DBCmnd) new Join(p);
-            default -> throw new SyntaxException(1);
+            default -> throw new SyntaxException("");
         }
         cmd.parse(p);
         return cmd.execute(p);

@@ -6,30 +6,9 @@ import java.io.Serial;
 public class SyntaxException extends IOException {
     @Serial
     private static final long serialVersionUID = 1L;
-    private final String errorTag;
 
-    public SyntaxException(int Tag){
-        super.getMessage();
-        this.errorTag = tagToString(Tag);
+    public SyntaxException(String message){
+        super("[ERROR]" + message);
     }
 
-    private static String tagToString(int Tag){
-        //TODO remove OK
-        String tagError = "[ERROR]";
-        if (Tag == 0){
-            return null;
-        }
-        else{
-            return tagError;
-        }
-    }
-
-    public String getMessage(){
-        return this.errorTag;
-    }
-
-    @Override
-    public String toString() {
-        return getMessage();
-    }
 }

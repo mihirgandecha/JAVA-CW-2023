@@ -97,7 +97,7 @@ public class Parser {
     }
     public void firstCheck() throws SyntaxException {
         if (isCmndEmpty(this.tokens) || (!this.isValidCommand())) {
-            throw new SyntaxException(1);
+            throw new SyntaxException("");
         }
     }
     //Naming Parser Methods:
