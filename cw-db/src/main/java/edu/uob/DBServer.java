@@ -28,8 +28,8 @@ public class DBServer {
     /**
     * KEEP this signature otherwise we won't be able to mark your submission correctly.
     */
+    //TODO make sure signiture is same - consider getting rid of:
     public DBServer() {
-        //TODO get rid of:
         updateSorageFolderPath("databases");
         if (!createDirectoryIfAbsent()){
             System.err.println("Cannot generate database directory");
@@ -90,6 +90,7 @@ public class DBServer {
             case "JOIN" -> cmd = (DBCmnd) new Join(p);
             default -> throw new SyntaxException(1, "");
         }
+        //TODO Surround in try-catch
         cmd.parse(p);
         return cmd.execute(p);
     }

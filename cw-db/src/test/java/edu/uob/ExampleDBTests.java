@@ -29,6 +29,7 @@ public class ExampleDBTests {
         return randomName;
     }
 
+    //TODO: Debugging had to increase time: Understand how this works
     private String sendCommandToServer(String command) {
         // Try to send a command to the server - this call will timeout if it takes too long (in case the server enters an infinite loop)
         return assertTimeoutPreemptively(Duration.ofMillis(1000000), () -> { return server.handleCommand(command);},

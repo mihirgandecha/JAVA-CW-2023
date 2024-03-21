@@ -8,7 +8,6 @@ public class Update extends Database implements DBCmnd {
 
     @Override
     public void parse(Parser p) throws SyntaxException, IOException {
-
     }
 
     @Override

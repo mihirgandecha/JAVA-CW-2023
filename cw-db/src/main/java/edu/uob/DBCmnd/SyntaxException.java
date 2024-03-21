@@ -16,6 +16,7 @@ public class SyntaxException extends IOException {
     }
 
     private static String tagToString(int Tag){
+        //TODO remove OK
         String tagOk = "[OK]";
         String tagError = "[ERROR]";
         if (Tag == 0){
