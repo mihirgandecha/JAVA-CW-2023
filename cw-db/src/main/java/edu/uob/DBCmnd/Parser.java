@@ -29,6 +29,10 @@ public class Parser {
         if (query == null){
             return true;
         }
+        int strLen = query.length();
+        if (strLen <= 1){
+            return true;
+        }
         return false;
     }
 
@@ -46,10 +50,16 @@ public class Parser {
     }
 
     public String getCurrentToken(){
-        return tokens.get(index);
+        if(!tokens.isEmpty()){
+            return tokens.get(index);
+        }
+        return null;
     }
 
     public String getNextToken(){
+        if(tokens.isEmpty()){
+            return null;
+        }
         incrementIndex();
         if (index < tokens.size()){
             return tokens.get(index);
@@ -66,15 +76,15 @@ public class Parser {
         return tokens.size();
     }
 
-    public String getLastToken(){
-        int tokenLen = getTokenLen();
-        tokenLen--;
-        if(!tokens.isEmpty() && tokenLen > 0){
-            String lastTkn = tokens.get(tokenLen);
-            return lastTkn;
+    public String getLastToken() {
+        if (tokens.isEmpty() || (getTokenLen() == 1)) {
+            return null; // Immediate return if tokens list is empty
         }
-        return null;
+        int tokenLen = getTokenLen() - 1; // Directly getting the last index
+        // Now, tokenLen is the index of the last token, no need for further checks for emptiness
+        return tokens.get(tokenLen);
     }
+
 
     public boolean isValidCommand(){
         String lastTkn = getLastToken();
@@ -108,8 +118,9 @@ public class Parser {
         return false;
     }
     public void firstCheck() throws SyntaxException {
+        index = 0;
         ArrayList<String> tokenChk = this.tokens;
-        if(isUpperCase(getCurrentToken())){
+        if(!isUpperCase(getCurrentToken())){
             clear();
             throw new SyntaxException(" [SERVER]: Token cmnd NOT uppercase!");
         }
@@ -117,7 +128,6 @@ public class Parser {
             clear();
             throw new SyntaxException(" No ';' at end!");
         }
-        index = 0;
     }
 
     public boolean isEmpty (String token){
@@ -129,15 +139,15 @@ public class Parser {
     }
 
     public boolean isDigit(String token){
-        return token.matches("[0-9]");
+        return token.matches("[0-9]+");
     }
 
     public boolean isUpperCase(String token){
-        return token.matches("[A-Z]");
+        return token.matches("[A-Z]+");
     }
 
     public boolean isLowerCase(String token){
-        return token.matches("[a-z]");
+        return token.matches("[a-z]+");
     }
 
     public boolean isLetter(String token){

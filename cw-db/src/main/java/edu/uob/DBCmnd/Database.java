@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 public class Database {
     public String dbName;
     public Path dbPath;
+    public String tbName;
     public Path currentDbPath;
     public File tbFile;
 
@@ -95,19 +96,19 @@ public class Database {
 
     //Deletion:
     // Deletes an empty directory at the specified path within the root directory
-    public boolean deleteEmptyDir(String directoryName) throws IOException {
-        Path dPath = getAbsPath("databases" + File.separator + directoryName);
-        if (!Files.exists(dPath)){
-            return false;
-        }
-//        Path dirPath = Paths.get(String.valueOf(dbPath), directoryName);
-        try {
-            return Files.deleteIfExists(dPath);
-        } catch (SyntaxException e) {
-            System.out.println("Directory is not empty.");
-            return false;
-        }
-    }
+//    public boolean deleteEmptyDir(String directoryName) throws IOException {
+//        Path dPath = getAbsPath("databases" + File.separator + directoryName);
+//        if (!Files.exists(dPath)){
+//            return false;
+//        }
+////        Path dirPath = Paths.get(String.valueOf(dbPath), directoryName);
+//        try {
+//            return Files.deleteIfExists(dPath);
+//        } catch (SyntaxException e) {
+//            System.out.println("Directory is not empty.");
+//            return false;
+//        }
+//    }
 
     // Deletes a directory and all its contents
     public void deleteSpecificDir(String directoryName) throws IOException {

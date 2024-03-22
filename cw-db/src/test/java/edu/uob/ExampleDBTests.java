@@ -65,189 +65,126 @@ public class ExampleDBTests {
 
     //Empty Command stops at SERVER:
     @Test
-    public void testParsingInvalidDatabaseName() {
-        String testEmptyCmd = null;
-        SyntaxException thrown = assertThrows(
-                SyntaxException.class,
-                () -> sendCommandToServer(testEmptyCmd),
-                "[ERROR]"
-        );
-        String expected = "[ERROR]" + " [SERVER]: Command Query is empty.";
-        assertEquals(expected, thrown.getMessage());
-        //TODO is redundant?
-        assertTrue(thrown.getMessage().contains(expected));
+    public void testEmptyCmd() {
+        String testEmptyCmd = sendCommandToServer("");
+        String expected = " [SERVER]: Command Query is empty.";
+        assertTrue(testEmptyCmd.contains(expected));
     }
 
     //Just 'CREATE' without ';' catches in CREATE - edge case found!
     @Test
     public void testParsingJustCreate() {
-        String testEmptyCmd = "CREATE";
-        SyntaxException thrown = assertThrows(
-                SyntaxException.class,
-                () -> sendCommandToServer(testEmptyCmd),
-                "[ERROR]"
-        );
-        String expected = "[ERROR]" + " No ';' at end!";
-        String actual = thrown.getMessage();
-        assertEquals(expected, thrown.getMessage());
-        assertTrue(thrown.getMessage().contains(expected));
+        String testEmptyCmd = sendCommandToServer("create");
+        String expected = "[ERROR]" + " [SERVER]: Token cmnd NOT uppercase!";
+        assertEquals(expected, testEmptyCmd);
     }
 
     //Test for "CREATE DATABASE" for no ';'
     @Test
     public void testParsingJustCreateDatabase() {
-        String testEmptyCmd = "CREATE DATABASE";
-        SyntaxException thrown = assertThrows(
-                SyntaxException.class,
-                () -> sendCommandToServer(testEmptyCmd),
-                "[ERROR]"
-        );
+        String testEmptyCmd = sendCommandToServer("CREATE DATABASE");
         String expected = "[ERROR]" + " No ';' at end!";
-        String actual = thrown.getMessage();
-        assertEquals(expected, thrown.getMessage());
-        assertTrue(thrown.getMessage().contains(expected));
+        assertEquals(expected, testEmptyCmd);
     }
 
     //Test for "CREATE DATABASE" for no dbName
     @Test
     public void testParsingNoDBName() {
-        String testEmptyCmd = "CREATE DATABASE;";
-        SyntaxException thrown = assertThrows(
-                SyntaxException.class,
-                () -> sendCommandToServer(testEmptyCmd),
-                "[ERROR]"
-        );
+        String testEmptyCmd = sendCommandToServer("CREATE DATABASE;");
         String expected = "[ERROR]" + " Token length invalid.";
-        String actual = thrown.getMessage();
-        assertEquals(expected, thrown.getMessage());
-        assertTrue(thrown.getMessage().contains(expected));
+        assertEquals(expected, testEmptyCmd);
     }
 
     //Test for "CREATE DATABASE" for invalid dbName
     @Test
     public void testParsingInvalidDBName() {
-        String testEmptyCmd = "CREATE DATABASE #;";
-        SyntaxException thrown = assertThrows(
-                SyntaxException.class,
-                () -> sendCommandToServer(testEmptyCmd),
-                "[ERROR]"
-        );
+        String testEmptyCmd = sendCommandToServer("CREATE DATABASE #;");
         String expected = "[ERROR]" + " Invalid Database name!";
-        String actual = thrown.getMessage();
-        assertEquals(expected, thrown.getMessage());
-        assertTrue(thrown.getMessage().contains(expected));
+        assertEquals(expected, testEmptyCmd);
     }
 
     //Test for "CREATE DATABASE" for more than 4 tokens
     @Test
     public void testParsingInvalidTokenLen() {
-        String testEmptyCmd = "CREATE DATABASE # 2 4;";
-        SyntaxException thrown = assertThrows(
-                SyntaxException.class,
-                () -> sendCommandToServer(testEmptyCmd),
-                "[ERROR]"
-        );
+        String testEmptyCmd = sendCommandToServer("CREATE DATABASE # 2 4;");
         String expected = "[ERROR]" + " Token length invalid.";
-        String actual = thrown.getMessage();
-        assertEquals(expected, thrown.getMessage());
-        assertTrue(thrown.getMessage().contains(expected));
+        assertEquals(expected, testEmptyCmd);
     }
 
     //CREATE TABLE PARSING TESTS:
 //    @Test
 //    public void testCTbValid() throws IOException {
-//        String testEmptyCmd = "CREATE TABLE newTb;";
-//        SyntaxException thrown = assertThrows(
-//                SyntaxException.class,
-//                () -> sendCommandToServer(testEmptyCmd),
-//                "[ERROR]"
-//        );
+//        String testEmptyCmd = sendCommandToServer("CREATE TABLE newTb;");
 //        String expected = "[ERROR]" + "  No Database selected. USE command not implemented.";
-//        String actual = thrown.getMessage();
-//        assertEquals(expected, thrown.getMessage());
-//        assertTrue(thrown.getMessage().contains(expected));
+//        assertEquals(expected, testEmptyCmd);
 //    }
+
     // Test for "CREATE TABLE" without table name
+    @Test
+    public void testParsingCTblLowercase() {
+        String testCmd = sendCommandToServer("CREATE table;");
+        String expected = "[ERROR]" + " Parsing [CREATE]: Token 'DATABASE'/'TABLE' not found!";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testParsingCTblInvalidTknLen() {
+        String testCmd = sendCommandToServer("CREATE TABLE;");
+        String expected = "[ERROR]" + " Token length invalid.";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testParsingCTblInvalidTblName() {
+        String testCmd = sendCommandToServer("CREATE TABLE !name;");
+        String expected = "[ERROR]" + " Invalid Table name!";
+        assertEquals(expected, testCmd);
+    }
+
+    //Parsing just CREATE TABLE <TABLENAME>
+    @Test
+    public void testParsingCTblNoEndCaughtServer() {
+        String testCmd = sendCommandToServer("CREATE TABLE tbName");
+        String expected = "[ERROR]" + " No ';' at end!";
+        assertEquals(expected, testCmd);
+    }
+
 //    @Test
-//    public void testParsingCreateTableNoName() {
-//        String testCmd = "CREATE TABLE;";
-//        SyntaxException thrown = assertThrows(
-//                SyntaxException.class,
-//                () -> sendCommandToServer(testCmd),
-//                "[ERROR]"
-//        );
-//        String expected = "[ERROR]" + " Table name is missing.";
-//        assertEquals(expected, thrown.getMessage());
-//        assertTrue(thrown.getMessage().contains(expected));
+//    public void testParsingCTblBasicValid() {
+//        String testCmd = sendCommandToServer("CREATE TABLE tbName;");
+//        assertEquals("tbName", testCmd);
 //    }
-//
-//    // Test for "CREATE TABLE" with an invalid table name
-//    @Test
-//    public void testParsingCreateTableInvalidName() {
-//        String testCmd = "CREATE TABLE #table;";
-//        SyntaxException thrown = assertThrows(
-//                SyntaxException.class,
-//                () -> sendCommandToServer(testCmd),
-//                "[ERROR]"
-//        );
-//        String expected = "[ERROR]" + " Invalid table name!";
-//        assertEquals(expected, thrown.getMessage());
-//        assertTrue(thrown.getMessage().contains(expected));
-//    }
-//
-//    // Test for "CREATE TABLE" with missing '(' for attribute list
-//    @Test
-//    public void testParsingMissingOpeningParenthesis() {
-//        String testCmd = "CREATE TABLE tableName attribute1 INT, attribute2 VARCHAR);";
-//        SyntaxException thrown = assertThrows(
-//                SyntaxException.class,
-//                () -> sendCommandToServer(testCmd),
-//                "[ERROR]"
-//        );
-//        String expected = "[ERROR]" + " Missing '(' for attribute list.";
-//        assertEquals(expected, thrown.getMessage());
-//        assertTrue(thrown.getMessage().contains(expected));
-//    }
-//
-//    // Test for "CREATE TABLE" with missing ')' for attribute list
+
+    //Test for Invalid Attribute List
+    // Test for "CREATE TABLE" with missing '(' for attribute list
+    @Test
+    public void testParsingMissingOpeningParenthesis() {
+        String testCmd = sendCommandToServer("CREATE TABLE tableName attribute1 INT, attribute2 VARCHAR);");
+        String expected = "[ERROR]" + " Parsing [CREATE]/[TABLE]: Token '(' not found!";
+        assertEquals(expected, testCmd);
+    }
+
+    // Test for "CREATE TABLE" with missing ')' for attribute list
 //    @Test
 //    public void testParsingMissingClosingParenthesis() {
-//        String testCmd = "CREATE TABLE tableName (attribute1 INT, attribute2 VARCHAR;";
-//        SyntaxException thrown = assertThrows(
-//                SyntaxException.class,
-//                () -> sendCommandToServer(testCmd),
-//                "[ERROR]"
-//        );
-//        String expected = "[ERROR]" + " Missing ')' at the end of attribute list.";
-//        assertEquals(expected, thrown.getMessage());
-//        assertTrue(thrown.getMessage().contains(expected));
+//        String testCmd = sendCommandToServer("CREATE TABLE tableName (attribute1 INT, attribute2 VARCHAR;");
+//        String expected = "[ERROR]" + " Parsing [CREATE]/[TABLE]: Token '(' not found!";
+//        assertNotEquals(expected, testCmd);
 //    }
-//
-//    // Test for "CREATE TABLE" with invalid attribute syntax
+
+    // Test for "CREATE TABLE" with invalid attribute syntax
 //    @Test
 //    public void testParsingInvalidAttributeSyntax() {
-//        String testCmd = "CREATE TABLE tableName (attribute1 INT, attribute2);";
-//        SyntaxException thrown = assertThrows(
-//                SyntaxException.class,
-//                () -> sendCommandToServer(testCmd),
-//                "[ERROR]"
-//        );
+//        String testCmd = sendCommandToServer("CREATE TABLE tableName (attribute1 INT, attribute2);");
 //        String expected = "[ERROR]" + " Invalid attribute syntax.";
-//        assertEquals(expected, thrown.getMessage());
-//        assertTrue(thrown.getMessage().contains(expected));
+//        assertEquals(expected, testCmd);
 //    }
-//
-//    // Test for successful "CREATE TABLE" command with attribute list
+
+    // Test for successful "CREATE TABLE" command with attribute list
 //    @Test
 //    public void testParsingValidCreateTable() {
 //        String testCmd = "CREATE TABLE tableName (attribute1 INT, attribute2 VARCHAR);";
-//        try {
-//            String result = sendCommandToServer(testCmd);
-//            String expected = "Table 'tableName' created successfully.";
-//            assertEquals(expected, result);
-//        } catch (SyntaxException e) {
-//            fail("Should not have thrown any exception.");
-//        }
+//        String expected = "Table 'tableName' created successfully.";
 //    }
 //
 //

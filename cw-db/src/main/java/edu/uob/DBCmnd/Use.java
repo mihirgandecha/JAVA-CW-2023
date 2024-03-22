@@ -29,7 +29,7 @@ public class Use extends Database implements DBCmnd {
     }
 
     @Override
-    public String execute(Parser p) throws IOException {
+    public String execute(Parser p) throws IOException, SyntaxException {
         String newPath = String.valueOf(dbStore.setPathUseCmd(dbName));
         if (Files.exists(Paths.get(newPath))) {
             dbStore.currentDbPath = Path.of(newPath);

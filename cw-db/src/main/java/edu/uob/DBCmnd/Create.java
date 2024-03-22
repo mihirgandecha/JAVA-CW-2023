@@ -12,6 +12,7 @@ public class Create implements DBCmnd {
     private boolean isDb = false;
     private boolean isTb = false;
     private static String dbName = null;
+    private static String setTbName = null;
     private Database dbStore;
 
     public Create(Database dbStore) {
@@ -32,7 +33,7 @@ public class Create implements DBCmnd {
                 break;
             case "TABLE":
                 parseTb(p);
-                isTb = true;
+                //isTb = true;
                 break;
             default:
                 throw new SyntaxException(" Parsing [CREATE]: Token 'DATABASE'/'TABLE' not found!");
@@ -58,8 +59,20 @@ public class Create implements DBCmnd {
         }
         String tableName = p.getNextToken();
         if (!p.isTbAtrDbName(tableName)) {
-            throw new SyntaxException(" Parsing [CREATE]/[TABLE]: Invalid table name!");
+            throw new SyntaxException(" Invalid Table name!");
         }
+        String nextTkn = p.getNextToken();
+        if (p.ensureCmdEnd(nextTkn)){
+            isTb = true;
+            setTbName = tableName;
+            return;
+        }
+//        if(";".equals(ta))
+//        if(!p.ensureCmdEnd(tableName)){
+//            if (!p.isTbAtrDbName(tableName)) {
+//                throw new SyntaxException(" Invalid Table name!");
+//            }
+//        }
         parseTbAtrb(p);
     }
 
@@ -104,7 +117,8 @@ public class Create implements DBCmnd {
             // dbStore.tbFile = new File();
             isTb = false;
             p.clear();
-            return "[OK]" + " Table created";
+            dbStore.tbName = setTbName;
+            return "[OK]" + " Table created.";
         }
         dbStore.dbPath = null;
         dbStore.dbName = null;
