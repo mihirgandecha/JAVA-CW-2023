@@ -152,7 +152,129 @@ public class ExampleDBTests {
         assertEquals(expected, thrown.getMessage());
         assertTrue(thrown.getMessage().contains(expected));
     }
+
+    //CREATE TABLE PARSING TESTS:
 //    @Test
+//    public void testCTbValid() throws IOException {
+//        String testEmptyCmd = "CREATE TABLE newTb;";
+//        SyntaxException thrown = assertThrows(
+//                SyntaxException.class,
+//                () -> sendCommandToServer(testEmptyCmd),
+//                "[ERROR]"
+//        );
+//        String expected = "[ERROR]" + "  No Database selected. USE command not implemented.";
+//        String actual = thrown.getMessage();
+//        assertEquals(expected, thrown.getMessage());
+//        assertTrue(thrown.getMessage().contains(expected));
+//    }
+    // Test for "CREATE TABLE" without table name
+//    @Test
+//    public void testParsingCreateTableNoName() {
+//        String testCmd = "CREATE TABLE;";
+//        SyntaxException thrown = assertThrows(
+//                SyntaxException.class,
+//                () -> sendCommandToServer(testCmd),
+//                "[ERROR]"
+//        );
+//        String expected = "[ERROR]" + " Table name is missing.";
+//        assertEquals(expected, thrown.getMessage());
+//        assertTrue(thrown.getMessage().contains(expected));
+//    }
+//
+//    // Test for "CREATE TABLE" with an invalid table name
+//    @Test
+//    public void testParsingCreateTableInvalidName() {
+//        String testCmd = "CREATE TABLE #table;";
+//        SyntaxException thrown = assertThrows(
+//                SyntaxException.class,
+//                () -> sendCommandToServer(testCmd),
+//                "[ERROR]"
+//        );
+//        String expected = "[ERROR]" + " Invalid table name!";
+//        assertEquals(expected, thrown.getMessage());
+//        assertTrue(thrown.getMessage().contains(expected));
+//    }
+//
+//    // Test for "CREATE TABLE" with missing '(' for attribute list
+//    @Test
+//    public void testParsingMissingOpeningParenthesis() {
+//        String testCmd = "CREATE TABLE tableName attribute1 INT, attribute2 VARCHAR);";
+//        SyntaxException thrown = assertThrows(
+//                SyntaxException.class,
+//                () -> sendCommandToServer(testCmd),
+//                "[ERROR]"
+//        );
+//        String expected = "[ERROR]" + " Missing '(' for attribute list.";
+//        assertEquals(expected, thrown.getMessage());
+//        assertTrue(thrown.getMessage().contains(expected));
+//    }
+//
+//    // Test for "CREATE TABLE" with missing ')' for attribute list
+//    @Test
+//    public void testParsingMissingClosingParenthesis() {
+//        String testCmd = "CREATE TABLE tableName (attribute1 INT, attribute2 VARCHAR;";
+//        SyntaxException thrown = assertThrows(
+//                SyntaxException.class,
+//                () -> sendCommandToServer(testCmd),
+//                "[ERROR]"
+//        );
+//        String expected = "[ERROR]" + " Missing ')' at the end of attribute list.";
+//        assertEquals(expected, thrown.getMessage());
+//        assertTrue(thrown.getMessage().contains(expected));
+//    }
+//
+//    // Test for "CREATE TABLE" with invalid attribute syntax
+//    @Test
+//    public void testParsingInvalidAttributeSyntax() {
+//        String testCmd = "CREATE TABLE tableName (attribute1 INT, attribute2);";
+//        SyntaxException thrown = assertThrows(
+//                SyntaxException.class,
+//                () -> sendCommandToServer(testCmd),
+//                "[ERROR]"
+//        );
+//        String expected = "[ERROR]" + " Invalid attribute syntax.";
+//        assertEquals(expected, thrown.getMessage());
+//        assertTrue(thrown.getMessage().contains(expected));
+//    }
+//
+//    // Test for successful "CREATE TABLE" command with attribute list
+//    @Test
+//    public void testParsingValidCreateTable() {
+//        String testCmd = "CREATE TABLE tableName (attribute1 INT, attribute2 VARCHAR);";
+//        try {
+//            String result = sendCommandToServer(testCmd);
+//            String expected = "Table 'tableName' created successfully.";
+//            assertEquals(expected, result);
+//        } catch (SyntaxException e) {
+//            fail("Should not have thrown any exception.");
+//        }
+//    }
+//
+//
+//
+//    //CREATE TABLE IMPLEMENT TESTS:
+//    @Test
+//    public void testCTbUseNotImplemented() throws IOException {
+//        server.dbStore.deleteEmptyDir("newDb");
+//        sendCommandToServer("CREATE DATABASE newDb;");
+//        String testEmptyCmd = "CREATE TABLE newTb;";
+//        SyntaxException thrown = assertThrows(
+//                SyntaxException.class,
+//                () -> sendCommandToServer(testEmptyCmd),
+//                "[ERROR]"
+//        );
+//        String expected = "[ERROR]" + "  No Database selected. USE command not implemented.";
+//        String actual = thrown.getMessage();
+//        assertEquals(expected, thrown.getMessage());
+//        assertTrue(thrown.getMessage().contains(expected));
+//    }
+
+
+
+
+
+
+    //    @Test
 //    public void testInvalidDatabase() {
 //        String randomUseNameTest = generateRandomName();
 //        String command = "USE " + randomUseNameTest + ";";

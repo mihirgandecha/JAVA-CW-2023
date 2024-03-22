@@ -11,11 +11,7 @@ public class Database {
     public String dbName;
     public Path dbPath;
     public Path currentDbPath;
-
-//    public Database(){
-//        this.rootDir = "databases";
-//        this.dbPath = Paths.get("cw-db", "databases", dbName);
-//    }
+    public File tbFile;
 
     //Check if cw-db/databases is present
     public boolean isDatabasesDirPresent(){

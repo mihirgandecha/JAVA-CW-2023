@@ -84,9 +84,9 @@ public class Create implements DBCmnd {
 
     @Override
     public String execute(Parser p) throws SyntaxException, IOException {
-        dbStore.setDbName(dbName);
-        dbStore.setPath();
         if (isDb) {
+            dbStore.setDbName(dbName);
+            dbStore.setPath();
             if (!dbStore.createDB()) {
                 dbStore.dbPath = null;
                 dbStore.dbName = null;
@@ -97,6 +97,11 @@ public class Create implements DBCmnd {
             return "[OK]" + dbName + " Database Created";
         }
         if (isTb){
+            if(dbStore.currentDbPath != null){
+                throw new SyntaxException(" No Database selected. USE command not implemented.");
+            }
+
+            // dbStore.tbFile = new File();
             isTb = false;
             p.clear();
             return "[OK]" + " Table created";
