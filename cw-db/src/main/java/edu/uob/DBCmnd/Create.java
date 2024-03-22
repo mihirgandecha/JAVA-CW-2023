@@ -1,12 +1,16 @@
 package edu.uob.DBCmnd;
 
+import javax.swing.*;
 import javax.xml.crypto.Data;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+
 
 public class Create implements DBCmnd {
     private boolean isDb = false;
@@ -109,27 +113,40 @@ public class Create implements DBCmnd {
             p.clear();
             return "[OK]" + dbName + " Database Created";
         }
-        if (isTb){
-            if(dbStore.currentDbPath == null){
+        if (isTb) {
+            if (dbStore.currentDbPath == null) {
                 throw new SyntaxException(" No Database selected. USE command not implemented.");
             }
             String dirPath = String.valueOf(dbStore.currentDbPath) + File.separator;
             String fileName = dbStore.tbName + dbStore.FEXTENSION;
-            dbStore.tbFile = new File(dirPath  + fileName);
-            boolean isFCreated = dbStore.tbFile.createNewFile();
-            if(isFCreated == true){
-                isTb = false;
-                p.clear();
-                dbStore.tbName = setTbName;
-                return "[OK]" + " Table created.";
+            //TODO check for if Windows works:
+            dbStore.tbFile = new BufferedWriter(new FileWriter(dirPath + fileName));
+            dbStore.isFileCreated = true;
+            dbStore.tbAttributes = new ArrayList<>();
+            if (dbStore.tbAttributes.isEmpty()) {
+                checkAtribContainsID();
+                dbStore.tbAttributes.add(0, "id");
             }
-            else{
-               throw new SyntaxException(" " + dbStore.tbName + "table file already exists or error occured.");
-            }
+            isTb = false;
+            p.clear();
+            dbStore.tbName = setTbName;
+            return "[OK]" + " Table created.";
         }
         dbStore.dbPath = null;
         dbStore.dbName = null;
         p.clear();
         throw new SyntaxException(" Executing [CREATE]/[TABLE]: Table execution invalid!");
+    }
+
+    private void checkAtribContainsID() throws SyntaxException {
+        for(String idAtr : dbStore.tbAttributes){
+            if(isId(idAtr)){
+                throw new SyntaxException("attribute name cannot be 'id'");
+            }
+        }
+    }
+
+    public static boolean isId(String input) {
+        return "ID".equalsIgnoreCase(input);
     }
 }

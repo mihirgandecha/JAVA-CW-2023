@@ -1,20 +1,24 @@
 package edu.uob.DBCmnd;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Database {
     public String dbName;
     public Path dbPath;
     public String tbName;
     public Path currentDbPath;
-    public File tbFile;
+    public BufferedWriter tbFile;
     public final String FEXTENSION = ".tab";
     public boolean isFileCreated = false;
+    public ArrayList<String> tbAttributes;
 
     //Check if cw-db/databases is present
     public boolean isDatabasesDirPresent(){

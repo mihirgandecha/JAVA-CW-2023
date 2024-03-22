@@ -65,6 +65,7 @@ public class DBServer {
             cmd.parse(p);
             return cmd.execute(p);
         } catch (SyntaxException e) {
+            //TODO put ERROR here.
             return "" + e.getMessage();
         }
     }
