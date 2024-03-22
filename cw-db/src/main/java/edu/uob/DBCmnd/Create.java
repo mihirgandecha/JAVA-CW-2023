@@ -110,15 +110,22 @@ public class Create implements DBCmnd {
             return "[OK]" + dbName + " Database Created";
         }
         if (isTb){
-            if(dbStore.currentDbPath != null){
+            if(dbStore.currentDbPath == null){
                 throw new SyntaxException(" No Database selected. USE command not implemented.");
             }
-
-            // dbStore.tbFile = new File();
-            isTb = false;
-            p.clear();
-            dbStore.tbName = setTbName;
-            return "[OK]" + " Table created.";
+            String dirPath = String.valueOf(dbStore.currentDbPath) + File.separator;
+            String fileName = dbStore.tbName + dbStore.FEXTENSION;
+            dbStore.tbFile = new File(dirPath  + fileName);
+            boolean isFCreated = dbStore.tbFile.createNewFile();
+            if(isFCreated == true){
+                isTb = false;
+                p.clear();
+                dbStore.tbName = setTbName;
+                return "[OK]" + " Table created.";
+            }
+            else{
+               throw new SyntaxException(" " + dbStore.tbName + "table file already exists or error occured.");
+            }
         }
         dbStore.dbPath = null;
         dbStore.dbName = null;

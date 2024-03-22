@@ -149,11 +149,11 @@ public class ExampleDBTests {
         assertEquals(expected, testCmd);
     }
 
-//    @Test
-//    public void testParsingCTblBasicValid() {
-//        String testCmd = sendCommandToServer("CREATE TABLE tbName;");
-//        assertEquals("tbName", testCmd);
-//    }
+    @Test
+    public void testParsingCTblNoDBCreated() {
+        String testCmd = sendCommandToServer("CREATE TABLE tbName;");
+        assertEquals("[ERROR] No Database selected. USE command not implemented.", testCmd);
+    }
 
     //Test for Invalid Attribute List
     // Test for "CREATE TABLE" with missing '(' for attribute list
@@ -162,6 +162,15 @@ public class ExampleDBTests {
         String testCmd = sendCommandToServer("CREATE TABLE tableName attribute1 INT, attribute2 VARCHAR);");
         String expected = "[ERROR]" + " Parsing [CREATE]/[TABLE]: Token '(' not found!";
         assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testParsingCTblBasicValid() throws IOException {
+        server.dbStore.deleteEmptyDir("newdb");
+        sendCommandToServer("CREATE DATABASE newdb;");
+        sendCommandToServer("USE newdb;");
+        String testCmd = sendCommandToServer("CREATE TABLE tbName;");
+        assertTrue(testCmd.contains("[OK]"));
     }
 
     // Test for "CREATE TABLE" with missing ')' for attribute list
