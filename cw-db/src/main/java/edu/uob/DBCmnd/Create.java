@@ -71,27 +71,20 @@ public class Create implements DBCmnd {
             setTbName = tableName;
             return;
         }
-//        if(";".equals(ta))
-//        if(!p.ensureCmdEnd(tableName)){
-//            if (!p.isTbAtrDbName(tableName)) {
-//                throw new SyntaxException(" Invalid Table name!");
-//            }
-//        }
+        else if (!"(".equals(nextTkn)) {
+            throw new SyntaxException(" Token '(' not found!");
+        }
         parseTbAtrb(p);
     }
 
     private void parseTbAtrb(Parser p) throws SyntaxException, IOException {
-        String firstBrkt = p.getNextToken();
-        if (!"(".equals(firstBrkt)) {
-            throw new SyntaxException(" Parsing [CREATE]/[TABLE]: Token '(' not found!");
-        }
-        String nextToken = p.getNextToken();
-        while (nextToken != null && !")".equals(nextToken)) {
-            if (!p.isPlainText(nextToken)) {
-                throw new SyntaxException(" Parsing [CREATE]/[TABLE]: Invalid Table Attribute!");
+        String tableNameTkn= p.getNextToken();
+        while (tableNameTkn!= null && !")".equals(tableNameTkn)) {
+            if (!p.isPlainText(tableNameTkn)) {
+                throw new SyntaxException(" Invalid Table Attribute!");
             }
-            nextToken = p.getNextToken();
-            if (",".equals(nextToken)) {
+            String nextToken = p.getNextToken();
+            if (",".equals(nextToken )) {
                 nextToken = p.getNextToken();
             }
         }

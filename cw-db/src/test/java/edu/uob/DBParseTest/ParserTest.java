@@ -109,4 +109,13 @@ class ParserTest {
     void testDatabaseNameWithTabCharacter() {
         assertFalse(p.isTbAtrDbName("name\t"));
     }
+
+    //Penultimate token
+    @Test
+    void testPenultimateTkn() throws SyntaxException {
+        String command = "CREATE TABLE marks (name, mark, pass);";
+        p.setTokens(command);
+        assertEquals(")", p.getTokenGivenIndx(9));
+        assertEquals(")", p.getPenultimateToken());
+    }
 }

@@ -160,7 +160,14 @@ public class ExampleDBTests {
     @Test
     public void testParsingMissingOpeningParenthesis() {
         String testCmd = sendCommandToServer("CREATE TABLE tableName attribute1 INT, attribute2 VARCHAR);");
-        String expected = "[ERROR]" + " Parsing [CREATE]/[TABLE]: Token '(' not found!";
+        String expected = "[ERROR]" + " Token '(' not found!";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testParsingMissingClosingParenthesis() {
+        String testCmd = sendCommandToServer("CREATE TABLE tableName (attribute1 INT, attribute2 VARCHAR;");
+        String expected = "[ERROR]" + " Parsing [CREATE]/[TABLE]: Token ')' not found!";
         assertEquals(expected, testCmd);
     }
 

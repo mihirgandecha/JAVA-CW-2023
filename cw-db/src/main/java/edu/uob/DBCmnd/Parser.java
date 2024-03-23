@@ -78,13 +78,19 @@ public class Parser {
 
     public String getLastToken() {
         if (tokens.isEmpty() || (getTokenLen() == 1)) {
-            return null; // Immediate return if tokens list is empty
+            return null;
         }
-        int tokenLen = getTokenLen() - 1; // Directly getting the last index
-        // Now, tokenLen is the index of the last token, no need for further checks for emptiness
+        int tokenLen = getTokenLen() - 1;
         return tokens.get(tokenLen);
     }
 
+    public String getPenultimateToken() {
+        if (tokens.isEmpty() || (getTokenLen() == 1)) {
+            return null;
+        }
+        int tokenLen = getTokenLen() - 2;
+        return tokens.get(tokenLen);
+    }
 
     public boolean isValidCommand(){
         String lastTkn = getLastToken();
