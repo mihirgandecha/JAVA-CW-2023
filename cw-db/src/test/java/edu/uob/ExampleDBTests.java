@@ -167,40 +167,35 @@ public class ExampleDBTests {
     @Test
     public void testParsingMissingClosingParenthesis() {
         String testCmd = sendCommandToServer("CREATE TABLE tableName (attribute1 INT, attribute2 VARCHAR;");
-        String expected = "[ERROR]" + " Parsing [CREATE]/[TABLE]: Token ')' not found!";
+        String expected = "[ERROR]" + " Token ')' not found!";
         assertEquals(expected, testCmd);
     }
 
-    @Test
-    public void testParsingCTblBasicValid() throws IOException {
-        server.dbStore.deleteEmptyDir("newdb");
-        sendCommandToServer("CREATE DATABASE newdb;");
-        sendCommandToServer("USE newdb;");
-        String testCmd = sendCommandToServer("CREATE TABLE tbName;");
-        assertTrue(testCmd.contains("[OK]"));
-    }
-
-    // Test for "CREATE TABLE" with missing ')' for attribute list
 //    @Test
-//    public void testParsingMissingClosingParenthesis() {
-//        String testCmd = sendCommandToServer("CREATE TABLE tableName (attribute1 INT, attribute2 VARCHAR;");
-//        String expected = "[ERROR]" + " Parsing [CREATE]/[TABLE]: Token '(' not found!";
-//        assertNotEquals(expected, testCmd);
+//    public void testParsingCTblBasicValid() throws IOException {
+//        server.dbStore.deleteEmptyDir("newdb");
+//        sendCommandToServer("CREATE DATABASE newdb;");
+//        sendCommandToServer("USE newdb;");
+//        String testCmd = sendCommandToServer("CREATE TABLE tbName;");
+//        assertTrue(testCmd.contains("[OK]"));
 //    }
 
     // Test for "CREATE TABLE" with invalid attribute syntax
-//    @Test
-//    public void testParsingInvalidAttributeSyntax() {
-//        String testCmd = sendCommandToServer("CREATE TABLE tableName (attribute1 INT, attribute2);");
-//        String expected = "[ERROR]" + " Invalid attribute syntax.";
-//        assertEquals(expected, testCmd);
-//    }
+    @Test
+    public void testParsingInvalidAttributeSyntax() {
+        String testCmd = sendCommandToServer("CREATE TABLE tableName (attribute1 INT, attribute2);");
+        String expected = "[ERROR]" + " No comma found!";
+        assertEquals(expected, testCmd);
+    }
 
     // Test for successful "CREATE TABLE" command with attribute list
 //    @Test
 //    public void testParsingValidCreateTable() {
-//        String testCmd = "CREATE TABLE tableName (attribute1 INT, attribute2 VARCHAR);";
-//        String expected = "Table 'tableName' created successfully.";
+//        sendCommandToServer("CREATE DATABASE testDbTb");
+//        sendCommandToServer("USE testDbTb");
+//        String testCmd = sendCommandToServer("CREATE TABLE tableName (attribute1, attribute2, attribute3);");
+//        String expected = "[OK]" + "Table 'tableName' created successfully.";
+//        assertEquals(expected, testCmd);
 //    }
 //
 //

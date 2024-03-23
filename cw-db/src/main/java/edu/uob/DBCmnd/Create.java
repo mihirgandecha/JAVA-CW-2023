@@ -25,10 +25,6 @@ public class Create implements DBCmnd {
 
     @Override
     public void parse(Parser p) throws SyntaxException, IOException {
-//        int tokenLen = p.getTokenLen();
-//        if (tokenLen < 4) {
-//            throw new SyntaxException(" Token length invalid.");
-//        }
         String nextToken = p.getNextToken();
         switch (nextToken) {
             case "DATABASE":
@@ -37,7 +33,7 @@ public class Create implements DBCmnd {
                 break;
             case "TABLE":
                 parseTb(p);
-                //isTb = true;
+                isTb = true;
                 break;
             default:
                 throw new SyntaxException(" Parsing [CREATE]: Token 'DATABASE'/'TABLE' not found!");
@@ -74,22 +70,27 @@ public class Create implements DBCmnd {
         else if (!"(".equals(nextTkn)) {
             throw new SyntaxException(" Token '(' not found!");
         }
+        else if (!")".equals(p.getPenultimateToken())) {
+            throw new SyntaxException(" Token ')' not found!");
+        }
         parseTbAtrb(p);
     }
 
     private void parseTbAtrb(Parser p) throws SyntaxException, IOException {
-        String tableNameTkn= p.getNextToken();
-        while (tableNameTkn!= null && !")".equals(tableNameTkn)) {
-            if (!p.isPlainText(tableNameTkn)) {
+        String nextTkn = p.getNextToken();
+        while (nextTkn != null && !")".equals(nextTkn)) {
+            if (!p.isPlainText(nextTkn)) {
                 throw new SyntaxException(" Invalid Table Attribute!");
             }
-            String nextToken = p.getNextToken();
-            if (",".equals(nextToken )) {
-                nextToken = p.getNextToken();
+            nextTkn = p.getNextToken();
+            if (",".equals(nextTkn)) {
+                nextTkn = p.getNextToken();
+            }
+            else if (!")".equals(nextTkn)){
+                throw new SyntaxException(" No comma found!");
             }
         }
         p.getNextToken();
-
     }
 
     @Override
@@ -123,7 +124,7 @@ public class Create implements DBCmnd {
             isTb = false;
             p.clear();
             dbStore.tbName = setTbName;
-            return "[OK]" + " Table created.";
+            return "[OK]" + " " + dbStore.tbName + " Table created.";
         }
         dbStore.dbPath = null;
         dbStore.dbName = null;
