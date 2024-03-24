@@ -3,14 +3,12 @@ package edu.uob.DBCmnd;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 
-public class Database {
+public class Metadata {
     public String dbName;
     public Path dbPath;
     public String tbName;

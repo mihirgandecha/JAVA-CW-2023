@@ -5,12 +5,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class Use extends Database implements DBCmnd {
+public class Use extends Metadata implements DBCmnd {
     private String dbName = null;
-    private Database dbStore;
+    private Metadata dbStore;
 
-    public Use(Database database) {
-        this.dbStore = database;
+    public Use(Metadata metadata) {
+        this.dbStore = metadata;
     }
 
     @Override

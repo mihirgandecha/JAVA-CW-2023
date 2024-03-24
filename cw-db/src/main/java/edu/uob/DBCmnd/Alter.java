@@ -2,7 +2,7 @@ package edu.uob.DBCmnd;
 
 import java.io.IOException;
 
-public class Alter extends Database implements DBCmnd {
+public class Alter extends Metadata implements DBCmnd {
     public Alter(Parser p) {
     }
 

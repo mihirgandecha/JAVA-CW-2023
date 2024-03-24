@@ -3,24 +3,21 @@ package edu.uob;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
 
 import edu.uob.DBCmnd.*;
 
-import javax.xml.crypto.Data;
-
 /** This class implements the DB server. */
 public class DBServer {
-    public Database dbStore = new Database();
+    public Metadata dbStore = new Metadata();
 
     private static final char END_OF_TRANSMISSION = 4;
     private String storageFolderPath;
 
     public static void main(String args[]) throws IOException {
         DBServer server = new DBServer();
-        server.blockingListenOn(8888);
+        server.blockingListenOn(8889);
     }
 
     /**

@@ -2,7 +2,7 @@ package edu.uob.DBCmnd;
 
 import java.io.IOException;
 
-public class Delete extends Database implements DBCmnd {
+public class Delete extends Metadata implements DBCmnd {
     public Delete(Parser p) {
     }
 

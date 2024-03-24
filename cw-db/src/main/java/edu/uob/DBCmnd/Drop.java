@@ -2,7 +2,7 @@ package edu.uob.DBCmnd;
 
 import java.io.IOException;
 
-public class Drop extends Database implements DBCmnd {
+public class Drop extends Metadata implements DBCmnd {
     public Drop(Parser p) {
     }
 

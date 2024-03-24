@@ -1,14 +1,9 @@
 package edu.uob.DBCmnd;
 
-import javax.swing.*;
-import javax.xml.crypto.Data;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 
@@ -17,9 +12,9 @@ public class Create implements DBCmnd {
     private boolean isTb = false;
     private static String dbName = null;
     private static String setTbName = null;
-    private Database dbStore;
+    private Metadata dbStore;
 
-    public Create(Database dbStore) {
+    public Create(Metadata dbStore) {
         this.dbStore = dbStore;
     }
 
@@ -111,6 +106,8 @@ public class Create implements DBCmnd {
             if (dbStore.currentDbPath == null) {
                 throw new SyntaxException(" No Database selected. USE command not implemented.");
             }
+            //TODO ! Reforactor just instantiating Table after path confirmed.
+            //TODO Check if file already present in directory given tbName
             String dirPath = String.valueOf(dbStore.currentDbPath) + File.separator;
             String fileName = dbStore.tbName + dbStore.FEXTENSION;
             //TODO check for if Windows works:
