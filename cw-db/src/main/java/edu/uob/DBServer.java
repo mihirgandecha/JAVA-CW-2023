@@ -17,6 +17,7 @@ public class DBServer {
 
     public static void main(String args[]) throws IOException {
         DBServer server = new DBServer();
+        //TODO why 8888 in use
         server.blockingListenOn(8889);
     }
 
