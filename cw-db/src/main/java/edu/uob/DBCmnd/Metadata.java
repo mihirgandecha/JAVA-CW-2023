@@ -13,12 +13,9 @@ public class Metadata {
     public Path dbPath;
     public String tbName;
     public Path currentDbPath;
-    public BufferedWriter tbFile;
     public final String FEXTENSION = ".tab";
-    public boolean isFileCreated = false;
-    public ArrayList<String> tbAttributes;
+    Table table;
 
-    //Check if cw-db/databases is present
     public boolean isDatabasesDirPresent(){
         boolean isDatabasesExists = Files.exists(getAbsPath("databases"));
         return isDatabasesExists;
@@ -124,5 +121,20 @@ public class Metadata {
         }
         Files.delete(dir.toPath());
     }
+
+    //Create Table functions:
+//    public Table initTable() throws SyntaxException{
+//        if (currentDbPath == null) throw new SyntaxException(" Please select database with USE.");
+//        File tbFile = new File(currentDbPath + File.separator + tbName + FEXTENSION);
+//        if (!tbFile.exists()) throw new SyntaxException(" No .tb file found.");
+//        table = new Table();
+//        return table;
+//    }
+
+//    public Table setColumns(ArrayList<String> tbCols) throws SyntaxException{
+//        if (table == null) throw new SyntaxException(" .tb file not initiated!");
+//        if (tbCols == null) throw new SyntaxException(" Table has no columns!");
+//
+//    }
 
 }
