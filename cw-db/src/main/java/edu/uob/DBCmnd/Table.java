@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,16 +11,19 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.String.join;
+
 public class Table {
     public String name;
     public Path dbPath;
     ArrayList<String> columns;
     private int id;
     private List<Map<String, String>> table;
-    public final String FEXTENSION = ".tab";
+    public final String EXTENSION = ".tab";
 
 
-    public Table(ArrayList<String> tbColumns){
+    public Table(String tableName, Path filePath, ArrayList<String> tbColumns) throws SyntaxException {
+        this.table = new ArrayList<>();
         this.columns = new ArrayList<>(tbColumns);
         addIdColumn();
         for (String column : tbColumns) {
@@ -29,14 +31,39 @@ public class Table {
                 this.columns.add(column);
             }
         }
+        setPath(filePath);
+        this.name = setName(tableName);
         this.id = 1;
-        this.table = new ArrayList<>();
-        //this.columns.addAll(tbColumns);
     }
 
-    public void setName(String tablename){
-        this.name = tablename;
+    //Ensure Table properly configured:
+    public boolean isTableConfigured() {
+        return this.name != null && this.dbPath != null && !this.columns.isEmpty();
     }
+
+    //Is valid column (testing purposes):
+    public boolean isValidColumnName(String columnName) {
+        return this.columns.contains(columnName);
+    }
+
+    //Is valid columns (testing purposes):
+    public boolean isValidColumnNames(List<String> columnNames) {
+        return this.columns.containsAll(columnNames);
+    }
+
+    //do columns match (excluding 'id' column):
+    public boolean isValidEntrySize(int dataSize) {
+        return dataSize == this.columns.size() - 1;
+    }
+
+    //How many rows:
+    public int getExtrySize() {
+        return this.table != null ? this.table.size() : 0;
+    }
+
+//    public void setName(String tablename){
+//        this.name = tablename;
+//    }
 
     public String getName(){
         return name;
@@ -50,22 +77,64 @@ public class Table {
         return String.valueOf(this.dbPath);
     }
 
-    public String setFilePath() throws SyntaxException {
+    public String setName(String tableName) throws SyntaxException {
         if(this.dbPath == null) throw new SyntaxException(" Database Path not set!");
-        if(this.name == null) throw new SyntaxException(" Table name not set!");
-        return name + FEXTENSION;
+        return tableName + EXTENSION;
     }
 
-    public void writeTbToFile(String dirPath, String fileName) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(dirPath + fileName));
-        String column = String.join("\t", columns);
-        try {
-            writer.write(column);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            writer.close();
+//    public void writeTbToFile() throws IOException {
+//        Path filePath = Path.of(dbPath + File.separator + name);
+//        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath.toFile()))) {
+//            //Write columns
+//            String header = join("\t", columns);
+//            writer.write(header);
+//            writer.newLine();
+//            //Write data entries
+//            for (Map<String, String> row : table) {
+//                List<String> rowData = new ArrayList<>();
+//                for (String column : columns) {
+//                    rowData.add(row.getOrDefault(column, "N/A"));
+//                }
+//                String rowLine = join("\t", rowData);
+//                writer.write(rowLine);
+//                writer.newLine();
+//            }
+//        }
+//    }
+    public void writeTbToFile() throws SyntaxException, IOException{
+        if (dbPath == null || name == null) {
+            throw new IOException("Table path or name is not configured.");
         }
+        Path filePath = Path.of(dbPath + File.separator + name);
+        File fileToOpen = filePath.toFile();
+        fileToOpen.createNewFile();
+        if (!fileToOpen.isFile()) {
+            throw new SyntaxException(" Cannot create or access the file at " + filePath);
+        }
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileToOpen))) {
+            writeColumns(bw);
+            writeEntries(bw);
+        }
+    }
+
+    private void writeColumns(BufferedWriter bw) throws IOException {
+        String header = String.join("\t", columns);
+        bw.write(header);
+        bw.newLine();
+        bw.flush();
+    }
+
+    private void writeEntries(BufferedWriter bw) throws IOException {
+        for (Map<String, String> row : table) {
+            List<String> rowData = new ArrayList<>();
+            for (String column : columns) {
+                rowData.add(row.getOrDefault(column, ""));
+            }
+            String rowLine = String.join("\t", rowData);
+            bw.write(rowLine);
+            bw.newLine();
+        }
+        bw.flush();
     }
 
     // Get the current columns
@@ -92,19 +161,6 @@ public class Table {
         if (!columns.contains("id")){
             columns.add(0, "id");
         }
-    }
-
-    public void insertRow(Map<String, String> rowData) throws Exception {
-        for (String column : columns) {
-            if (!column.equals("id") && !rowData.containsKey(column)) {
-                throw new Exception("Missing data for column: " + column);
-            }
-        }
-        rowData.put("id", Integer.toString(id++));
-        if (this.table == null) {
-            this.table = new ArrayList<>();
-        }
-        this.table.add(new HashMap<>(rowData));
     }
 
     private void getColumns(ArrayList<String> createTbColumns) {
@@ -134,6 +190,9 @@ public class Table {
         this.table.add(row);
     }
 
+
+
+
     @Override
     public String toString() {
         Map<String, Integer> columnWidths = new HashMap<>();
@@ -161,17 +220,17 @@ public class Table {
         return builder.toString();
     }
 
-    public static void main(String[] args) {
-        Table myTable = new Table(new ArrayList<>(Arrays.asList("name", "mark", "pass")));
-        ArrayList<String> newRowData = new ArrayList<>(Arrays.asList("Simon", "98", "True"));
-        ArrayList<String> newRowData2 = new ArrayList<>(Arrays.asList("Mark", "33", "False"));
-        try {
-            myTable.addEntry(newRowData);
-            myTable.addEntry(newRowData2);
-            System.out.println(myTable);
-        } catch (Exception e) {
-            System.err.println("Error adding data: " + e.getMessage());
-        }
-        myTable.clear();
-    }
+//    public static void main(String[] args) {
+//        Table myTable = new Table(new ArrayList<>(Arrays.asList("name", "mark", "pass")));
+//        ArrayList<String> newRowData = new ArrayList<>(Arrays.asList("Simon", "98", "True"));
+//        ArrayList<String> newRowData2 = new ArrayList<>(Arrays.asList("Mark", "33", "False"));
+//        try {
+//            myTable.addEntry(newRowData);
+//            myTable.addEntry(newRowData2);
+//            System.out.println(myTable);
+//        } catch (Exception e) {
+//            System.err.println("Error adding data: " + e.getMessage());
+//        }
+//        myTable.clear();
+//    }
 }
