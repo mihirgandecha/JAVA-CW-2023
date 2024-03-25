@@ -13,9 +13,12 @@ public class Create implements DBCmnd {
     private static String dbName = null;
     private static String setTbName = null;
     private Metadata dbStore;
+    private int expectedColLen = 0;
+    private ArrayList<String> columns;
 
     public Create(Metadata dbStore) {
         this.dbStore = dbStore;
+        columns = new ArrayList<String>();
     }
 
     @Override
@@ -56,10 +59,10 @@ public class Create implements DBCmnd {
         if (!p.isTbAtrDbName(tableName)) {
             throw new SyntaxException(" Invalid Table name!");
         }
+        setTbName = tableName;
         String nextTkn = p.getNextToken();
         if (p.ensureCmdEnd(nextTkn)){
             isTb = true;
-            setTbName = tableName;
             return;
         }
         else if (!"(".equals(nextTkn)) {
@@ -77,6 +80,8 @@ public class Create implements DBCmnd {
             if (!p.isPlainText(nextTkn)) {
                 throw new SyntaxException(" Invalid Table Attribute!");
             }
+            expectedColLen++;
+            columns.add(nextTkn);
             nextTkn = p.getNextToken();
             if (",".equals(nextTkn)) {
                 nextTkn = p.getNextToken();
@@ -106,22 +111,7 @@ public class Create implements DBCmnd {
             if (dbStore.currentDbPath == null) {
                 throw new SyntaxException(" No Database selected. USE command not implemented.");
             }
-            //TODO ! Reforactor just instantiating Table after path confirmed.
-            //TODO Check if file already present in directory given tbName
-            String dirPath = String.valueOf(dbStore.currentDbPath) + File.separator;
-            String fileName = dbStore.tbName + dbStore.FEXTENSION;
-            //TODO check for if Windows works:
-            dbStore.tbFile = new BufferedWriter(new FileWriter(dirPath + fileName));
-            dbStore.isFileCreated = true;
-            dbStore.tbAttributes = new ArrayList<>();
-            if (dbStore.tbAttributes.isEmpty()) {
-                checkAtribContainsID();
-                dbStore.tbAttributes.add(0, "id");
-            }
-            isTb = false;
-            p.clear();
-            dbStore.tbName = setTbName;
-            return "[OK]" + " " + dbStore.tbName + " Table created.";
+            return createTb(p, dbStore);
         }
         dbStore.dbPath = null;
         dbStore.dbName = null;
@@ -129,13 +119,46 @@ public class Create implements DBCmnd {
         throw new SyntaxException(" Executing [CREATE]/[TABLE]: Table execution invalid!");
     }
 
-    private void checkAtribContainsID() throws SyntaxException {
-        for(String idAtr : dbStore.tbAttributes){
-            if(isId(idAtr)){
-                throw new SyntaxException("attribute name cannot be 'id'");
-            }
+    private String createTb(Parser p, Metadata dbStore) throws SyntaxException {
+        //TODO ! Reforactor just instantiating Table after path confirmed.
+        //TODO Check if file already present in directory given tbName
+        if (!columns.contains("id")){
+            //checkAtribContainsID();
+            columns.add(0, "id");
+        }
+        try {
+            writeTbToFile(dbStore);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        isTb = false;
+        p.clear();
+        dbStore.tbName = setTbName;
+        return "[OK]" + " " + dbStore.tbName + " Table created.";
+    }
+
+    public void writeTbToFile(Metadata dbStore) throws IOException {
+        String dirPath = String.valueOf(dbStore.currentDbPath) + File.separator;
+        String fileName = setTbName + dbStore.FEXTENSION;
+        //TODO check for if Windows works:
+        BufferedWriter writer = new BufferedWriter(new FileWriter(dirPath + fileName));
+        String column = String.join("\t", columns);
+        try {
+            writer.write(column);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            writer.close();
         }
     }
+
+//    private void checkAtribContainsID() throws SyntaxException {
+//        for(String idAtr : dbStore.tbAttributes){
+//            if(isId(idAtr)){
+//                throw new SyntaxException("attribute name cannot be 'id'");
+//            }
+//        }
+//    }
 
     public static boolean isId(String input) {
         return "ID".equalsIgnoreCase(input);

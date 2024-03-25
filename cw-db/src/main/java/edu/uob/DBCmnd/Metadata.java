@@ -39,7 +39,7 @@ public class Metadata {
     }
 
     public Path setPathUseCmd(String useCmdPath) throws IOException {
-        Path usePath = Paths.get("databases", useCmdPath).toAbsolutePath();
+        Path usePath = Paths.get("cw-db","databases", useCmdPath).toAbsolutePath();
         if (!checkCreateRoot()){
             throw new IOException("[ERROR]");
         }
