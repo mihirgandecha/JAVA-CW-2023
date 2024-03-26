@@ -1,0 +1,12 @@
+1. Update changes of local main with local master using git pull origin main
+2. Create new branch -> git checkout -b newBranch
+3. Develop features with any messaging (to yourself) youd like
+4. When done, staying on same branch -> git rebase main (checks for conflicts)
+5. git checkout main
+6. git rebase newBranch
+7. git push (sends to remote (production))
+
+Tips:
+1. Be smart with msg, treat like button
+2. Group commits and dont just always use git add . (ie stage changes at a time)
+3. If big commit - dont use inline (-m) option, just git commit and use multiple lines
