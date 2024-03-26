@@ -1,7 +1,7 @@
 #Directories
 .idea
 target
-cw-db/resources
+resources
 
 #Files
 Instructions.md
@@ -31,3 +31,4 @@ BNF.txt
 *.tar.gz
 *.rar
 
+.github/*
