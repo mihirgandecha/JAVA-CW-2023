@@ -30,9 +30,9 @@ public class Use implements DBCmnd {
 
     @Override
     public String execute(Parser p) throws IOException, SyntaxException {
-        String newPath = String.valueOf(dbStore.setPathUseCmd(dbName));
-        if (Files.exists(Paths.get(newPath))) {
-            dbStore.currentDbPath = Path.of(newPath);
+        //String newPath = String.valueOf(dbStore.setPathUseCmd(dbName));
+        if (Files.exists(dbStore.dbPath)) {
+            dbStore.currentDbPath = dbStore.dbPath;
             return "[OK]" + dbName + " is an existing database. " + "USE Executed Successfully";
         }
         else {

@@ -53,8 +53,8 @@ public class DBServer {
                 case "CREATE" -> cmd = (DBCmnd) new Create(dbStore);
                 case "DROP" -> cmd = (DBCmnd) new Drop(dbStore);
                 case "ALTER" -> cmd = (DBCmnd) new Alter(p);
-                case "INSERT" -> cmd = (DBCmnd) new Insert(p);
-                case "SELECT" -> cmd = (DBCmnd) new Select(p);
+                case "INSERT" -> cmd = (DBCmnd) new Insert(dbStore);
+                case "SELECT" -> cmd = (DBCmnd) new Select(dbStore);
                 case "UPDATE" -> cmd = (DBCmnd) new Update(p);
                 case "DELETE" -> cmd = (DBCmnd) new Delete(p);
                 case "JOIN" -> cmd = (DBCmnd) new Join(p);

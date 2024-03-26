@@ -136,6 +136,7 @@ public class Create implements DBCmnd {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        dbStore.table = table;
         isTb = false;
         p.clear();
         dbStore.tbName = setTbName;

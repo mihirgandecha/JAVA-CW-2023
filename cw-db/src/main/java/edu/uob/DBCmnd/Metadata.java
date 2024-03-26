@@ -12,7 +12,7 @@ public class Metadata {
     public String tbName;
     public Path currentDbPath;
     public final String EXTENSION = ".tab";
-    Table table;
+    public Table table;
 
     public void setStoragePath(String storagePathFromServer) {
         if (storagePath != null) {
