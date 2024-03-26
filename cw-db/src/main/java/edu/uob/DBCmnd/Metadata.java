@@ -2,9 +2,8 @@ package edu.uob.DBCmnd;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 
 public class Metadata {
     public String dbName;
@@ -114,43 +113,67 @@ public class Metadata {
         return directory + File.separator;
     }
 
-    public boolean dropDatabase(String dbName) {
-        Path databasePath = Paths.get("databases", dbName).toAbsolutePath();
-        File databaseDir = databasePath.toFile();
-        if (databaseDir.exists() && databaseDir.isDirectory()) {
-            try {
-                deleteDirectoryRecursively(databaseDir);
-                return true;
-            } catch (IOException e) {
-                return false;
+//    public boolean dropDatabase(String dbName) {
+//        Path databasePath = Paths.get("databases", dbName).toAbsolutePath();
+//        File databaseDir = databasePath.toFile();
+//        if (databaseDir.exists() && databaseDir.isDirectory()) {
+//            try {
+//                deleteDirectoryRecursively(databaseDir);
+//                return true;
+//            } catch (IOException e) {
+//                return false;
+//            }
+//        }
+//        return false;
+//    }
+
+    //Working!
+    public void dropDatabase(Path databasePath) throws IOException {
+        Files.walkFileTree(databasePath, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
             }
-        }
-        return false;
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                Files.delete(dir);
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 
 
     //Helper method to dropDatabase
-    private void deleteDirectoryRecursively(File dir) throws IOException {
-        File[] allContents = dir.listFiles();
-        if (allContents != null) {
-            for (File file : allContents) {
-                deleteDirectoryRecursively(file);
-            }
+//    private void deleteDirectoryRecursively(File dir) throws IOException {
+//        File[] allContents = dir.listFiles();
+//        if (allContents != null) {
+//            for (File file : allContents) {
+//                deleteDirectoryRecursively(file);
+//            }
+//        }
+//        Files.delete(dir.toPath());
+//    }
+
+
+//    public boolean dropTable(String tableName) {
+//        Path tablePath = currentDbPath.resolve(tableName + ".tab");
+//        try {
+//            if (Files.exists(tablePath)) {
+//                Files.delete(tablePath);
+//                return true;
+//            }
+//        } catch (IOException ignored) {
+//        }
+//        return false;
+//    }
+    public boolean dropTable(Path tablePath) throws IOException {
+        if (Files.exists(tablePath) && !Files.isDirectory(tablePath)) {
+            Files.delete(tablePath);
+            return true;
+        } else {
+            System.out.println("Specified path does not exist or is a directory.");
+            return false;
         }
-        Files.delete(dir.toPath());
     }
-
-
-    public boolean dropTable(String tableName) {
-        Path tablePath = currentDbPath.resolve(tableName + ".tab");
-        try {
-            if (Files.exists(tablePath)) {
-                Files.delete(tablePath);
-                return true;
-            }
-        } catch (IOException ignored) {
-        }
-        return false;
-    }
-
 }

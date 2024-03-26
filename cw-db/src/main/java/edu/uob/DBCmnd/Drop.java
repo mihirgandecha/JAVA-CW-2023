@@ -64,22 +64,17 @@ public class Drop implements DBCmnd {
         if ((isTb && isDb) || (!isTb && !isDb)){
             throw new SyntaxException(" Error when parsing DROP");
         }
-        if (isDb && !isTb){
+        if (isDb){
             if(metadata.currentDbPath == null) throw new SyntaxException(" 'USE' command not executed.");
             if (!metadata.isDirAtEndOfPath(name)) throw new SyntaxException(" " + name + " database does not match path given by USE: " + metadata.currentDbPath);
-            if (!metadata.dropDatabase(name)) throw new SyntaxException(" " + name + " database could not be drooped");
-            metadata.dropDatabase(name);
+            //TODO consider surrounding in try catch
+            metadata.dropDatabase(metadata.currentDbPath);
             return "[OK] " + name + " database successfully dropped";
         }
-        if (!isDb && isTb){
-            if(metadata.currentDbPath == null) throw new SyntaxException(" 'USE' command not executed.");
-            Path withTbFile = Path.of(metadata.currentDbPath + File.separator + name);
-            if (!metadata.isTbAtEndOfPath(name)) throw new SyntaxException(" " + name + " file does not match path given by USE: " + withTbFile);
-            if (!metadata.dropTable(name)) throw new SyntaxException(" " + name + " table could not be drooped");
-            return "[OK] " + name + " table successfully dropped";
-        }
-        else{
-            throw new SyntaxException(" Error when executing DROP command!");
-        }
+        if (metadata.currentDbPath == null) throw new SyntaxException(" 'USE' command not executed.");
+        Path withTbFile = Path.of(metadata.currentDbPath + File.separator + name);
+        if (!metadata.isTbAtEndOfPath(name)) throw new SyntaxException(" " + name + " file does not match path given by USE: " + withTbFile);
+        if (!metadata.dropTable(withTbFile)) throw new SyntaxException(" " + name + " table could not be drooped");
+        return "[OK] " + name + " table successfully dropped";
     }
 }
