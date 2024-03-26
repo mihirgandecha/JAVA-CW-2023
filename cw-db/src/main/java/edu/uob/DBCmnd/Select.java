@@ -13,6 +13,7 @@ public class Select extends Metadata implements DBCmnd {
 
     @Override
     public String execute(Parser p) throws SyntaxException, IOException {
-        throw new SyntaxException("");
+        return "[OK]";
+        //throw new SyntaxException("");
     }
 }
