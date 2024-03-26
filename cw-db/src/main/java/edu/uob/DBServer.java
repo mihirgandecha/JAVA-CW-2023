@@ -51,7 +51,7 @@ public class DBServer {
             switch (firstToken) {
                 case "USE" -> cmd = (DBCmnd) new Use(dbStore);
                 case "CREATE" -> cmd = (DBCmnd) new Create(dbStore);
-                case "DROP" -> cmd = (DBCmnd) new Drop(p);
+                case "DROP" -> cmd = (DBCmnd) new Drop(dbStore);
                 case "ALTER" -> cmd = (DBCmnd) new Alter(p);
                 case "INSERT" -> cmd = (DBCmnd) new Insert(p);
                 case "SELECT" -> cmd = (DBCmnd) new Select(p);

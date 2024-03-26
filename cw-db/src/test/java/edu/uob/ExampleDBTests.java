@@ -188,6 +188,16 @@ public class ExampleDBTests {
         assertEquals(expected, testCmd);
     }
 
+
+    //Testing DROP DB
+    @Test
+    public void testDropDatabaseIsValid() {
+        sendCommandToServer("CREATE DATABASE testDrop");
+        sendCommandToServer("USE testDrop");
+        String testCmd = sendCommandToServer("DROP DATABASE testDrop");
+
+    }
+
     // Test for successful "CREATE TABLE" command with attribute list
 //    @Test
 //    public void testParsingValidCreateTable() {

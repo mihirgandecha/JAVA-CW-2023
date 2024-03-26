@@ -51,6 +51,16 @@ public class Metadata {
         return Paths.get(directory).toAbsolutePath();
     }
 
+    public boolean isDirAtEndOfPath(String dirName) {
+        Path lastPartOfPath = currentDbPath.getFileName();
+        return lastPartOfPath != null && lastPartOfPath.toString().equals(dirName);
+    }
+
+    public boolean isTbAtEndOfPath(String filename) {
+        Path fileNamePath = currentDbPath.getFileName();
+        return fileNamePath != null && fileNamePath.toString().equals(filename + FEXTENSION);
+    }
+
     //Check if exists -> cw/db/databases
     public boolean checkCreateRoot() throws IOException {
         if (!isDatabasesDirPresent()){
@@ -115,7 +125,20 @@ public class Metadata {
         deleteDirectoryRecursively(dirPath.toFile());
     }
 
-    // Helper method to delete a directory recursively
+    public boolean dropDatabase(String databaseDirPath) {
+        File databaseDir = new File(databaseDirPath);
+        if (databaseDir.exists() && databaseDir.isDirectory()) {
+            try {
+                deleteDirectoryRecursively(databaseDir);
+                return true;
+            } catch (IOException e) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    //Helper method to dropDatabase
     private void deleteDirectoryRecursively(File dir) throws IOException {
         File[] allContents = dir.listFiles();
         if (allContents != null) {
@@ -124,6 +147,19 @@ public class Metadata {
             }
         }
         Files.delete(dir.toPath());
+    }
+
+
+    public boolean dropTable(String tableName) {
+        Path tablePath = currentDbPath.resolve(tableName + ".tab");
+        try {
+            if (Files.exists(tablePath)) {
+                Files.delete(tablePath);
+                return true;
+            }
+        } catch (IOException e) {
+        }
+        return false;
     }
 
 }

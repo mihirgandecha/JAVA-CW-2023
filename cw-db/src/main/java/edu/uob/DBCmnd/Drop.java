@@ -1,23 +1,21 @@
 package edu.uob.DBCmnd;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class Drop extends Metadata implements DBCmnd {
     private boolean isDb = false;
     private boolean isTb = false;
-    public Drop(Parser p) {
+    private final Metadata metadata;
+    private String name;
+
+    public Drop(Metadata metadata) {
+        this.metadata = metadata;
     }
 
-    //<Drop> ::=  "DROP " "DATABASE " [DatabaseName] | "DROP " "TABLE " [TableName]
     @Override
-    public void parse(Parser p) throws SyntaxException, IOException {
-
-        //3 token len
-        //first always DROP
-        //Then either db or tb
-        //then name
-        //Ending with ';'
-
+    public void parse(Parser p) throws IOException {
         String nextToken = p.getNextToken();
         switch (nextToken) {
             case "DATABASE":
@@ -33,7 +31,7 @@ public class Drop extends Metadata implements DBCmnd {
         }
     }
 
-    private void parseDb(Parser p) throws SyntaxException, IOException {
+    private void parseDb(Parser p) throws IOException {
         int tokenLen = p.getTokenLen();
         if (tokenLen != 4) {
             throw new SyntaxException(" Token length invalid.");
@@ -42,10 +40,10 @@ public class Drop extends Metadata implements DBCmnd {
         if (!p.isTbAtrDbName(databaseName)) {
             throw new SyntaxException(" Invalid Database name!");
         }
-        //dbName = databaseName;
+        name = databaseName;
     }
 
-    private void parseTb(Parser p) throws SyntaxException, IOException {
+    private void parseTb(Parser p) throws IOException {
         int tokenLen = p.getTokenLen();
         if (tokenLen < 4) {
             throw new SyntaxException(" Token length invalid.");
@@ -57,36 +55,31 @@ public class Drop extends Metadata implements DBCmnd {
         String nextTkn = p.getNextToken();
         if (p.ensureCmdEnd(nextTkn)){
             isTb = true;
-            //setTbName = tableName;
-            return;
+            name = tableName;
         }
-        else if (!"(".equals(nextTkn)) {
-            throw new SyntaxException(" Token '(' not found!");
-        }
-        else if (!")".equals(p.getPenultimateToken())) {
-            throw new SyntaxException(" Token ')' not found!");
-        }
-        parseTbAtrb(p);
     }
 
-    private void parseTbAtrb(Parser p) throws SyntaxException, IOException {
-        String nextTkn = p.getNextToken();
-        while (nextTkn != null && !")".equals(nextTkn)) {
-            if (!p.isPlainText(nextTkn)) {
-                throw new SyntaxException(" Invalid Table Attribute!");
-            }
-            nextTkn = p.getNextToken();
-            if (",".equals(nextTkn)) {
-                nextTkn = p.getNextToken();
-            }
-            else if (!")".equals(nextTkn)){
-                throw new SyntaxException(" No comma found!");
-            }
-        }
-        p.getNextToken();
-    }
     @Override
-    public String execute(Parser p) throws SyntaxException, IOException {
-        throw new SyntaxException("");
+    public String execute(Parser p) throws IOException {
+        if ((isTb && isDb) || (!isTb && !isDb)){
+            throw new SyntaxException(" Error when parsing DROP");
+        }
+        if (isDb && !isTb){
+            if(metadata.currentDbPath == null) throw new SyntaxException(" 'USE' command not executed.");
+            if (!metadata.isDirAtEndOfPath(name)) throw new SyntaxException(" " + name + " database does not match path given by USE: " + metadata.currentDbPath);
+            if (!metadata.dropDatabase(name)) throw new SyntaxException(" " + name + " database could not be drooped");
+            metadata.dropDatabase(name);
+            return "[OK] " + name + " database successfully dropped";
+        }
+        if (!isDb && isTb){
+            if(metadata.currentDbPath == null) throw new SyntaxException(" 'USE' command not executed.");
+            Path withTbFile = Path.of(metadata.currentDbPath + File.separator + name);
+            if (!metadata.isTbAtEndOfPath(name)) throw new SyntaxException(" " + name + " file does not match path given by USE: " + withTbFile);
+            if (!metadata.dropTable(name)) throw new SyntaxException(" " + name + " table could not be drooped");
+            return "[OK] " + name + " table successfully dropped";
+        }
+        else{
+            throw new SyntaxException(" Error when executing DROP command!");
+        }
     }
 }
