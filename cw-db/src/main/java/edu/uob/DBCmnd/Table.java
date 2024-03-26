@@ -190,9 +190,6 @@ public class Table {
         this.table.add(row);
     }
 
-
-
-
     @Override
     public String toString() {
         Map<String, Integer> columnWidths = new HashMap<>();
