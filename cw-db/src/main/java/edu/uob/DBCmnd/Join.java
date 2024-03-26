@@ -2,7 +2,7 @@ package edu.uob.DBCmnd;
 
 import java.io.IOException;
 
-public class Join extends Metadata implements DBCmnd {
+public class Join implements DBCmnd {
     public Join(Parser p) {
     }
 

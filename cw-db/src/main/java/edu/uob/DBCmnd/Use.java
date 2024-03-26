@@ -5,7 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class Use extends Metadata implements DBCmnd {
+public class Use implements DBCmnd {
     private String dbName = null;
     private Metadata dbStore;
 

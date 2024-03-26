@@ -2,7 +2,7 @@ package edu.uob.DBCmnd;
 
 import java.io.IOException;
 
-public class Insert extends Metadata implements DBCmnd {
+public class Insert implements DBCmnd {
     public Insert(Parser p) {
     }
 

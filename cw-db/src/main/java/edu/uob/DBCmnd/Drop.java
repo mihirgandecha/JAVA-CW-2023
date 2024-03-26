@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class Drop extends Metadata implements DBCmnd {
+public class Drop implements DBCmnd {
     private boolean isDb = false;
     private boolean isTb = false;
     private final Metadata metadata;

@@ -17,7 +17,6 @@ public class DBServer {
 
     public static void main(String args[]) throws IOException {
         DBServer server = new DBServer();
-        //TODO why 8888 in use
         server.blockingListenOn(8888);
     }
 
@@ -42,6 +41,7 @@ public class DBServer {
      */
     public String handleCommand(String command) throws IOException {
         // TODO implement your server logic here - return a string output -> client
+        dbStore.setStoragePath(this.storageFolderPath);
         try {
             Parser p = new Parser(command);
             p.firstCheck();

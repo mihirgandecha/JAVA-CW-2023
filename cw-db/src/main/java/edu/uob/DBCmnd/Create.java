@@ -144,7 +144,7 @@ public class Create implements DBCmnd {
 
     public void writeTbToFile(Metadata dbStore) throws IOException {
         String dirPath = String.valueOf(dbStore.currentDbPath) + File.separator;
-        String fileName = setTbName + dbStore.FEXTENSION;
+        String fileName = setTbName + dbStore.EXTENSION;
         //TODO check for if Windows works:
         BufferedWriter writer = new BufferedWriter(new FileWriter(dirPath + fileName));
         String column = String.join("\t", columns);
