@@ -2,7 +2,7 @@ package edu.uob.DBCmnd;
 
 import java.io.IOException;
 
-public class Select extends Metadata implements DBCmnd {
+public class Select implements DBCmnd {
     public Select(Parser p) {
     }
 

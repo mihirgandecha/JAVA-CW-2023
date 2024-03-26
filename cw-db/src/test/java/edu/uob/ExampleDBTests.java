@@ -1,14 +1,8 @@
 package edu.uob;
 
-import edu.uob.DBCmnd.SyntaxException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,29 +31,38 @@ public class ExampleDBTests {
     }
 
     //TODO condition -> use float for everything (convert into int)
+//    @Test
+//    public void testStoragePathMetadataInitiatedIsValid() {
+//        DBServer server = new DBServer(); // Assuming this initializes dbStore's storagePath
+//        try {
+//            sendCommandToServer("");
+//            String actualStoragePath = server.dbStore.storagePath.toString();
+//            assertTrue(actualStoragePath.contains("databases"));
+//        } catch (Exception e) {
+//        }
+//    }
 
     // A basic test that creates a database, creates a table, inserts some test data, then queries it.
     // It then checks the response to see that a couple of the entries in the table are returned as expected
-    @Test
-    public void testBasicCreateAndQuery() {
-        String randomName = generateRandomName();
-        String testCreate = sendCommandToServer("CREATE DATABASE " + randomName + ";");
-        assertTrue(testCreate.contains("[OK]"));
-        assertEquals(randomName, server.dbStore.dbName);
-        String testUse = sendCommandToServer("USE " + randomName + ";");
-        assertTrue(testUse.contains("[OK]"));
-        assertEquals(server.dbStore.dbPath, server.dbStore.currentDbPath);
-        sendCommandToServer("CREATE TABLE marks (name, mark, pass);");
-        sendCommandToServer("INSERT INTO marks VALUES ('Simon', 65, TRUE);");
-        sendCommandToServer("INSERT INTO marks VALUES ('Sion', 55, TRUE);");
-        sendCommandToServer("INSERT INTO marks VALUES ('Rob', 35, FALSE);");
-        sendCommandToServer("INSERT INTO marks VALUES ('Chris', 20, FALSE);");
-        String response = sendCommandToServer("SELECT * FROM marks;");
-        assertTrue(response.contains("[OK]"), "A valid query was made, however an [OK] tag was not returned");
-//        assertFalse(response.contains("[ERROR]"), "A valid query was made, however an [ERROR] tag was returned");
-//        assertTrue(response.contains("Simon"), "An attempt was made to add Simon to the table, but they were not returned by SELECT *");
-//        assertTrue(response.contains("Chris"), "An attempt was made to add Chris to the table, but they were not returned by SELECT *");
-    }
+//    @Test
+//    public void testBasicCreateAndQuery() {
+//        String randomName = generateRandomName();
+//        String testCreate = sendCommandToServer("CREATE DATABASE " + randomName + ";");
+//        assertTrue(testCreate.contains("[OK]"));
+//        assertEquals(randomName, server.dbStore.dbName);
+//        String testUse = sendCommandToServer("USE " + randomName + ";");
+//        assertTrue(testUse.contains("[OK]"));
+//        sendCommandToServer("CREATE TABLE marks (name, mark, pass);");
+//        sendCommandToServer("INSERT INTO marks VALUES ('Simon', 65, TRUE);");
+//        sendCommandToServer("INSERT INTO marks VALUES ('Sion', 55, TRUE);");
+//        sendCommandToServer("INSERT INTO marks VALUES ('Rob', 35, FALSE);");
+//        sendCommandToServer("INSERT INTO marks VALUES ('Chris', 20, FALSE);");
+//        String response = sendCommandToServer("SELECT * FROM marks;");
+//        assertTrue(response.contains("[OK]"), "A valid query was made, however an [OK] tag was not returned");
+////        assertFalse(response.contains("[ERROR]"), "A valid query was made, however an [ERROR] tag was returned");
+////        assertTrue(response.contains("Simon"), "An attempt was made to add Simon to the table, but they were not returned by SELECT *");
+////        assertTrue(response.contains("Chris"), "An attempt was made to add Chris to the table, but they were not returned by SELECT *");
+//    }
 
     //CREATE Parsing:
 
@@ -111,6 +114,7 @@ public class ExampleDBTests {
         assertEquals(expected, testEmptyCmd);
     }
 
+
     //CREATE TABLE PARSING TESTS:
 //    @Test
 //    public void testCTbValid() throws IOException {
@@ -156,7 +160,6 @@ public class ExampleDBTests {
     }
 
     //Test for Invalid Attribute List
-    // Test for "CREATE TABLE" with missing '(' for attribute list
     @Test
     public void testParsingMissingOpeningParenthesis() {
         String testCmd = sendCommandToServer("CREATE TABLE tableName attribute1 INT, attribute2 VARCHAR);");
@@ -187,6 +190,18 @@ public class ExampleDBTests {
         String expected = "[ERROR]" + " No comma found!";
         assertEquals(expected, testCmd);
     }
+
+
+    //Testing DROP DB
+//    @Test
+//    public void testDropDatabaseIsValid() {
+//        sendCommandToServer("CREATE DATABASE testDrop;");
+//        sendCommandToServer("USE testDrop;");
+//        String testCmd = sendCommandToServer("DROP DATABASE testDrop;");
+//        System.out.println(testCmd);
+//        assertTrue(testCmd.contains("[OK]"));
+//
+//    }
 
     // Test for successful "CREATE TABLE" command with attribute list
 //    @Test

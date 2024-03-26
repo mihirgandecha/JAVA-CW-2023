@@ -17,7 +17,6 @@ public class DBServer {
 
     public static void main(String args[]) throws IOException {
         DBServer server = new DBServer();
-        //TODO why 8888 in use
         server.blockingListenOn(8888);
     }
 
@@ -42,6 +41,7 @@ public class DBServer {
      */
     public String handleCommand(String command) throws IOException {
         // TODO implement your server logic here - return a string output -> client
+        dbStore.setStoragePath(this.storageFolderPath);
         try {
             Parser p = new Parser(command);
             p.firstCheck();
@@ -51,7 +51,7 @@ public class DBServer {
             switch (firstToken) {
                 case "USE" -> cmd = (DBCmnd) new Use(dbStore);
                 case "CREATE" -> cmd = (DBCmnd) new Create(dbStore);
-                case "DROP" -> cmd = (DBCmnd) new Drop(p);
+                case "DROP" -> cmd = (DBCmnd) new Drop(dbStore);
                 case "ALTER" -> cmd = (DBCmnd) new Alter(p);
                 case "INSERT" -> cmd = (DBCmnd) new Insert(p);
                 case "SELECT" -> cmd = (DBCmnd) new Select(p);
