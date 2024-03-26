@@ -2,11 +2,13 @@
 .idea
 target
 resources
+cw-db/.mvn/
 
 #Files
 Instructions.md
 SQLFormalGrammar.md
 BNF.txt
+cw-db/BNF.txt
 
 
 ### Java template
