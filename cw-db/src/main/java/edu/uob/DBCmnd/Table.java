@@ -18,7 +18,7 @@ public class Table {
     public Path dbPath;
     ArrayList<String> columns;
     private int id;
-    private List<Map<String, String>> table;
+    List<Map<String, String>> table;
     public final String EXTENSION = ".tab";
 
 
