@@ -127,10 +127,10 @@ public class Create implements DBCmnd {
         if (!table.isTableConfigured()){
             throw new SyntaxException(" Table configured incorrectly.");
         }
-        ArrayList<String> newRowData = new ArrayList<>(Arrays.asList("Simon", "98", "True"));
-        ArrayList<String> newRowData2 = new ArrayList<>(Arrays.asList("Mark", "33", "False"));
-        table.addEntry(newRowData);
-        table.addEntry(newRowData2);
+//        ArrayList<String> newRowData = new ArrayList<>(Arrays.asList("Simon", "98", "True"));
+//        ArrayList<String> newRowData2 = new ArrayList<>(Arrays.asList("Mark", "33", "False"));
+//        table.addEntry(newRowData);
+//        table.addEntry(newRowData2);
         try {
             table.writeTbToFile();
         } catch (IOException e) {
