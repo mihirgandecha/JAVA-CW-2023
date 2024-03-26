@@ -1,15 +1,8 @@
 package edu.uob;
 
-import edu.uob.DBCmnd.SyntaxException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -167,7 +160,6 @@ public class ExampleDBTests {
     }
 
     //Test for Invalid Attribute List
-    // Test for "CREATE TABLE" with missing '(' for attribute list
     @Test
     public void testParsingMissingOpeningParenthesis() {
         String testCmd = sendCommandToServer("CREATE TABLE tableName attribute1 INT, attribute2 VARCHAR);");
