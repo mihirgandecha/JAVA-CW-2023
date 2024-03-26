@@ -32,34 +32,197 @@ public class ExampleDBTests {
     //TODO: Debugging had to increase time: Understand how this works
     private String sendCommandToServer(String command) {
         // Try to send a command to the server - this call will timeout if it takes too long (in case the server enters an infinite loop)
-        return assertTimeoutPreemptively(Duration.ofMillis(1000000), () -> { return server.handleCommand(command);},
+        return assertTimeoutPreemptively(Duration.ofMillis(1000), () -> { return server.handleCommand(command);},
         "Server took too long to respond (probably stuck in an infinite loop)");
     }
 
+    //TODO condition -> use float for everything (convert into int)
+
     // A basic test that creates a database, creates a table, inserts some test data, then queries it.
     // It then checks the response to see that a couple of the entries in the table are returned as expected
-//    @Test
-//    public void testBasicCreateAndQuery() {
-//        String randomName = generateRandomName();
-//        String testCreate = sendCommandToServer("CREATE DATABASE " + randomName + ";");
-//        assertTrue(testCreate.contains("[OK]"));
-//        String testUse = sendCommandToServer("USE " + randomName + ";");
-//        assertTrue(testUse.contains("[OK]"));
-//        assertEquals(randomName, server.dbStore.dbName);
-//        assertEquals(server.dbStore.dbPath, server.dbStore.currentDbPath);
-//        sendCommandToServer("CREATE TABLE marks (name, mark, pass);");
-//        sendCommandToServer("INSERT INTO marks VALUES ('Simon', 65, TRUE);");
-//        sendCommandToServer("INSERT INTO marks VALUES ('Sion', 55, TRUE);");
-//        sendCommandToServer("INSERT INTO marks VALUES ('Rob', 35, FALSE);");
-//        sendCommandToServer("INSERT INTO marks VALUES ('Chris', 20, FALSE);");
-//        String response = sendCommandToServer("SELECT * FROM marks;");
-//        assertTrue(response.contains("[OK]"), "A valid query was made, however an [OK] tag was not returned");
+    @Test
+    public void testBasicCreateAndQuery() {
+        String randomName = generateRandomName();
+        String testCreate = sendCommandToServer("CREATE DATABASE " + randomName + ";");
+        assertTrue(testCreate.contains("[OK]"));
+        assertEquals(randomName, server.dbStore.dbName);
+        String testUse = sendCommandToServer("USE " + randomName + ";");
+        assertTrue(testUse.contains("[OK]"));
+        assertEquals(server.dbStore.dbPath, server.dbStore.currentDbPath);
+        sendCommandToServer("CREATE TABLE marks (name, mark, pass);");
+        sendCommandToServer("INSERT INTO marks VALUES ('Simon', 65, TRUE);");
+        sendCommandToServer("INSERT INTO marks VALUES ('Sion', 55, TRUE);");
+        sendCommandToServer("INSERT INTO marks VALUES ('Rob', 35, FALSE);");
+        sendCommandToServer("INSERT INTO marks VALUES ('Chris', 20, FALSE);");
+        String response = sendCommandToServer("SELECT * FROM marks;");
+        assertTrue(response.contains("[OK]"), "A valid query was made, however an [OK] tag was not returned");
 //        assertFalse(response.contains("[ERROR]"), "A valid query was made, however an [ERROR] tag was returned");
 //        assertTrue(response.contains("Simon"), "An attempt was made to add Simon to the table, but they were not returned by SELECT *");
 //        assertTrue(response.contains("Chris"), "An attempt was made to add Chris to the table, but they were not returned by SELECT *");
+    }
+
+    //CREATE Parsing:
+
+    //Empty Command stops at SERVER:
+    @Test
+    public void testEmptyCmd() {
+        String testEmptyCmd = sendCommandToServer("");
+        String expected = " [SERVER]: Command Query is empty.";
+        assertTrue(testEmptyCmd.contains(expected));
+    }
+
+    //Just 'CREATE' without ';' catches in CREATE - edge case found!
+    @Test
+    public void testParsingJustCreate() {
+        String testEmptyCmd = sendCommandToServer("create");
+        String expected = "[ERROR]" + " [SERVER]: Token cmnd NOT uppercase!";
+        assertEquals(expected, testEmptyCmd);
+    }
+
+    //Test for "CREATE DATABASE" for no ';'
+    @Test
+    public void testParsingJustCreateDatabase() {
+        String testEmptyCmd = sendCommandToServer("CREATE DATABASE");
+        String expected = "[ERROR]" + " No ';' at end!";
+        assertEquals(expected, testEmptyCmd);
+    }
+
+    //Test for "CREATE DATABASE" for no dbName
+    @Test
+    public void testParsingNoDBName() {
+        String testEmptyCmd = sendCommandToServer("CREATE DATABASE;");
+        String expected = "[ERROR]" + " Token length invalid.";
+        assertEquals(expected, testEmptyCmd);
+    }
+
+    //Test for "CREATE DATABASE" for invalid dbName
+    @Test
+    public void testParsingInvalidDBName() {
+        String testEmptyCmd = sendCommandToServer("CREATE DATABASE #;");
+        String expected = "[ERROR]" + " Invalid Database name!";
+        assertEquals(expected, testEmptyCmd);
+    }
+
+    //Test for "CREATE DATABASE" for more than 4 tokens
+    @Test
+    public void testParsingInvalidTokenLen() {
+        String testEmptyCmd = sendCommandToServer("CREATE DATABASE # 2 4;");
+        String expected = "[ERROR]" + " Token length invalid.";
+        assertEquals(expected, testEmptyCmd);
+    }
+
+    //CREATE TABLE PARSING TESTS:
+//    @Test
+//    public void testCTbValid() throws IOException {
+//        String testEmptyCmd = sendCommandToServer("CREATE TABLE newTb;");
+//        String expected = "[ERROR]" + "  No Database selected. USE command not implemented.";
+//        assertEquals(expected, testEmptyCmd);
 //    }
 
+    // Test for "CREATE TABLE" without table name
+    @Test
+    public void testParsingCTblLowercase() {
+        String testCmd = sendCommandToServer("CREATE table;");
+        String expected = "[ERROR]" + " Parsing [CREATE]: Token 'DATABASE'/'TABLE' not found!";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testParsingCTblInvalidTknLen() {
+        String testCmd = sendCommandToServer("CREATE TABLE;");
+        String expected = "[ERROR]" + " Token length invalid.";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testParsingCTblInvalidTblName() {
+        String testCmd = sendCommandToServer("CREATE TABLE !name;");
+        String expected = "[ERROR]" + " Invalid Table name!";
+        assertEquals(expected, testCmd);
+    }
+
+    //Parsing just CREATE TABLE <TABLENAME>
+    @Test
+    public void testParsingCTblNoEndCaughtServer() {
+        String testCmd = sendCommandToServer("CREATE TABLE tbName");
+        String expected = "[ERROR]" + " No ';' at end!";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testParsingCTblNoDBCreated() {
+        String testCmd = sendCommandToServer("CREATE TABLE tbName;");
+        assertEquals("[ERROR] No Database selected. USE command not implemented.", testCmd);
+    }
+
+    //Test for Invalid Attribute List
+    // Test for "CREATE TABLE" with missing '(' for attribute list
+    @Test
+    public void testParsingMissingOpeningParenthesis() {
+        String testCmd = sendCommandToServer("CREATE TABLE tableName attribute1 INT, attribute2 VARCHAR);");
+        String expected = "[ERROR]" + " Token '(' not found!";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testParsingMissingClosingParenthesis() {
+        String testCmd = sendCommandToServer("CREATE TABLE tableName (attribute1 INT, attribute2 VARCHAR;");
+        String expected = "[ERROR]" + " Token ')' not found!";
+        assertEquals(expected, testCmd);
+    }
+
 //    @Test
+//    public void testParsingCTblBasicValid() throws IOException {
+//        server.dbStore.deleteEmptyDir("newdb");
+//        sendCommandToServer("CREATE DATABASE newdb;");
+//        sendCommandToServer("USE newdb;");
+//        String testCmd = sendCommandToServer("CREATE TABLE tbName;");
+//        assertTrue(testCmd.contains("[OK]"));
+//    }
+
+    // Test for "CREATE TABLE" with invalid attribute syntax
+    @Test
+    public void testParsingInvalidAttributeSyntax() {
+        String testCmd = sendCommandToServer("CREATE TABLE tableName (attribute1 INT, attribute2);");
+        String expected = "[ERROR]" + " No comma found!";
+        assertEquals(expected, testCmd);
+    }
+
+    // Test for successful "CREATE TABLE" command with attribute list
+//    @Test
+//    public void testParsingValidCreateTable() {
+//        sendCommandToServer("CREATE DATABASE testDbTb");
+//        sendCommandToServer("USE testDbTb");
+//        String testCmd = sendCommandToServer("CREATE TABLE tableName (attribute1, attribute2, attribute3);");
+//        String expected = "[OK]" + "Table 'tableName' created successfully.";
+//        assertEquals(expected, testCmd);
+//    }
+//
+//
+//
+//    //CREATE TABLE IMPLEMENT TESTS:
+//    @Test
+//    public void testCTbUseNotImplemented() throws IOException {
+//        server.dbStore.deleteEmptyDir("newDb");
+//        sendCommandToServer("CREATE DATABASE newDb;");
+//        String testEmptyCmd = "CREATE TABLE newTb;";
+//        SyntaxException thrown = assertThrows(
+//                SyntaxException.class,
+//                () -> sendCommandToServer(testEmptyCmd),
+//                "[ERROR]"
+//        );
+//        String expected = "[ERROR]" + "  No Database selected. USE command not implemented.";
+//        String actual = thrown.getMessage();
+//        assertEquals(expected, thrown.getMessage());
+//        assertTrue(thrown.getMessage().contains(expected));
+//    }
+
+
+
+
+
+
+    //    @Test
 //    public void testInvalidDatabase() {
 //        String randomUseNameTest = generateRandomName();
 //        String command = "USE " + randomUseNameTest + ";";

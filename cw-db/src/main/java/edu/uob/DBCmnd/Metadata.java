@@ -1,26 +1,28 @@
 package edu.uob.DBCmnd;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
-public class Database {
+public class Metadata {
     public String dbName;
     public Path dbPath;
+    public String tbName;
     public Path currentDbPath;
+    public final String FEXTENSION = ".tab";
+    Table table;
 
-//    public Database(){
-//        this.rootDir = "databases";
-//        this.dbPath = Paths.get("cw-db", "databases", dbName);
-//    }
-
-    //Check if cw-db/databases is present
     public boolean isDatabasesDirPresent(){
         boolean isDatabasesExists = Files.exists(getAbsPath("databases"));
         return isDatabasesExists;
+    }
+
+    public boolean isTbPresent(){
+        return table.isTableConfigured();
     }
 
     public void setDbName(String dbToken) throws IOException {
@@ -31,14 +33,14 @@ public class Database {
     }
 
     public void setPath() throws IOException {
-        dbPath = Paths.get("databases", dbName).toAbsolutePath();
+        dbPath = Paths.get("cw-db","databases", dbName).toAbsolutePath();
         if (!checkCreateRoot()){
             throw new IOException("[ERROR]");
         }
     }
 
     public Path setPathUseCmd(String useCmdPath) throws IOException {
-        Path usePath = Paths.get("databases", useCmdPath).toAbsolutePath();
+        Path usePath = Paths.get("cw-db","databases", useCmdPath).toAbsolutePath();
         if (!checkCreateRoot()){
             throw new IOException("[ERROR]");
         }
@@ -104,13 +106,7 @@ public class Database {
         if (!Files.exists(dPath)){
             return false;
         }
-//        Path dirPath = Paths.get(String.valueOf(dbPath), directoryName);
-        try {
-            return Files.deleteIfExists(dPath);
-        } catch (SyntaxException e) {
-            System.out.println("Directory is not empty.");
-            return false;
-        }
+        return Files.deleteIfExists(dPath);
     }
 
     // Deletes a directory and all its contents

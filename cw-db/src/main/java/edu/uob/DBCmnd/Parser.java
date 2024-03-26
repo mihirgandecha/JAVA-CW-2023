@@ -10,16 +10,30 @@ public class Parser {
     public ArrayList<String> tokens;
     static int index = 0;
 
-    public Parser(String command) {
+    public Parser(String command) throws SyntaxException {
         setTokens(command);
     }
 
-    public void setTokens(String command){
+    public void setTokens(String command) throws SyntaxException {
+        if (queryEmpty(command)){
+            throw new SyntaxException(" [SERVER]: Command Query is empty.");
+        }
         this.tokenizer = new Tokenizer();
         this.tokenizer.query = command;
         tokenizer.setup();
         this.tokens = this.tokenizer.tokens;
         this.userInCmnd = command;
+    }
+
+    public boolean queryEmpty(String query){
+        if (query == null){
+            return true;
+        }
+        int strLen = query.length();
+        if (strLen <= 1){
+            return true;
+        }
+        return false;
     }
 
     public ArrayList<String> getTokens(){
@@ -36,10 +50,16 @@ public class Parser {
     }
 
     public String getCurrentToken(){
-        return tokens.get(index);
+        if(!tokens.isEmpty()){
+            return tokens.get(index);
+        }
+        return null;
     }
 
     public String getNextToken(){
+        if(tokens.isEmpty()){
+            return null;
+        }
         incrementIndex();
         if (index < tokens.size()){
             return tokens.get(index);
@@ -56,12 +76,20 @@ public class Parser {
         return tokens.size();
     }
 
-    public String getLastToken(){
-        int tokenLen = getTokenLen();
-        if(!tokens.isEmpty()){
-            return tokens.get(tokenLen - 1);
+    public String getLastToken() {
+        if (tokens.isEmpty() || (getTokenLen() == 1)) {
+            return null;
         }
-        return null;
+        int tokenLen = getTokenLen() - 1;
+        return tokens.get(tokenLen);
+    }
+
+    public String getPenultimateToken() {
+        if (tokens.isEmpty() || (getTokenLen() == 1)) {
+            return null;
+        }
+        int tokenLen = getTokenLen() - 2;
+        return tokens.get(tokenLen);
     }
 
     public boolean isValidCommand(){
@@ -89,6 +117,8 @@ public class Parser {
         }
         return false;
     }
+
+    //TODO Unclear
     public boolean checkTokensLen(int expectedLen){
         if(tokens.size() != expectedLen){
             return true;
@@ -96,11 +126,17 @@ public class Parser {
         return false;
     }
     public void firstCheck() throws SyntaxException {
-        if (isCmndEmpty(this.tokens) || (!this.isValidCommand())) {
-            throw new SyntaxException("");
+        index = 0;
+        ArrayList<String> tokenChk = this.tokens;
+        if(!isUpperCase(getCurrentToken())){
+            clear();
+            throw new SyntaxException(" [SERVER]: Token cmnd NOT uppercase!");
+        }
+        if(!isValidCommand()){
+            clear();
+            throw new SyntaxException(" No ';' at end!");
         }
     }
-    //Naming Parser Methods:
 
     public boolean isEmpty (String token){
         return (token == null) || token.isEmpty();
@@ -111,15 +147,15 @@ public class Parser {
     }
 
     public boolean isDigit(String token){
-        return token.matches("[0-9]");
+        return token.matches("[0-9]+");
     }
 
     public boolean isUpperCase(String token){
-        return token.matches("[A-Z]");
+        return token.matches("[A-Z]+");
     }
 
     public boolean isLowerCase(String token){
-        return token.matches("[a-z]");
+        return token.matches("[a-z]+");
     }
 
     public boolean isLetter(String token){

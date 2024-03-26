@@ -2,7 +2,7 @@ package edu.uob.DBCmnd;
 
 import java.io.IOException;
 
-public class Select extends Database implements DBCmnd {
+public class Select extends Metadata implements DBCmnd {
     public Select(Parser p) {
     }
 
@@ -13,6 +13,7 @@ public class Select extends Database implements DBCmnd {
 
     @Override
     public String execute(Parser p) throws SyntaxException, IOException {
-        throw new SyntaxException("");
+        return "[OK]";
+        //throw new SyntaxException("");
     }
 }

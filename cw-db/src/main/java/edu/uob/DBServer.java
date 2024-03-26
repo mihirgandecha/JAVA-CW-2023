@@ -3,23 +3,21 @@ package edu.uob;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
 
 import edu.uob.DBCmnd.*;
 
-import javax.xml.crypto.Data;
-
 /** This class implements the DB server. */
 public class DBServer {
-    public Database dbStore = new Database();
+    public Metadata dbStore = new Metadata();
 
     private static final char END_OF_TRANSMISSION = 4;
     private String storageFolderPath;
 
     public static void main(String args[]) throws IOException {
         DBServer server = new DBServer();
+        //TODO why 8888 in use
         server.blockingListenOn(8888);
     }
 
@@ -44,24 +42,30 @@ public class DBServer {
      */
     public String handleCommand(String command) throws IOException {
         // TODO implement your server logic here - return a string output -> client
-        Parser p = new Parser(command);
-        String firstToken = p.getCurrentToken();
-        DBCmnd cmd;
-        //TODO Do I need to convert if lowercase?
-        switch (firstToken){
-            case "USE" -> cmd = (DBCmnd) new Use(dbStore);
-            case "CREATE" -> cmd = (DBCmnd) new Create(dbStore);
-            case "DROP" -> cmd = (DBCmnd) new Drop(p);
-            case "ALTER" -> cmd = (DBCmnd) new Alter(p);
-            case "INSERT" -> cmd = (DBCmnd) new Insert(p);
-            case "SELECT" -> cmd = (DBCmnd) new Select(p);
-            case "UPDATE" -> cmd = (DBCmnd) new Update(p);
-            case "DELETE" -> cmd = (DBCmnd) new Delete(p);
-            case "JOIN" -> cmd = (DBCmnd) new Join(p);
-            default -> throw new SyntaxException("");
+        try {
+            Parser p = new Parser(command);
+            p.firstCheck();
+            String firstToken = p.getCurrentToken();
+            DBCmnd cmd;
+            //TODO Do I need to convert if lowercase?
+            switch (firstToken) {
+                case "USE" -> cmd = (DBCmnd) new Use(dbStore);
+                case "CREATE" -> cmd = (DBCmnd) new Create(dbStore);
+                case "DROP" -> cmd = (DBCmnd) new Drop(p);
+                case "ALTER" -> cmd = (DBCmnd) new Alter(p);
+                case "INSERT" -> cmd = (DBCmnd) new Insert(p);
+                case "SELECT" -> cmd = (DBCmnd) new Select(p);
+                case "UPDATE" -> cmd = (DBCmnd) new Update(p);
+                case "DELETE" -> cmd = (DBCmnd) new Delete(p);
+                case "JOIN" -> cmd = (DBCmnd) new Join(p);
+                default -> throw new SyntaxException(" [SERVER]: Empty/Invalid Command");
+            }
+            cmd.parse(p);
+            return cmd.execute(p);
+        } catch (SyntaxException e) {
+            //TODO put ERROR here.
+            return "" + e.getMessage();
         }
-        cmd.parse(p);
-        return cmd.execute(p);
     }
 
     //  === Methods below handle networking aspects of the project - you will not need to change these ! ===

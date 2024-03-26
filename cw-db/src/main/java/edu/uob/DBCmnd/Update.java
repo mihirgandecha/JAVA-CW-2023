@@ -2,7 +2,7 @@ package edu.uob.DBCmnd;
 
 import java.io.IOException;
 
-public class Update extends Database implements DBCmnd {
+public class Update extends Metadata implements DBCmnd {
     public Update(Parser p) {
     }
 

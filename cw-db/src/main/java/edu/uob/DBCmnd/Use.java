@@ -5,17 +5,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class Use extends Database implements DBCmnd {
+public class Use extends Metadata implements DBCmnd {
     private String dbName = null;
-    private Database dbStore;
+    private Metadata dbStore;
 
-    public Use(Database database) {
-        this.dbStore = database;
+    public Use(Metadata metadata) {
+        this.dbStore = metadata;
     }
 
     @Override
     public void parse(Parser p) throws SyntaxException, IOException {
-        p.firstCheck();
         p.checkTokensLen(3);
         String firstTkn = p.getCurrentToken();
         String expectedFirstTkn = "USE";
@@ -26,22 +25,18 @@ public class Use extends Database implements DBCmnd {
         if (!p.isTbAtrDbName(dbNameTkn)) {
             throw new SyntaxException("");
         }
-        String lastTkn = p.getLastToken();
-        if (!p.ensureCmdEnd(lastTkn)){
-            throw new SyntaxException("");
-        }
         dbName = dbNameTkn;
     }
 
     @Override
-    public String execute(Parser p) throws IOException {
+    public String execute(Parser p) throws IOException, SyntaxException {
         String newPath = String.valueOf(dbStore.setPathUseCmd(dbName));
         if (Files.exists(Paths.get(newPath))) {
             dbStore.currentDbPath = Path.of(newPath);
             return "[OK]" + dbName + " is an existing database. " + "USE Executed Successfully";
         }
         else {
-            throw new SyntaxException("");
+            throw new SyntaxException(" [USE]:" + dbName + " is not an existing database.");
         }
     }
 }

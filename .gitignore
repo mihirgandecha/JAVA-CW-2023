@@ -1,4 +1,9 @@
 .idea
 src/test/java/edu/uob/ExampleDBTests.java
 target
+Instructions.md
+SQLFormalGrammar.md
+resources
+cw-db/BNF.txt
+
 
