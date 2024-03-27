@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Insert implements DBCmnd {
-    private final Metadata dbStore;
+    private Metadata dbStore;
     private String tableName;
     private final ArrayList<String> values = new ArrayList<>();
 
@@ -63,7 +63,6 @@ public class Insert implements DBCmnd {
         }
         if(values.isEmpty()) throw new SyntaxException(" No data provided for table insertion.");
         dbStore.table.addEntry(values);
-
         try {
             dbStore.table.writeTbToFile();
         } catch (IOException e) {

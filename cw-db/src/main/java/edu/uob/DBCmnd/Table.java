@@ -1,9 +1,6 @@
 package edu.uob.DBCmnd;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -71,6 +68,7 @@ public class Table {
         if(this.dbPath == null) throw new SyntaxException(" Database Path not set!");
         return tableName + EXTENSION;
     }
+
 
 
     public void writeTbToFile() throws SyntaxException, IOException {

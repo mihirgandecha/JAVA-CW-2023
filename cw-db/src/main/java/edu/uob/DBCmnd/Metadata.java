@@ -1,9 +1,9 @@
 package edu.uob.DBCmnd;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.*;
 
 public class Metadata {
     public String dbName;
@@ -13,6 +13,8 @@ public class Metadata {
     public Path currentDbPath;
     public final String EXTENSION = ".tab";
     public Table table;
+    public boolean tbHasEntries = false;
+    public int maxEntryRows;
 
     public void setStoragePath(String storagePathFromServer) {
         if (storagePath != null) {
@@ -114,18 +116,96 @@ public class Metadata {
         return directory + File.separator;
     }
 
-//    public boolean dpublic ropDatabase(String dbName) {
-//        Path databasePath = Paths.get("databases", dbName).toAbsolutePath();
-//        File databaseDir = databasePath.toFile();
-//        if (databaseDir.exists() && databaseDir.isDirectory()) {
-//            try {
-//                deleteDirectoryRecursively(databaseDir);
-//                return true;
-//            } catch (IOException e) {
-//                return false;
+    public void readTbFile(Path filePathToRead) throws SyntaxException, FileNotFoundException {
+        File tabFile = new File(String.valueOf(filePathToRead));
+        if(!tabFile.exists()){
+            throw new SyntaxException(" Cannot find path" + String.valueOf(filePathToRead) + " when reading file.");
+        }
+        ArrayList<String> tableLines = new ArrayList<>();
+        FileReader fileReader = new FileReader(tabFile);
+        BufferedReader br = new BufferedReader(fileReader);
+        try {
+            String tbLine = br.readLine();
+            while(tbLine != null){
+                tableLines.add(tbLine);
+                tbLine = br.readLine();
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ArrayList<String> columnsRead = readColumns(tableLines);
+        columnsRead.remove(Arrays.asList("id"));
+        if (columnsRead != null){
+            if(!tableLines.isEmpty()){
+                tableLines.remove(0);
+            }
+        }
+        else{
+            throw new SyntaxException(" columns could not be read");
+        }
+        columnsRead.remove("id");
+        System.out.println(columnsRead);
+        this.table = new Table("newTb", this.storagePath, columnsRead);
+        while(!tableLines.isEmpty()){
+            ArrayList<String> readEntry = readColumns(tableLines);
+            readEntry.remove(0);
+            if (!tableLines.isEmpty()) {
+                tableLines.remove(0);
+            }
+            this.table.addEntry(readEntry);
+        }
+    }
+
+    public static void main(String[] args) throws IOException{
+        Metadata metadata = new Metadata();
+        metadata.setStoragePath("/home/mihirgany/IdeaProjects/JAVA-CW-2023/cw-db/databases");
+        if(metadata.table == null){
+            metadata.readTbFile(Path.of(metadata.storagePath + File.separator + "newdatab" + File.separator + "newTb.tab"));
+        }
+        System.out.println(metadata.table);
+    }
+
+    private ArrayList<String> readColumns(ArrayList<String> readLines) throws SyntaxException {
+        if(!readLines.isEmpty()) {
+            String[] columnsToRead = readLines.get(0).split("\\t");
+            return new ArrayList<>((Arrays.asList(columnsToRead)));
+//            for (String i : readLines) {
+//                if (i.contains("id")) {
+//                    return new ArrayList<String>(Arrays.(columnsToRead));
+//                }
 //            }
+        }
+        return null;
+    }
+
+    private ArrayList<String> readEntries(ArrayList<String> readLines) throws SyntaxException {
+        if(!readLines.isEmpty()) {
+            String columnsToRead = Arrays.toString(readLines.get(0).split("\\t"));
+            for (String i : readLines) {
+                return new ArrayList<>(Arrays.asList(columnsToRead));
+            }
+        }
+        return null;
+    }
+
+//    private List<Map<String, String>> readEntries(List<String> tableLines) {
+//        List<Map<String, String>> table = new ArrayList<>();
+//        for (int i = 1; i < tableLines.size(); i++) {
+//            String[] entries = tableLines.get(i).split("\\t");
+//            Map<String, String> row = new HashMap<>();
+//            for (int j = 0; j < columns.size(); j++) {
+//                row.put(columns.get(j), entries[j]);
+//            }
+//            table.add(row);
 //        }
-//        return false;
+//        return table;
+//    }
+
+//    private void readEntries(ArrayList<String> listOfLines){
+//        for(int i=1; i<listOfLines.size(); i++){
+//            table.addEntry(listOfLines.get(i).split("\\t"));
+//        }
 //    }
 
     //Working!
@@ -143,7 +223,6 @@ public class Metadata {
             }
         });
     }
-
 
     //Helper method to dropDatabase
 //    private void deleteDirectoryRecursively(File dir) throws IOException {

@@ -1,12 +1,12 @@
 package edu.uob;
 
+import edu.uob.DBCmnd.*;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Paths;
 import java.nio.file.Files;
-
-import edu.uob.DBCmnd.*;
+import java.nio.file.Paths;
 
 /** This class implements the DB server. */
 public class DBServer {
@@ -62,8 +62,7 @@ public class DBServer {
             }
             cmd.parse(p);
             return cmd.execute(p);
-        } catch (SyntaxException e) {
-            //TODO put ERROR here.
+        } catch (Exception e) {
             return "" + e.getMessage();
         }
     }
