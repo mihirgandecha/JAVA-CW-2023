@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class Create implements DBCmnd {
@@ -13,7 +12,7 @@ public class Create implements DBCmnd {
     private boolean isTb = false;
     private static String dbName = null;
     private static String setTbName = null;
-    private Metadata dbStore;
+    private final Metadata dbStore;
     private int expectedColLen = 0;
     private ArrayList<String> columns;
 
@@ -106,7 +105,7 @@ public class Create implements DBCmnd {
             }
             isDb = false;
             p.clear();
-            return "[OK]" + dbName + " Database Created";
+            return "[OK] " + dbName + " Database Created";
         }
         if (isTb) {
             if (dbStore.currentDbPath == null) {
@@ -122,19 +121,15 @@ public class Create implements DBCmnd {
 
     private String createTb(Parser p, Metadata dbStore) throws SyntaxException {
         //TODO ! Reforactor just instantiating Table after path confirmed.
-        //TODO Check if file already present in directory given tbName
+        //TODO Check if file already present in directory given tbName using file.isExist()
         Table table = new Table(setTbName, dbStore.currentDbPath, columns);
         if (!table.isTableConfigured()){
             throw new SyntaxException(" Table configured incorrectly.");
         }
-//        ArrayList<String> newRowData = new ArrayList<>(Arrays.asList("Simon", "98", "True"));
-//        ArrayList<String> newRowData2 = new ArrayList<>(Arrays.asList("Mark", "33", "False"));
-//        table.addEntry(newRowData);
-//        table.addEntry(newRowData2);
         try {
             table.writeTbToFile();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new SyntaxException(" Failed to create table!");
         }
         dbStore.table = table;
         isTb = false;

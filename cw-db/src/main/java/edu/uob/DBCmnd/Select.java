@@ -2,8 +2,8 @@ package edu.uob.DBCmnd;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class Select implements DBCmnd {
@@ -37,26 +37,35 @@ public class Select implements DBCmnd {
 
     @Override
     public String execute(Parser p) throws SyntaxException, IOException {
-        if (dbStore.table == null && dbStore.table.name != tableName) {
-            throw new SyntaxException("Table " + tableName + " does not exist.");
+        if(dbStore.currentDbPath == null){
+            throw new SyntaxException(" USE command not executed on current DB!");
         }
-        Table table = dbStore.table;
-//        if(table.columns == null) {
-//            selectedColumns = table.columns;
-//        }
-//        else {
-//            for (String column : table.columns) {
-//                if (!table.columns.contains(column)) throw new SyntaxException(" " + column + " is not an attribute in the table.");
-//            }
-//        }
+        Path withTbFile = Path.of(dbStore.currentDbPath + File.separator + tableName + dbStore.EXTENSION);
+        File tableFile = new File(withTbFile.toString());
+        if(!tableFile.exists()){
+            throw new SyntaxException(" " + tableFile + " does not exist in path: " + withTbFile);
+        }
+        if (dbStore.tbName == null){
+            dbStore.tbName = tableName;
+        }
+        if (dbStore.table == null){
+            dbStore.readTbFile(withTbFile);
+        }
         ArrayList<String> output = new ArrayList<>();
         StringBuilder line = new StringBuilder();
+        try {
+            if(selectedColumns.contains("*")){
+                selectedColumns = dbStore.table.getColumns();
+            }
+        } catch (Exception e){
+            throw new SyntaxException(e.getMessage());
+        }
         for (String column : selectedColumns) {
-            if (!table.columns.contains(column) && !"*".equals(column)) throw new SyntaxException(column + " is not an attribute in the table.");
+            if (!dbStore.table.columns.contains(column) && !"*".equals(column)) throw new SyntaxException(column + " is not an attribute in the table.");
             line.append(column).append("\t");
         }
         output.add(line.toString().trim());
-        for (Map<String, String> row : table.table) {
+        for (Map<String, String> row : dbStore.table.table) {
             line.setLength(0);
             if ("*".equals(selectedColumns.get(0))) {
                 for (String value : row.values()) {
@@ -69,6 +78,6 @@ public class Select implements DBCmnd {
             }
             output.add(line.toString().trim());
         }
-        return String.join("\n", output);
+        return "[OK]\n" + String.join("\n", output);
     }
 }

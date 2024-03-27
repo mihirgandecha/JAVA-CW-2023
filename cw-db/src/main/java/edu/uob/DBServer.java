@@ -1,12 +1,12 @@
 package edu.uob;
 
+import edu.uob.DBCmnd.*;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Paths;
 import java.nio.file.Files;
-
-import edu.uob.DBCmnd.*;
+import java.nio.file.Paths;
 
 /** This class implements the DB server. */
 public class DBServer {
@@ -49,7 +49,7 @@ public class DBServer {
             DBCmnd cmd;
             //TODO Do I need to convert if lowercase?
             switch (firstToken) {
-                case "USE" -> cmd = (DBCmnd) new Use(dbStore);
+                case "USE" -> cmd = (DBCmnd) new Use(dbStore, this.storageFolderPath);
                 case "CREATE" -> cmd = (DBCmnd) new Create(dbStore);
                 case "DROP" -> cmd = (DBCmnd) new Drop(dbStore);
                 case "ALTER" -> cmd = (DBCmnd) new Alter(p);
@@ -62,8 +62,7 @@ public class DBServer {
             }
             cmd.parse(p);
             return cmd.execute(p);
-        } catch (SyntaxException e) {
-            //TODO put ERROR here.
+        } catch (Exception e) {
             return "" + e.getMessage();
         }
     }

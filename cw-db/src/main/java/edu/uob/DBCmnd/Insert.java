@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Insert implements DBCmnd {
-    private final Metadata dbStore;
+    private Metadata dbStore;
     private String tableName;
     private final ArrayList<String> values = new ArrayList<>();
 
@@ -12,8 +12,8 @@ public class Insert implements DBCmnd {
         this.dbStore = dbStore;
     }
 
-    public void parse(Parser p) throws SyntaxException, IOException {
-        //p.checkTokensLen(3);
+    public void parse(Parser p) throws SyntaxException {
+        //TODO check that expected token len >= ?
         String expectedFirstTkn = "INTO";
         String firstTkn = p.getNextToken();
         if (!expectedFirstTkn.equals(firstTkn)) {
@@ -42,18 +42,32 @@ public class Insert implements DBCmnd {
                 nextToken = p.getNextToken();
             }
         }
+        parseValueType(p);
+
     }
 
-    public String execute(Parser p) throws SyntaxException, IOException {
+    public void parseValueType(Parser p) throws SyntaxException {
+        for (String token : values) {
+            if (!(p.isStringLiteral(token) || p.isBooleanLiteral(token) || p.isFloatLiteral(token) || p.isIntegerLiteral(token) || "NULL".equals(token))) {
+                throw new SyntaxException(" Invalid row token: " + token);
+            }
+        }
+    }
+
+    public String execute(Parser p) throws SyntaxException {
         if (dbStore.currentDbPath == null) {
             throw new SyntaxException(" No Database selected. USE command not executed.");
         }
         if(dbStore.table == null){
             throw new SyntaxException(" Table class not instantiated");
         }
-        if(values.isEmpty()) throw new SyntaxException(" No data provided for table insertation.");
+        if(values.isEmpty()) throw new SyntaxException(" No data provided for table insertion.");
         dbStore.table.addEntry(values);
-        dbStore.table.writeTbToFile();
+        try {
+            dbStore.table.writeTbToFile();
+        } catch (IOException e) {
+            throw new SyntaxException(" Error when writing to " + tableName + ".tab file.");
+        }
         return "[OK] Values inserted into " + tableName;
     }
 }
