@@ -51,6 +51,7 @@ public class Select implements DBCmnd {
 //        }
         ArrayList<String> output = new ArrayList<>();
         StringBuilder line = new StringBuilder();
+        //TODO column names not appearing
         for (String column : selectedColumns) {
             if (!table.columns.contains(column) && !"*".equals(column)) throw new SyntaxException(column + " is not an attribute in the table.");
             line.append(column).append("\t");
@@ -69,6 +70,7 @@ public class Select implements DBCmnd {
             }
             output.add(line.toString().trim());
         }
+        //TODO need to return OK (new line)
         return String.join("\n", output);
     }
 }

@@ -41,6 +41,7 @@ public class Insert implements DBCmnd {
             if (",".equals(nextToken)) {
                 nextToken = p.getNextToken();
             }
+            //TODO tokenise and type to string litteral
         }
     }
 

@@ -1,13 +1,12 @@
 package edu.uob.DBCmnd;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class Use implements DBCmnd {
     private String dbName = null;
-    private Metadata dbStore;
+    private final Metadata dbStore;
 
     public Use(Metadata metadata) {
         this.dbStore = metadata;
@@ -29,11 +28,11 @@ public class Use implements DBCmnd {
     }
 
     @Override
-    public String execute(Parser p) throws IOException, SyntaxException {
-        //String newPath = String.valueOf(dbStore.setPathUseCmd(dbName));
-        if (Files.exists(dbStore.dbPath)) {
-            dbStore.currentDbPath = dbStore.dbPath;
-            return "[OK]" + dbName + " is an existing database. " + "USE Executed Successfully";
+    public String execute(Parser p) throws SyntaxException, IOException {
+        File f = new File(dbStore.storagePath + File.separator + dbName);
+        if (f.exists() && f.isDirectory()) {
+            dbStore.currentDbPath = Path.of(dbStore.storagePath + File.separator + dbName);
+            return "[OK] " + dbName + " is an existing database. " + "USE Executed Successfully";
         }
         else {
             throw new SyntaxException(" [USE]:" + dbName + " is not an existing database.");

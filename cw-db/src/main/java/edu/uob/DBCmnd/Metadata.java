@@ -79,7 +79,8 @@ public class Metadata {
 
     //Creates directory
     public boolean createDir() throws IOException{
-        boolean createExecuted = Files.createDirectories(dbPath).toFile().exists();
+        File f = new File(String.valueOf(dbPath));
+        boolean createExecuted = f.mkdir();
         return createExecuted;
     }
 

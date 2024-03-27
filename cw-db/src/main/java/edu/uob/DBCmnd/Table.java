@@ -5,13 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import static java.lang.String.join;
+import java.util.*;
 
 public class Table {
     public String name;
@@ -57,13 +51,9 @@ public class Table {
     }
 
     //How many rows:
-    public int getExtrySize() {
+    public int getExtraSize() {
         return this.table != null ? this.table.size() : 0;
     }
-
-//    public void setName(String tablename){
-//        this.name = tablename;
-//    }
 
     public String getName(){
         return name;
@@ -82,28 +72,14 @@ public class Table {
         return tableName + EXTENSION;
     }
 
-//    public void writeTbToFile() throws IOException {
-//        Path filePath = Path.of(dbPath + File.separator + name);
-//        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath.toFile()))) {
-//            //Write columns
-//            String header = join("\t", columns);
-//            writer.write(header);
-//            writer.newLine();
-//            //Write data entries
-//            for (Map<String, String> row : table) {
-//                List<String> rowData = new ArrayList<>();
-//                for (String column : columns) {
-//                    rowData.add(row.getOrDefault(column, "N/A"));
-//                }
-//                String rowLine = join("\t", rowData);
-//                writer.write(rowLine);
-//                writer.newLine();
-//            }
-//        }
-//    }
-    public void writeTbToFile() throws SyntaxException, IOException{
+
+    public void writeTbToFile() throws SyntaxException, IOException {
         if (dbPath == null || name == null) {
-            throw new IOException("Table path or name is not configured.");
+            throw new SyntaxException(" Table path or name is not configured.");
+        }
+        File f = new File(String.valueOf(dbPath));
+        if(!(f.exists() || f.isDirectory())) {
+            throw new SyntaxException(" Database not found within path: " + dbPath);
         }
         Path filePath = Path.of(dbPath + File.separator + name);
         File fileToOpen = filePath.toFile();
@@ -117,14 +93,18 @@ public class Table {
         }
     }
 
-    private void writeColumns(BufferedWriter bw) throws IOException {
+    private void writeColumns(BufferedWriter bw) throws SyntaxException, IOException {
         String header = String.join("\t", columns);
-        bw.write(header);
-        bw.newLine();
-        bw.flush();
+        try {
+            bw.write(header);
+            bw.newLine();
+            bw.flush();
+        } catch (IOException e){
+            throw new SyntaxException(" Writing to file");
+        }
     }
 
-    private void writeEntries(BufferedWriter bw) throws IOException {
+    private void writeEntries(BufferedWriter bw) throws SyntaxException, IOException {
         for (Map<String, String> row : table) {
             List<String> rowData = new ArrayList<>();
             for (String column : columns) {
@@ -182,7 +162,7 @@ public class Table {
         if (entry.size() != columns.size() - 1) {
             throw new SyntaxException("Incorrect number of values. Expected: " + (columns.size() - 1) + ", but received: " + entry.size());
         }
-        Map<String, String> row = new HashMap<>();
+        Map<String, String> row = new LinkedHashMap<>();
         row.put("id", Integer.toString(id++));
         for (int i = 0; i < entry.size(); i++) {
             row.put(columns.get(i + 1), entry.get(i));
@@ -216,18 +196,4 @@ public class Table {
         }
         return builder.toString();
     }
-
-//    public static void main(String[] args) {
-//        Table myTable = new Table(new ArrayList<>(Arrays.asList("name", "mark", "pass")));
-//        ArrayList<String> newRowData = new ArrayList<>(Arrays.asList("Simon", "98", "True"));
-//        ArrayList<String> newRowData2 = new ArrayList<>(Arrays.asList("Mark", "33", "False"));
-//        try {
-//            myTable.addEntry(newRowData);
-//            myTable.addEntry(newRowData2);
-//            System.out.println(myTable);
-//        } catch (Exception e) {
-//            System.err.println("Error adding data: " + e.getMessage());
-//        }
-//        myTable.clear();
-//    }
 }
