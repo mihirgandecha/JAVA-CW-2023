@@ -19,10 +19,9 @@ public class Insert implements DBCmnd {
         if (!expectedFirstTkn.equals(firstTkn)) {
             throw new SyntaxException("Expected INTO");
         }
-        tableName = p.getNextToken();
-        if (!p.isTbAtrDbName(tableName)) {
-            throw new SyntaxException("Invalid Table name");
-        }
+        String tableToken = p.getNextToken();
+        if (!p.isTbAtrDbName(tableToken)) throw new SyntaxException(" " + tableToken + " is not a valid table name!");
+        tableName = tableToken.toLowerCase();
         String nextToken = p.getNextToken();
         if (!"VALUES".equals(nextToken)) {
             throw new SyntaxException("Expected VALUES after table name");

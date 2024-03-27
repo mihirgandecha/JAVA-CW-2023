@@ -19,7 +19,7 @@ public class Table {
         addIdColumn();
         for (String column : tbColumns) {
             if (!this.columns.contains(column)) {
-                this.columns.add(column);
+                this.columns.add(column.toLowerCase());
             }
         }
         setPath(filePath);

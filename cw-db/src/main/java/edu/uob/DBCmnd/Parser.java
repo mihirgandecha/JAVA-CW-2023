@@ -128,10 +128,6 @@ public class Parser {
     public void firstCheck() throws SyntaxException {
         index = 0;
         ArrayList<String> tokenChk = this.tokens;
-        if(!isUpperCase(getCurrentToken())){
-            clear();
-            throw new SyntaxException(" [SERVER]: Token cmnd NOT uppercase!");
-        }
         if(!isValidCommand()){
             clear();
             throw new SyntaxException(" No ';' at end!");
@@ -265,6 +261,19 @@ public class Parser {
 
     public boolean isValidComparator(String token) {
         return token.matches("==|>|<|>=|<=|!=|LIKE");
+    }
+
+    public boolean isKeyword(String token) {
+        String[] keywords = {"SELECT", "UPDATE", "DELETE", "INSERT",
+                "JOIN", "ON", "AND", "OR", "WHERE",
+                "CREATE", "DROP", "USE", "ALTER",
+                "LIKE", "<", "<=", "=", "<>", ">=", ">"};
+        for (String keyword : keywords) {
+            if (keyword.equalsIgnoreCase(token)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void clear() {
