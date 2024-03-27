@@ -121,7 +121,7 @@ public class Create implements DBCmnd {
 
     private String createTb(Parser p, Metadata dbStore) throws SyntaxException {
         //TODO ! Reforactor just instantiating Table after path confirmed.
-        //TODO Check if file already present in directory given tbName
+        //TODO Check if file already present in directory given tbName using file.isExist()
         Table table = new Table(setTbName, dbStore.currentDbPath, columns);
         if (!table.isTableConfigured()){
             throw new SyntaxException(" Table configured incorrectly.");

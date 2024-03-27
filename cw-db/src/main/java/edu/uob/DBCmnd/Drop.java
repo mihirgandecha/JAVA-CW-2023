@@ -68,6 +68,7 @@ public class Drop implements DBCmnd {
             if(metadata.currentDbPath == null) throw new SyntaxException(" 'USE' command not executed.");
             if (!metadata.isDirAtEndOfPath(name)) throw new SyntaxException(" " + name + " database does not match path given by USE: " + metadata.currentDbPath);
             //TODO consider surrounding in try catch
+            //TODO simplify by just doing f.delDir
             metadata.dropDatabase(metadata.currentDbPath);
             return "[OK] " + name + " database successfully dropped";
         }

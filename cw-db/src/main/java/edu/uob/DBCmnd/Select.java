@@ -2,8 +2,8 @@ package edu.uob.DBCmnd;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class Select implements DBCmnd {
@@ -37,23 +37,27 @@ public class Select implements DBCmnd {
 
     @Override
     public String execute(Parser p) throws SyntaxException, IOException {
-        if (dbStore.table == null && dbStore.table.name != tableName) {
-            throw new SyntaxException("Table " + tableName + " does not exist.");
+        if(dbStore.currentDbPath == null){
+            throw new SyntaxException(" USE command not executed on current DB!");
+        }
+        Path withTbFile = Path.of(dbStore.currentDbPath + File.separator + tableName + dbStore.EXTENSION);
+        File tableFile = new File(withTbFile.toString());
+        if(!tableFile.exists()){
+            throw new SyntaxException(" " + tableFile + dbStore.EXTENSION + " does not exist in path: " + withTbFile);
         }
         Table table = dbStore.table;
-//        if(table.columns == null) {
-//            selectedColumns = table.columns;
-//        }
-//        else {
-//            for (String column : table.columns) {
-//                if (!table.columns.contains(column)) throw new SyntaxException(" " + column + " is not an attribute in the table.");
-//            }
-//        }
         ArrayList<String> output = new ArrayList<>();
         StringBuilder line = new StringBuilder();
         //TODO column names not appearing
+        try {
+            if(selectedColumns.contains("*")){
+                selectedColumns = dbStore.table.getColumns();
+            }
+        } catch (Exception e){
+            throw new SyntaxException(e.getMessage());
+        }
         for (String column : selectedColumns) {
-            if (!table.columns.contains(column) && !"*".equals(column)) throw new SyntaxException(column + " is not an attribute in the table.");
+            if (table.columns.contains(column) && !"*".equals(column)) throw new SyntaxException(column + " is not an attribute in the table.");
             line.append(column).append("\t");
         }
         output.add(line.toString().trim());

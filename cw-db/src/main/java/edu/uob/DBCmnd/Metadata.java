@@ -114,7 +114,7 @@ public class Metadata {
         return directory + File.separator;
     }
 
-//    public boolean dropDatabase(String dbName) {
+//    public boolean dpublic ropDatabase(String dbName) {
 //        Path databasePath = Paths.get("databases", dbName).toAbsolutePath();
 //        File databaseDir = databasePath.toFile();
 //        if (databaseDir.exists() && databaseDir.isDirectory()) {
