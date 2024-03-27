@@ -17,13 +17,13 @@ public class Metadata {
     public int maxEntryRows;
 
     public void setStoragePath(String storagePathFromServer) {
-        if (storagePath != null) {
-            return;
-        }
-        Path keepFilePath = Paths.get(storagePathFromServer, ".keep");
-        if (Files.exists(keepFilePath)) {
+        //if (storagePath != null) {
+        //    return;
+        //}
+        //Path keepFilePath = Paths.get(storagePathFromServer, ".keep");
+        //if (Files.exists(keepFilePath)) {
             storagePath = Paths.get(storagePathFromServer);
-        }
+        //}
     }
 
     public boolean isDatabasesDirPresent(){
@@ -146,7 +146,7 @@ public class Metadata {
         }
         columnsRead.remove("id");
         System.out.println(columnsRead);
-        this.table = new Table("newTb", this.storagePath, columnsRead);
+        this.table = new Table(tbName, this.currentDbPath, columnsRead);
         while(!tableLines.isEmpty()){
             ArrayList<String> readEntry = readColumns(tableLines);
             readEntry.remove(0);
@@ -157,14 +157,14 @@ public class Metadata {
         }
     }
 
-    public static void main(String[] args) throws IOException{
-        Metadata metadata = new Metadata();
-        metadata.setStoragePath("/home/mihirgany/IdeaProjects/JAVA-CW-2023/cw-db/databases");
-        if(metadata.table == null){
-            metadata.readTbFile(Path.of(metadata.storagePath + File.separator + "newdatab" + File.separator + "newTb.tab"));
-        }
-        System.out.println(metadata.table);
-    }
+//    public static void main(String[] args) throws IOException{
+//        Metadata metadata = new Metadata();
+//        metadata.setStoragePath("/home/mihirgany/IdeaProjects/JAVA-CW-2023/cw-db/databases");
+//        if(metadata.table == null){
+//            metadata.readTbFile(Path.of(metadata.storagePath + File.separator + "newdatab" + File.separator + "newTb.tab"));
+//        }
+//        System.out.println(metadata.table);
+//    }
 
     private ArrayList<String> readColumns(ArrayList<String> readLines) throws SyntaxException {
         if(!readLines.isEmpty()) {

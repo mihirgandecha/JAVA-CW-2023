@@ -43,12 +43,16 @@ public class Select implements DBCmnd {
         Path withTbFile = Path.of(dbStore.currentDbPath + File.separator + tableName + dbStore.EXTENSION);
         File tableFile = new File(withTbFile.toString());
         if(!tableFile.exists()){
-            throw new SyntaxException(" " + tableFile + dbStore.EXTENSION + " does not exist in path: " + withTbFile);
+            throw new SyntaxException(" " + tableFile + " does not exist in path: " + withTbFile);
         }
-        Table table = dbStore.table;
+        if (dbStore.tbName == null){
+            dbStore.tbName = tableName;
+        }
+        if (dbStore.table == null){
+            dbStore.readTbFile(withTbFile);
+        }
         ArrayList<String> output = new ArrayList<>();
         StringBuilder line = new StringBuilder();
-        //TODO column names not appearing
         try {
             if(selectedColumns.contains("*")){
                 selectedColumns = dbStore.table.getColumns();
@@ -57,11 +61,11 @@ public class Select implements DBCmnd {
             throw new SyntaxException(e.getMessage());
         }
         for (String column : selectedColumns) {
-            if (table.columns.contains(column) && !"*".equals(column)) throw new SyntaxException(column + " is not an attribute in the table.");
+            if (!dbStore.table.columns.contains(column) && !"*".equals(column)) throw new SyntaxException(column + " is not an attribute in the table.");
             line.append(column).append("\t");
         }
         output.add(line.toString().trim());
-        for (Map<String, String> row : table.table) {
+        for (Map<String, String> row : dbStore.table.table) {
             line.setLength(0);
             if ("*".equals(selectedColumns.get(0))) {
                 for (String value : row.values()) {
@@ -74,7 +78,6 @@ public class Select implements DBCmnd {
             }
             output.add(line.toString().trim());
         }
-        //TODO need to return OK (new line)
-        return String.join("\n", output);
+        return "[OK]\n" + String.join("\n", output);
     }
 }
