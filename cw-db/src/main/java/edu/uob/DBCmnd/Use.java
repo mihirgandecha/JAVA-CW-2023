@@ -28,7 +28,7 @@ public class Use implements DBCmnd {
         if (!p.isTbAtrDbName(dbNameTkn)) {
             throw new SyntaxException("");
         }
-        dbName = dbNameTkn;
+        dbName = dbNameTkn.toLowerCase();
     }
 
     @Override

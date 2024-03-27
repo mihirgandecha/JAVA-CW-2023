@@ -56,7 +56,7 @@ public class ExampleDBTests {
     @Test
     public void testParsingJustCreate() {
         String testEmptyCmd = sendCommandToServer("create");
-        String expected = "[ERROR]" + " [SERVER]: Token cmnd NOT uppercase!";
+        String expected = "[ERROR]" + " No ';' at end!";
         assertEquals(expected, testEmptyCmd);
     }
 
@@ -105,7 +105,7 @@ public class ExampleDBTests {
     @Test
     public void testParsingCTblLowercase() {
         String testCmd = sendCommandToServer("CREATE table;");
-        String expected = "[ERROR]" + " Parsing [CREATE]: Token 'DATABASE'/'TABLE' not found!";
+        String expected = "[ERROR]" + " Token length invalid.";
         assertEquals(expected, testCmd);
     }
 

@@ -48,7 +48,7 @@ public class DBServer {
             String firstToken = p.getCurrentToken();
             DBCmnd cmd;
             //TODO Do I need to convert if lowercase?
-            switch (firstToken) {
+            switch (firstToken.toUpperCase()) {
                 case "USE" -> cmd = (DBCmnd) new Use(dbStore, this.storageFolderPath);
                 case "CREATE" -> cmd = (DBCmnd) new Create(dbStore);
                 case "DROP" -> cmd = (DBCmnd) new Drop(dbStore);

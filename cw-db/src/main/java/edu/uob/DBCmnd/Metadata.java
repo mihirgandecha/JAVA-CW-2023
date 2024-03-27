@@ -17,13 +17,7 @@ public class Metadata {
     public int maxEntryRows;
 
     public void setStoragePath(String storagePathFromServer) {
-        //if (storagePath != null) {
-        //    return;
-        //}
-        //Path keepFilePath = Paths.get(storagePathFromServer, ".keep");
-        //if (Files.exists(keepFilePath)) {
-            storagePath = Paths.get(storagePathFromServer);
-        //}
+        storagePath = Paths.get(storagePathFromServer);
     }
 
     public boolean isDatabasesDirPresent(){
@@ -38,7 +32,7 @@ public class Metadata {
         if (dbToken == null){
             throw new IOException("dbName is empty!");
         }
-        dbName = dbToken;
+        dbName = dbToken.toLowerCase();
     }
 
     public void setPath() throws IOException {
@@ -157,24 +151,10 @@ public class Metadata {
         }
     }
 
-//    public static void main(String[] args) throws IOException{
-//        Metadata metadata = new Metadata();
-//        metadata.setStoragePath("/home/mihirgany/IdeaProjects/JAVA-CW-2023/cw-db/databases");
-//        if(metadata.table == null){
-//            metadata.readTbFile(Path.of(metadata.storagePath + File.separator + "newdatab" + File.separator + "newTb.tab"));
-//        }
-//        System.out.println(metadata.table);
-//    }
-
     private ArrayList<String> readColumns(ArrayList<String> readLines) throws SyntaxException {
         if(!readLines.isEmpty()) {
             String[] columnsToRead = readLines.get(0).split("\\t");
             return new ArrayList<>((Arrays.asList(columnsToRead)));
-//            for (String i : readLines) {
-//                if (i.contains("id")) {
-//                    return new ArrayList<String>(Arrays.(columnsToRead));
-//                }
-//            }
         }
         return null;
     }
@@ -188,25 +168,6 @@ public class Metadata {
         }
         return null;
     }
-
-//    private List<Map<String, String>> readEntries(List<String> tableLines) {
-//        List<Map<String, String>> table = new ArrayList<>();
-//        for (int i = 1; i < tableLines.size(); i++) {
-//            String[] entries = tableLines.get(i).split("\\t");
-//            Map<String, String> row = new HashMap<>();
-//            for (int j = 0; j < columns.size(); j++) {
-//                row.put(columns.get(j), entries[j]);
-//            }
-//            table.add(row);
-//        }
-//        return table;
-//    }
-
-//    private void readEntries(ArrayList<String> listOfLines){
-//        for(int i=1; i<listOfLines.size(); i++){
-//            table.addEntry(listOfLines.get(i).split("\\t"));
-//        }
-//    }
 
     //Working!
     public void dropDatabase(Path databasePath) throws IOException {
@@ -224,29 +185,6 @@ public class Metadata {
         });
     }
 
-    //Helper method to dropDatabase
-//    private void deleteDirectoryRecursively(File dir) throws IOException {
-//        File[] allContents = dir.listFiles();
-//        if (allContents != null) {
-//            for (File file : allContents) {
-//                deleteDirectoryRecursively(file);
-//            }
-//        }
-//        Files.delete(dir.toPath());
-//    }
-
-
-//    public boolean dropTable(String tableName) {
-//        Path tablePath = currentDbPath.resolve(tableName + ".tab");
-//        try {
-//            if (Files.exists(tablePath)) {
-//                Files.delete(tablePath);
-//                return true;
-//            }
-//        } catch (IOException ignored) {
-//        }
-//        return false;
-//    }
     public boolean dropTable(Path tablePath) throws IOException {
         if (Files.exists(tablePath) && !Files.isDirectory(tablePath)) {
             Files.delete(tablePath);

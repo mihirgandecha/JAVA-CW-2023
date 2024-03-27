@@ -18,12 +18,12 @@ public class Select implements DBCmnd {
 
     @Override
     public void parse(Parser p) throws SyntaxException, IOException {
-        String nextToken = p.getNextToken();
+        String nextToken = p.getNextToken().toLowerCase();
         while (!nextToken.equals("FROM")) {
             if (!nextToken.equals(",")) selectedColumns.add(nextToken);
             nextToken = p.getNextToken();
         }
-        tableName = p.getNextToken();
+        tableName = p.getNextToken().toLowerCase();
         if (p.getIndex() < p.getTokenLen() - 1) {
             nextToken = p.getNextToken();
             if (nextToken.equals("WHERE")) {
@@ -61,7 +61,7 @@ public class Select implements DBCmnd {
             throw new SyntaxException(e.getMessage());
         }
         for (String column : selectedColumns) {
-            if (!dbStore.table.columns.contains(column) && !"*".equals(column)) throw new SyntaxException(column + " is not an attribute in the table.");
+            if (!dbStore.table.columns.contains(column.toLowerCase()) && !"*".equals(column.toLowerCase())) throw new SyntaxException(column + " is not an attribute in the table.");
             line.append(column).append("\t");
         }
         output.add(line.toString().trim());

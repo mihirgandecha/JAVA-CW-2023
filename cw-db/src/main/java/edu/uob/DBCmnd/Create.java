@@ -1,5 +1,6 @@
 package edu.uob.DBCmnd;
 
+import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -11,9 +12,8 @@ public class Create implements DBCmnd {
     private boolean isDb = false;
     private boolean isTb = false;
     private static String dbName = null;
-    private static String setTbName = null;
+    private static String tbName = null;
     private final Metadata dbStore;
-    private int expectedColLen = 0;
     private ArrayList<String> columns;
 
     public Create(Metadata dbStore) {
@@ -24,7 +24,7 @@ public class Create implements DBCmnd {
     @Override
     public void parse(Parser p) throws SyntaxException, IOException {
         String nextToken = p.getNextToken();
-        switch (nextToken) {
+        switch (nextToken.toUpperCase()) {
             case "DATABASE":
                 parseDb(p);
                 isDb = true;
@@ -47,7 +47,10 @@ public class Create implements DBCmnd {
         if (!p.isTbAtrDbName(databaseName)) {
             throw new SyntaxException(" Invalid Database name!");
         }
-        dbName = databaseName;
+        if(p.isKeyword(databaseName)){
+            throw new SyntaxException(" " + databaseName + " cannot be same as SQL keyword!");
+        }
+        dbName = databaseName.toLowerCase();
     }
 
     private void parseTb(Parser p) throws SyntaxException, IOException {
@@ -56,10 +59,14 @@ public class Create implements DBCmnd {
             throw new SyntaxException(" Token length invalid.");
         }
         String tableName = p.getNextToken();
-        if (!p.isTbAtrDbName(tableName)) {
+        if (!p.isTbAtrDbName(tableName.toLowerCase())) {
             throw new SyntaxException(" Invalid Table name!");
         }
-        setTbName = tableName;
+        if(p.isKeyword(tableName)){
+            throw new SyntaxException(" table name cannot be condition!");
+
+        }
+        tbName = tableName.toLowerCase();
         String nextTkn = p.getNextToken();
         if (p.ensureCmdEnd(nextTkn)){
             isTb = true;
@@ -74,13 +81,15 @@ public class Create implements DBCmnd {
         parseTbAtrb(p);
     }
 
-    private void parseTbAtrb(Parser p) throws SyntaxException, IOException {
+    public void parseTbAtrb(Parser p) throws SyntaxException, IOException {
         String nextTkn = p.getNextToken();
-        while (nextTkn != null && !")".equals(nextTkn)) {
-            if (!p.isPlainText(nextTkn)) {
+        while (nextTkn.toLowerCase() != null && !")".equals(nextTkn)) {
+            if (!p.isAttributeList(nextTkn)) {
                 throw new SyntaxException(" Invalid Table Attribute!");
             }
-            expectedColLen++;
+            if (p.isKeyword(nextTkn)){
+                throw new SyntaxException(" " + nextTkn + " Attribute cannot be same as SQL keyword!");
+            }
             columns.add(nextTkn);
             nextTkn = p.getNextToken();
             if (",".equals(nextTkn)) {
@@ -111,6 +120,10 @@ public class Create implements DBCmnd {
             if (dbStore.currentDbPath == null) {
                 throw new SyntaxException(" No Database selected. USE command not implemented.");
             }
+            File f = new File((dbStore.currentDbPath + File.separator + tbName + dbStore.EXTENSION));
+            if(f.exists()){
+                throw new SyntaxException(" File already exists!");
+            }
             return createTb(p, dbStore);
         }
         dbStore.dbPath = null;
@@ -122,7 +135,8 @@ public class Create implements DBCmnd {
     private String createTb(Parser p, Metadata dbStore) throws SyntaxException {
         //TODO ! Reforactor just instantiating Table after path confirmed.
         //TODO Check if file already present in directory given tbName using file.isExist()
-        Table table = new Table(setTbName, dbStore.currentDbPath, columns);
+        columns.replaceAll(String::toLowerCase);
+        Table table = new Table(tbName, dbStore.currentDbPath, columns);
         if (!table.isTableConfigured()){
             throw new SyntaxException(" Table configured incorrectly.");
         }
@@ -134,13 +148,13 @@ public class Create implements DBCmnd {
         dbStore.table = table;
         isTb = false;
         p.clear();
-        dbStore.tbName = setTbName;
+        dbStore.tbName = tbName;
         return "[OK]" + " " + dbStore.tbName + " Table created.";
     }
 
     public void writeTbToFile(Metadata dbStore) throws IOException {
         String dirPath = String.valueOf(dbStore.currentDbPath) + File.separator;
-        String fileName = setTbName + dbStore.EXTENSION;
+        String fileName = tbName + dbStore.EXTENSION;
         //TODO check for if Windows works:
         BufferedWriter writer = new BufferedWriter(new FileWriter(dirPath + fileName));
         String column = String.join("\t", columns);
@@ -153,15 +167,4 @@ public class Create implements DBCmnd {
         }
     }
 
-//    private void checkAtribContainsID() throws SyntaxException {
-//        for(String idAtr : dbStore.tbAttributes){
-//            if(isId(idAtr)){
-//                throw new SyntaxException("attribute name cannot be 'id'");
-//            }
-//        }
-//    }
-
-    public static boolean isId(String input) {
-        return "ID".equalsIgnoreCase(input);
-    }
 }
