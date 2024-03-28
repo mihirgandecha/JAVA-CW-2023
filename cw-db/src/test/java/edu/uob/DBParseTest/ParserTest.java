@@ -1,15 +1,10 @@
 package edu.uob.DBParseTest;
 
-import edu.uob.DBCmnd.Create;
-import edu.uob.DBCmnd.Metadata;
 import edu.uob.DBCmnd.Parser;
 import edu.uob.DBCmnd.SyntaxException;
-import edu.uob.DBServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,7 +23,6 @@ class ParserTest {
         p.clear();
     }
 
-    //Test for DB-Name:
     @Test
     void testValidDatabaseNameWithLettersOnly() {
         assertTrue(p.isTbAtrDbName("DatabaseName"));
@@ -124,13 +118,4 @@ class ParserTest {
         assertEquals(")", p.getPenultimateToken());
     }
 
-    @Test
-    void testIfSQLkeyword() throws IOException {
-        assertFalse(p.isKeyword("flavour"));
-//        String command = "CREATE TABLE marks (FLAVOUR, price, stock);";
-//        p.setTokens(command);
-//        Create create = new Create(new Metadata());
-//        create.parseTbAtrb(p);
-//        asser
-    }
 }

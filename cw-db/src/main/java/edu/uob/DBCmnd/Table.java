@@ -32,36 +32,8 @@ public class Table {
         return this.name != null && this.dbPath != null && !this.columns.isEmpty();
     }
 
-    //Is valid column (testing purposes):
-    public boolean isValidColumnName(String columnName) {
-        return this.columns.contains(columnName);
-    }
-
-    //Is valid columns (testing purposes):
-    public boolean isValidColumnNames(List<String> columnNames) {
-        return this.columns.containsAll(columnNames);
-    }
-
-    //do columns match (excluding 'id' column):
-    public boolean isValidEntrySize(int dataSize) {
-        return dataSize == this.columns.size() - 1;
-    }
-
-    //How many rows:
-    public int getExtraSize() {
-        return this.table != null ? this.table.size() : 0;
-    }
-
-    public String getName(){
-        return name;
-    }
-
     public void setPath(Path usePath){
         this.dbPath = usePath;
-    }
-
-    public String getDbPath(){
-        return String.valueOf(this.dbPath);
     }
 
     public String setName(String tableName) throws SyntaxException {
@@ -125,24 +97,11 @@ public class Table {
         this.columns.add(colName);
     }
 
-    //Add all columns from tbColumns
-    public void addAllColumns(ArrayList<String> newColumns) {
-        for (String column : newColumns) {
-            if (!this.columns.contains(column)) {
-                this.columns.add(column);
-            }
-        }
-    }
-
     //Add ID column to start
     public void addIdColumn(){
         if (!columns.contains("id")){
             columns.add(0, "id");
         }
-    }
-
-    private void getColumns(ArrayList<String> createTbColumns) {
-        this.columns = createTbColumns;
     }
 
     public void addColumn(String colName) throws Exception {
@@ -170,14 +129,6 @@ public class Table {
         }
     }
 
-    private void clear() {
-        this.name = null;
-        this.dbPath = null;
-        this.columns.clear();
-        this.id = 1;
-        this.table.clear();
-    }
-
     public void addEntry(ArrayList<String> entry) throws SyntaxException {
         if (this.table == null) {
             this.table = new ArrayList<>();
@@ -191,6 +142,36 @@ public class Table {
             row.put(columns.get(i + 1), entry.get(i));
         }
         this.table.add(row);
+    }
+
+    public String displayTableToString() {
+        ArrayList<Integer> maxWidths = new ArrayList<>();
+        for (String column : this.columns) {
+            int maxWidth = column.length();
+            for (Map<String, String> row : this.table) {
+                String value = row.getOrDefault(column, "NULL");
+                if (value.length() > maxWidth) {
+                    maxWidth = value.length();
+                }
+            }
+            maxWidths.add(maxWidth);
+        }
+        StringBuilder line = new StringBuilder();
+        ArrayList<String> output = new ArrayList<>();
+        for (int i = 0; i < this.columns.size(); i++) {
+            line.append(String.format("%-" + maxWidths.get(i) + "s", this.columns.get(i))).append(" ");
+        }
+        output.add(line.toString().trim());
+        for (Map<String, String> row : this.table) {
+            line.setLength(0);
+            for (int i = 0; i < this.columns.size(); i++) {
+                String column = this.columns.get(i);
+                String value = row.getOrDefault(column, "NULL");
+                line.append(String.format("%-" + maxWidths.get(i) + "s", value)).append(" ");
+            }
+            output.add(line.toString().trim());
+        }
+        return "[OK]\n" + String.join("\n", output);
     }
 
     @Override

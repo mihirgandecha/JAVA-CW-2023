@@ -57,7 +57,7 @@ public class DBServer {
                 case "SELECT" -> cmd = (DBCmnd) new Select(dbStore);
                 case "UPDATE" -> cmd = (DBCmnd) new Update(p);
                 case "DELETE" -> cmd = (DBCmnd) new Delete(p);
-                case "JOIN" -> cmd = (DBCmnd) new Join(p);
+                case "JOIN" -> cmd = (DBCmnd) new Join(dbStore);
                 default -> throw new SyntaxException(" [SERVER]: Empty/Invalid Command");
             }
             cmd.parse(p);

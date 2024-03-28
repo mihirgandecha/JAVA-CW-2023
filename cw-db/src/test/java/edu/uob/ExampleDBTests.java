@@ -1,8 +1,11 @@
 package edu.uob;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,6 +18,20 @@ public class ExampleDBTests {
     public void setup() {
         server = new DBServer();
     }
+
+    @AfterAll
+    public static void cleanDBFolder() {
+        File databaseFolder = new File(Paths.get("databases").toAbsolutePath().toString());
+        File[] directories = databaseFolder.listFiles();
+        if (directories == null) return;
+        for (File directory : directories) {
+            File[] files = directory.listFiles();
+            if (files == null) continue;
+            for (File file : files) file.delete();
+            directory.delete();
+        }
+    }
+
 
     // Random name generator - useful for testing "bare earth" queries (i.e. where tables don't previously exist)
     public static String generateRandomName() {
@@ -30,19 +47,7 @@ public class ExampleDBTests {
         "Server took too long to respond (probably stuck in an infinite loop)");
     }
 
-    //TODO condition -> use float for everything (convert into int)
-//    @Test
-//    public void testStoragePathMetadataInitiatedIsValid() {
-//        DBServer server = new DBServer(); // Assuming this initializes dbStore's storagePath
-//        try {
-//            sendCommandToServer("");
-//            String actualStoragePath = server.dbStore.storagePath.toString();
-//            assertTrue(actualStoragePath.contains("databases"));
-//        } catch (Exception e) {
-//        }
-//    }
 
-    //CREATE Parsing:
 
     //Empty Command stops at SERVER:
     @Test
@@ -151,6 +156,42 @@ public class ExampleDBTests {
         String expected = "[ERROR]" + " Token ')' not found!";
         assertEquals(expected, testCmd);
     }
+
+    //TODO Join creating an extra column
+    @Test
+    public void testJoin(){
+        String createDbResult = sendCommandToServer("CREATE DATABASE markbook;");
+        assertTrue(createDbResult.contains("[OK]"));
+        String useDbResult = sendCommandToServer("USE markbook;");
+        assertTrue(useDbResult.contains("[OK]"));
+        String createTableMarksResult = sendCommandToServer("CREATE TABLE marks (name, mark, pass);");
+        assertTrue(createTableMarksResult.contains("[OK]"));
+        String insertSimonResult = sendCommandToServer("INSERT INTO marks VALUES ('Simon', 65, TRUE);");
+        assertTrue(insertSimonResult.contains("[OK]"));
+        String insertSionResult = sendCommandToServer("INSERT INTO marks VALUES ('Sion', 55, TRUE);");
+        assertTrue(insertSionResult.contains("[OK]"));
+        String insertRobResult = sendCommandToServer("INSERT INTO marks VALUES ('Rob', 35, FALSE);");
+        assertTrue(insertRobResult.contains("[OK]"));
+        String insertChrisResult = sendCommandToServer("INSERT INTO marks VALUES ('Chris', 20, FALSE);");
+        assertTrue(insertChrisResult.contains("[OK]"));
+        String selectMarksResult = sendCommandToServer("SELECT * FROM marks;");
+        assertTrue(selectMarksResult.contains("[OK]"));
+        String createTableCourseworkResult = sendCommandToServer("CREATE TABLE coursework (task, submission);");
+        assertTrue(createTableCourseworkResult.contains("[OK]"));
+        String insertCoursework1Result = sendCommandToServer("INSERT INTO coursework VALUES ('OXO', 3);");
+        assertTrue(insertCoursework1Result.contains("[OK]"));
+        String insertCoursework2Result = sendCommandToServer("INSERT INTO coursework VALUES ('DB', 1);");
+        assertTrue(insertCoursework2Result.contains("[OK]"));
+        String insertCoursework3Result = sendCommandToServer("INSERT INTO coursework VALUES ('OXO', 4);");
+        assertTrue(insertCoursework3Result.contains("[OK]"));
+        String insertCoursework4Result = sendCommandToServer("INSERT INTO coursework VALUES ('STAG', 2);");
+        assertTrue(insertCoursework4Result.contains("[OK]"));
+        String selectCourseworkResult = sendCommandToServer("SELECT * FROM coursework;");
+        assertTrue(selectCourseworkResult.contains("[OK]"));
+        String joinResult = sendCommandToServer("JOIN coursework AND marks ON submission AND id;");
+        assertTrue(joinResult.contains("[OK]"));
+    }
+
 
 //    @Test
 //    public void testParsingCTblBasicValid() throws IOException {

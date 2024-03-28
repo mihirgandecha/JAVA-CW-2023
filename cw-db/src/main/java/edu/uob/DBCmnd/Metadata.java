@@ -13,8 +13,6 @@ public class Metadata {
     public Path currentDbPath;
     public final String EXTENSION = ".tab";
     public Table table;
-    public boolean tbHasEntries = false;
-    public int maxEntryRows;
 
     public void setStoragePath(String storagePathFromServer) {
         storagePath = Paths.get(storagePathFromServer);
@@ -22,10 +20,6 @@ public class Metadata {
 
     public boolean isDatabasesDirPresent(){
         return Files.exists(getAbsPath("databases"));
-    }
-
-    public boolean isTbPresent(){
-        return table.isTableConfigured();
     }
 
     public void setDbName(String dbToken) throws IOException {
@@ -42,14 +36,6 @@ public class Metadata {
         }
     }
 
-    public Path setPathUseCmd(String useCmdPath) throws IOException {
-        Path usePath = Paths.get("cw-db","databases", useCmdPath).toAbsolutePath();
-        if (!checkCreateRoot()){
-            throw new IOException("[ERROR]");
-        }
-        return usePath;
-    }
-
     public Path getAbsPath(String directory){
         return Paths.get(directory).toAbsolutePath();
     }
@@ -59,13 +45,8 @@ public class Metadata {
         return lastPartOfPath != null && lastPartOfPath.toString().equals(dirName);
     }
 
-    public boolean isTbAtEndOfPath(String filename) {
-        Path fileNamePath = currentDbPath.getFileName();
-        return fileNamePath != null && fileNamePath.toString().equals(filename + EXTENSION);
-    }
-
     //Check if exists -> cw/db/databases
-    public boolean checkCreateRoot() throws IOException {
+    public boolean checkCreateRoot() {
         if (!isDatabasesDirPresent()){
             createDir();
             return true;
@@ -74,40 +55,22 @@ public class Metadata {
     }
 
     //Creates directory
-    public boolean createDir() throws IOException{
+    public boolean createDir() {
         File f = new File(String.valueOf(dbPath));
-        boolean createExecuted = f.mkdir();
-        return createExecuted;
+        return f.mkdir();
     }
 
     //Check if cw/databases/<DATABASE_NAME> already exists
     private boolean isDBPresent(){
-        boolean isDBPres = Files.exists(dbPath);
-        return isDBPres;
-    }
-
-    public boolean isDbPresentUseCmd(String dbToken){
-        boolean isDatabasePresent = Files.exists(Path.of(dbToken).toAbsolutePath());
-        return isDatabasePresent;
+        return Files.exists(dbPath);
     }
 
     //Check if exists -> Creates cw/databases/<DATABASE_NAME>
-    public boolean createDB() throws IOException {
+    public boolean createDB() {
         if (!isDBPresent()) {
             return createDir();
         }
         return false;
-    }
-
-    //Testing methods:
-
-    public String pathToString(String directory){
-        return getAbsPath(directory).toString();
-    }
-
-    //Returns UNIX+Windows compatible path
-    public String getCompatiblePath(String directory){
-        return directory + File.separator;
     }
 
     public void readTbFile(Path filePathToRead) throws SyntaxException, FileNotFoundException {
@@ -139,7 +102,6 @@ public class Metadata {
             throw new SyntaxException(" columns could not be read");
         }
         columnsRead.remove("id");
-        System.out.println(columnsRead);
         this.table = new Table(tbName, this.currentDbPath, columnsRead);
         while(!tableLines.isEmpty()){
             ArrayList<String> readEntry = readColumns(tableLines);
@@ -159,24 +121,15 @@ public class Metadata {
         return null;
     }
 
-    private ArrayList<String> readEntries(ArrayList<String> readLines) throws SyntaxException {
-        if(!readLines.isEmpty()) {
-            String columnsToRead = Arrays.toString(readLines.get(0).split("\\t"));
-            for (String i : readLines) {
-                return new ArrayList<>(Arrays.asList(columnsToRead));
-            }
-        }
-        return null;
-    }
-
     //Working!
     public void dropDatabase(Path databasePath) throws IOException {
-        Files.walkFileTree(databasePath, new SimpleFileVisitor<Path>() {
+        Files.walkFileTree(databasePath, new SimpleFileVisitor<>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 Files.delete(file);
                 return FileVisitResult.CONTINUE;
             }
+
             @Override
             public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
                 Files.delete(dir);
@@ -185,13 +138,4 @@ public class Metadata {
         });
     }
 
-    public boolean dropTable(Path tablePath) throws IOException {
-        if (Files.exists(tablePath) && !Files.isDirectory(tablePath)) {
-            Files.delete(tablePath);
-            return true;
-        } else {
-            System.out.println("Specified path does not exist or is a directory.");
-            return false;
-        }
-    }
 }
