@@ -259,6 +259,10 @@ public class Parser {
         return token.matches("AND|OR");
     }
 
+    public boolean isValidAlternationType(String token) {
+        return token.matches("AND|DROP");
+    }
+
     public boolean isValidComparator(String token) {
         return token.matches("==|>|<|>=|<=|!=|LIKE");
     }

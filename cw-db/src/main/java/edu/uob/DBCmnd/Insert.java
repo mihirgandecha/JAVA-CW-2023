@@ -1,6 +1,9 @@
 package edu.uob.DBCmnd;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class Insert implements DBCmnd {
@@ -53,12 +56,17 @@ public class Insert implements DBCmnd {
         }
     }
 
-    public String execute(Parser p) throws SyntaxException {
+    public String execute(Parser p) throws SyntaxException, FileNotFoundException {
         if (dbStore.currentDbPath == null) {
             throw new SyntaxException(" No Database selected. USE command not executed.");
         }
+        File f = new File((dbStore.currentDbPath + File.separator + this.tableName + dbStore.EXTENSION));
+        if(!f.exists()){
+            throw new SyntaxException(" File already exists!");
+        }
+        Path pathToTable = Path.of(dbStore.currentDbPath + File.separator + this.tableName + dbStore.EXTENSION);
         if(dbStore.table == null){
-            throw new SyntaxException(" Table class not instantiated");
+            dbStore.readTbFile(pathToTable);
         }
         if(values.isEmpty()) throw new SyntaxException(" No data provided for table insertion.");
         dbStore.table.addEntry(values);

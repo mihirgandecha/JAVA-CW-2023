@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class Use implements DBCmnd {
     private String dbName = null;
@@ -19,13 +18,13 @@ public class Use implements DBCmnd {
     @Override
     public void parse(Parser p) throws SyntaxException, IOException {
         p.checkTokensLen(3);
-        String firstTkn = p.getCurrentToken();
+        String firstTkn = p.getCurrentToken().toUpperCase();
         String expectedFirstTkn = "USE";
         if (!expectedFirstTkn.equals(firstTkn)){
             throw new SyntaxException("");
         }
         String dbNameTkn = p.getNextToken();
-        if (!p.isTbAtrDbName(dbNameTkn)) {
+        if (!p.isTbAtrDbName(dbNameTkn.toLowerCase())) {
             throw new SyntaxException("");
         }
         dbName = dbNameTkn.toLowerCase();

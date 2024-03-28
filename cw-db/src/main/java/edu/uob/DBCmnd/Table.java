@@ -121,7 +121,7 @@ public class Table {
     }
 
     //Add single column:
-    public void addColumn(String colName){
+    public void addColumnToArray(String colName){
         this.columns.add(colName);
     }
 
@@ -143,6 +143,31 @@ public class Table {
 
     private void getColumns(ArrayList<String> createTbColumns) {
         this.columns = createTbColumns;
+    }
+
+    public void addColumn(String colName) throws Exception {
+        colName = colName.toLowerCase();
+        if (this.columns.contains(colName)) {
+            throw new Exception("Column " + colName + " already exists.");
+        }
+        addColumnToArray(colName);
+        for (Map<String, String> row : this.table) {
+            row.put(colName, "");
+        }
+    }
+
+    public void removeColumn(String colName) throws Exception {
+        colName = colName.toLowerCase();
+        if ("id".equals(colName)) {
+            throw new Exception("Cannot remove the 'id' column.");
+        }
+        if (!this.columns.contains(colName)) {
+            throw new Exception("Column " + colName + " does not exist.");
+        }
+        this.columns.remove(colName);
+        for (Map<String, String> row : this.table) {
+            row.remove(colName);
+        }
     }
 
     private void clear() {
