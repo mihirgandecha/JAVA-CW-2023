@@ -52,7 +52,7 @@ public class DBServer {
                 case "USE" -> cmd = (DBCmnd) new Use(dbStore, this.storageFolderPath);
                 case "CREATE" -> cmd = (DBCmnd) new Create(dbStore);
                 case "DROP" -> cmd = (DBCmnd) new Drop(dbStore);
-                case "ALTER" -> cmd = (DBCmnd) new Alter(p);
+                case "ALTER" -> cmd = (DBCmnd) new Alter(dbStore);
                 case "INSERT" -> cmd = (DBCmnd) new Insert(dbStore);
                 case "SELECT" -> cmd = (DBCmnd) new Select(dbStore);
                 case "UPDATE" -> cmd = (DBCmnd) new Update(p);

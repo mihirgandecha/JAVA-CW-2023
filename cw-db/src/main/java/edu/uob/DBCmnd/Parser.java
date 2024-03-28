@@ -256,11 +256,11 @@ public class Parser {
     }
 
     public boolean isValidBoolOperator(String token) {
-        return token.matches("AND|OR");
+        return token.equals("AND") || token.equals("OR");
     }
 
     public boolean isValidAlternationType(String token) {
-        return token.matches("AND|DROP");
+        return token.equals("ADD") || token.equals("DROP");
     }
 
     public boolean isValidComparator(String token) {

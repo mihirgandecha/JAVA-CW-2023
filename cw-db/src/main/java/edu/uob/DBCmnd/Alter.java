@@ -14,7 +14,6 @@ public class Alter implements DBCmnd {
         this.dbStore = metadata;
     }
 
-    //"ALTER " "TABLE " [TableName] " " <AlterationType> " " [AttributeName]
     @Override
     public void parse(Parser p) throws IOException {
         String firstTkn = p.getNextToken().toLowerCase();
@@ -25,9 +24,9 @@ public class Alter implements DBCmnd {
         if(!p.isValidAlternationType(altTypeTkn)) throw new SyntaxException(" Invalid alteration type: " + altTypeTkn);
         String attrNameTkn = p.getNextToken().toLowerCase();
         if(!p.isTbAtrDbName(attrNameTkn)) throw new SyntaxException(attrNameTkn + " is not a valid attribute name!");
-        this.tbName = tableNameTkn;
-        this.attrName = attrNameTkn;
-        this.alterType = altTypeTkn;
+        this.tbName = tableNameTkn.toLowerCase();
+        this.attrName = attrNameTkn.toLowerCase();
+        this.alterType = altTypeTkn.toLowerCase();
     }
 
     @Override
@@ -37,8 +36,8 @@ public class Alter implements DBCmnd {
             throw new SyntaxException(" No Database selected. USE command not implemented.");
         }
         File f = new File((dbStore.currentDbPath + File.separator + this.tbName + dbStore.EXTENSION));
-        if(f.exists()){
-            throw new SyntaxException(" File already exists!");
+        if(!f.exists()){
+            throw new SyntaxException(" File does not exist!");
         }
         Path pathToTable = Path.of(dbStore.currentDbPath + File.separator + this.tbName + dbStore.EXTENSION);
         if(dbStore.table == null){
@@ -50,9 +49,8 @@ public class Alter implements DBCmnd {
             } catch (Exception e) {
                 throw new SyntaxException(" Error when adding column to table.");
             }
-        }
-        if("drop".equals(this.alterType)){
-            if(dbStore.table.columns.get(0).matches("id")){
+        } else if("drop".equals(this.alterType)){
+            if("id".equals(this.attrName)){
                 throw new SyntaxException("id cannot be dropped");
             }
             try {
@@ -60,8 +58,9 @@ public class Alter implements DBCmnd {
             } catch (Exception e) {
                 throw new SyntaxException(" Error when removing column to table");
             }
+        } else {
+            throw new SyntaxException(" Error occurred when executing Alter");
         }
-        else throw new SyntaxException(" Invalid command when executing alter.");
         dbStore.table.writeTbToFile();
         return "[OK]";
     }
