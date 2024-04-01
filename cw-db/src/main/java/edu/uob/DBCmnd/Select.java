@@ -19,9 +19,9 @@ public class Select implements DBCmnd {
     @Override
     public void parse(Parser p) throws SyntaxException, IOException {
         String nextToken = p.getNextToken().toLowerCase();
-        while (!nextToken.equals("FROM")) {
-            if (!nextToken.equals(",")) selectedColumns.add(nextToken);
-            nextToken = p.getNextToken();
+        while (!nextToken.equals("from")) {
+            if (!nextToken.equals(",")) selectedColumns.add(nextToken.toLowerCase());
+            nextToken = p.getNextToken().toLowerCase();
         }
         tableName = p.getNextToken().toLowerCase();
         if (p.getIndex() < p.getTokenLen() - 1) {
@@ -32,6 +32,9 @@ public class Select implements DBCmnd {
                     whereCondition += " " + p.getNextToken();
                 }
             }
+        }
+        else if(!nextToken.equals(";")){
+            throw new SyntaxException(" Expected semi colon at the end!");
         }
     }
 
