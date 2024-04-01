@@ -103,17 +103,23 @@ public class Metadata {
         }
         columnsRead.remove("id");
         this.table = new Table(tbName, this.currentDbPath, columnsRead);
-        while(!tableLines.isEmpty()){
+        while(tableLines != null && !tableLines.isEmpty()){
             ArrayList<String> readEntry = readColumns(tableLines);
-            readEntry.remove(0);
-            if (!tableLines.isEmpty()) {
-                tableLines.remove(0);
+            if(readEntry != null){
+                if (!readEntry.isEmpty()) {
+                    readEntry.remove(0);
+                }
+                if (!tableLines.isEmpty()) {
+                    tableLines.remove(0);
+                }
+                if(readEntry != null){
+                    this.table.addEntry(readEntry);
+                }
             }
-            this.table.addEntry(readEntry);
         }
     }
 
-    private ArrayList<String> readColumns(ArrayList<String> readLines) throws SyntaxException {
+    private ArrayList<String> readColumns(ArrayList<String> readLines) {
         if(!readLines.isEmpty()) {
             String[] columnsToRead = readLines.get(0).split("\\t");
             return new ArrayList<>((Arrays.asList(columnsToRead)));

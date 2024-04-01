@@ -16,7 +16,6 @@ public class Insert implements DBCmnd {
     }
 
     public void parse(Parser p) throws SyntaxException {
-        //TODO check that expected token len >= ?
         String expectedFirstTkn = "INTO";
         String firstTkn = p.getNextToken();
         if (!expectedFirstTkn.equals(firstTkn)) {

@@ -107,7 +107,6 @@ public class Parser {
         return true;
     }
 
-    //TODO Redundant?
     public boolean isSpecialCharacter(String token) {
         String[] specialCharacters = {"(",")",",",";"};
         for (String specialChar : specialCharacters) {
@@ -118,13 +117,13 @@ public class Parser {
         return false;
     }
 
-    //TODO Unclear
     public boolean checkTokensLen(int expectedLen){
         if(tokens.size() != expectedLen){
             return true;
         }
         return false;
     }
+
     public void firstCheck() throws SyntaxException {
         index = 0;
         ArrayList<String> tokenChk = this.tokens;
@@ -158,7 +157,6 @@ public class Parser {
         return (isUpperCase(token) || isLowerCase(token));
     }
 
-    // TODO why isn't underscore allowed
     public boolean isPlainText(String token){
         if (isEmpty(token)){
             return false;
@@ -176,7 +174,6 @@ public class Parser {
         return token.matches("[!#$%&()*+,\\-./:;<=>?@\\[\\]\\^_`{|}~]");
     }
 
-    //TODO Redundant?
     public boolean stringContainsSymbol(String token) {
         Pattern pattern = Pattern.compile("[!#$%&()*+,\\-./:;<=>?@\\[\\]\\^_`{|}~]");
         Matcher matcher = pattern.matcher(token);
@@ -244,7 +241,6 @@ public class Parser {
         return true;
     }
 
-    //TODO Method: Array<list>String as parameter as well as String
     private boolean isCondition(ArrayList<String> expression) {
         for (int i = 0; i < expression.size(); i++) {
             String token = expression.get(i);

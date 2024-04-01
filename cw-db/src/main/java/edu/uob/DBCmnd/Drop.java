@@ -67,8 +67,6 @@ public class Drop implements DBCmnd {
         if (isDb){
             if(metadata.currentDbPath == null) throw new SyntaxException(" 'USE' command not executed.");
             if (!metadata.isDirAtEndOfPath(name)) throw new SyntaxException(" " + name + " database does not match path given by USE: " + metadata.currentDbPath);
-            //TODO consider surrounding in try catch
-            //TODO simplify by just doing f.delDir
             metadata.dropDatabase(metadata.currentDbPath);
             return "[OK] " + name + " database successfully dropped";
         }
@@ -78,8 +76,6 @@ public class Drop implements DBCmnd {
         File f = new File(String.valueOf(withTbFile));
         if (!f.exists()) throw new SyntaxException(" " + name + " file does not match path given by USE: " + withTbFile);
         if (!f.delete()) throw new SyntaxException(" " + name + " Error when deleting");
-        //if (!metadata.isTbAtEndOfPath(name + metadata.EXTENSION)) throw new SyntaxException(" " + name + " file does not match path given by USE: " + withTbFile);
-        //if (!metadata.dropTable(withTbFile)) throw new SyntaxException(" " + name + " table could not be drooped");
         return "[OK] " + name + " table successfully dropped";
     }
 }

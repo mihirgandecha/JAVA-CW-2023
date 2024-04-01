@@ -40,14 +40,12 @@ public class DBServer {
      * <p>This method handles all incoming DB commands and carries out the required actions.
      */
     public String handleCommand(String command) throws IOException {
-        // TODO implement your server logic here - return a string output -> client
         dbStore.setStoragePath(this.storageFolderPath);
         try {
             Parser p = new Parser(command);
             p.firstCheck();
             String firstToken = p.getCurrentToken();
             DBCmnd cmd;
-            //TODO Do I need to convert if lowercase?
             switch (firstToken.toUpperCase()) {
                 case "USE" -> cmd = (DBCmnd) new Use(dbStore, this.storageFolderPath);
                 case "CREATE" -> cmd = (DBCmnd) new Create(dbStore);

@@ -1,6 +1,5 @@
 package edu.uob.DBCmnd;
 
-import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -18,7 +17,7 @@ public class Create implements DBCmnd {
 
     public Create(Metadata dbStore) {
         this.dbStore = dbStore;
-        columns = new ArrayList<String>();
+        columns = new ArrayList<>();
     }
 
     @Override
@@ -133,8 +132,6 @@ public class Create implements DBCmnd {
     }
 
     private String createTb(Parser p, Metadata dbStore) throws SyntaxException {
-        //TODO ! Reforactor just instantiating Table after path confirmed.
-        //TODO Check if file already present in directory given tbName using file.isExist()
         columns.replaceAll(String::toLowerCase);
         Table table = new Table(tbName, dbStore.currentDbPath, columns);
         if (!table.isTableConfigured()){
@@ -155,7 +152,6 @@ public class Create implements DBCmnd {
     public void writeTbToFile(Metadata dbStore) throws IOException {
         String dirPath = String.valueOf(dbStore.currentDbPath) + File.separator;
         String fileName = tbName + dbStore.EXTENSION;
-        //TODO check for if Windows works:
         BufferedWriter writer = new BufferedWriter(new FileWriter(dirPath + fileName));
         String column = String.join("\t", columns);
         try {
