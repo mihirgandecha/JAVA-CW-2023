@@ -48,7 +48,6 @@ class DBCreateTest {
                 "Server took too long to respond (probably stuck in an infinite loop)");
     }
 
-    //Just 'CREATE' without ';' catches in CREATE - edge case found!
     @Test
     public void testParsingJustCreate() {
         String testEmptyCmd = sendCommandToServer("create");
@@ -56,7 +55,6 @@ class DBCreateTest {
         assertEquals(expected, testEmptyCmd);
     }
 
-    //Test for "CREATE DATABASE" for no ';'
     @Test
     public void testParsingJustCreateDatabase() {
         String testEmptyCmd = sendCommandToServer("CREATE DATABASE");
@@ -64,15 +62,13 @@ class DBCreateTest {
         assertEquals(expected, testEmptyCmd);
     }
 
-    //Test for "CREATE DATABASE" for no dbName
     @Test
-    public void testParsingNoDBName() {
+    public void testParsingCreateDbNoDBName() {
         String testEmptyCmd = sendCommandToServer("CREATE DATABASE;");
         String expected = "[ERROR]" + " Token length invalid.";
         assertEquals(expected, testEmptyCmd);
     }
 
-    //Test for "CREATE DATABASE" for invalid dbName
     @Test
     public void testParsingInvalidDBName() {
         String testEmptyCmd = sendCommandToServer("CREATE DATABASE #;");
@@ -80,7 +76,6 @@ class DBCreateTest {
         assertEquals(expected, testEmptyCmd);
     }
 
-    //Test for "CREATE DATABASE" for more than 4 tokens
     @Test
     public void testParsingInvalidTokenLen() {
         String testEmptyCmd = sendCommandToServer("CREATE DATABASE # 2 4;");
@@ -88,15 +83,30 @@ class DBCreateTest {
         assertEquals(expected, testEmptyCmd);
     }
 
-
-    //CREATE TABLE PARSING TESTS:
     @Test
-    public void testCTbValid() {
-        String testEmptyCmd = sendCommandToServer("CREATE TABLE newTb;");
-        assertTrue(testEmptyCmd.contains("[ERROR]"));
+    public void testNormalCreateDbIsValid(){
+        String randomName = generateRandomName();
+        String response = sendCommandToServer("CREATE DATABASE " +  randomName + ";");
+        assertTrue(response.contains("[OK]"));
     }
 
-    // Test for "CREATE TABLE" without table name
+    @Test
+    public void testNormalCreateDbAndUseIsValidWithCaseIns(){
+        String randomName = "mYSqlDaTabAse";
+        String response = sendCommandToServer("cReAtE dAtabasE " +  randomName + ";");
+        assertTrue(response.contains("[OK]"));
+        String testUse = sendCommandToServer("uSe " + "mySQLDATABASE" + ";");
+        assertTrue(response.contains("[OK]"));
+    }
+
+    @Test
+    public void testCreateTableIsValid() {
+        sendCommandToServer("create database NeWdB;");
+        sendCommandToServer("use newdb;");
+        String testEmptyCmd = sendCommandToServer("CREATE TABLE newTb;");
+        assertTrue(testEmptyCmd.contains("[OK]"));
+    }
+
     @Test
     public void testParsingCTblLowercase() {
         String testCmd = sendCommandToServer("CREATE table;");
