@@ -153,16 +153,19 @@ class DBCreateTest {
         assertEquals(expected, response);
     }
 
-
     //Create Table Testing:
     //TODO clean up test names for rest:
+
     @Test
     public void testCreateTableIsValid() {
         String randomName = generateRandomName();
         sendCommandToServer("create database " + randomName + ";");
         sendCommandToServer("use " + randomName + ";");
-        String testEmptyCmd = sendCommandToServer("CREATE TABLE newTb;");
-        assertTrue(testEmptyCmd.contains("[OK]"));
+        String randomTableName = generateRandomName();
+        randomTableName = randomiseCasing(randomTableName);
+        String testTableCmd = sendCommandToServer("CREATE TABLE " + randomTableName + ";");
+        String expected = "[OK] " + randomTableName.toLowerCase() + " Table created.";
+        assertEquals(expected, testTableCmd);
     }
 
     @Test
