@@ -169,16 +169,23 @@ class DBCreateTest {
     }
 
     @Test
-    public void testParsingCTblLowercase() {
+    public void testNoTableName() {
         String testCmd = sendCommandToServer("CREATE table;");
         String expected = "[ERROR]" + " Token length invalid.";
         assertEquals(expected, testCmd);
     }
 
     @Test
-    public void testParsingCTblInvalidTknLen() {
-        String testCmd = sendCommandToServer("CREATE TABLE;");
-        String expected = "[ERROR]" + " Token length invalid.";
+    public void testCreateTableInvalidTbNameIsSemiColon() {
+        String testCmd = sendCommandToServer("CREATE TABLE;;");
+        String expected = "[ERROR]" + " Invalid Table name!";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testCreateTableInvalidTableSpelling() {
+        String testCmd = sendCommandToServer("creaTe TALE;");
+        String expected = "[ERROR]" + " Parsing [CREATE]: Token 'DATABASE'/'TABLE' not found!";
         assertEquals(expected, testCmd);
     }
 
