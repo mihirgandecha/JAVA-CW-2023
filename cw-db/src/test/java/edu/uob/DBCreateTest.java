@@ -90,12 +90,11 @@ class DBCreateTest {
 
 
     //CREATE TABLE PARSING TESTS:
-//    @Test
-//    public void testCTbValid() throws IOException {
-//        String testEmptyCmd = sendCommandToServer("CREATE TABLE newTb;");
-//        String expected = "[ERROR]" + "  No Database selected. USE command not implemented.";
-//        assertEquals(expected, testEmptyCmd);
-//    }
+    @Test
+    public void testCTbValid() {
+        String testEmptyCmd = sendCommandToServer("CREATE TABLE newTb;");
+        assertTrue(testEmptyCmd.contains("[ERROR]"));
+    }
 
     // Test for "CREATE TABLE" without table name
     @Test
