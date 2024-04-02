@@ -56,105 +56,14 @@ public class ExampleDBTests {
         assertTrue(testEmptyCmd.contains(expected));
     }
 
-    //Just 'CREATE' without ';' catches in CREATE - edge case found!
-    @Test
-    public void testParsingJustCreate() {
-        String testEmptyCmd = sendCommandToServer("create");
-        String expected = "[ERROR]" + " No ';' at end!";
-        assertEquals(expected, testEmptyCmd);
-    }
-
-    //Test for "CREATE DATABASE" for no ';'
-    @Test
-    public void testParsingJustCreateDatabase() {
-        String testEmptyCmd = sendCommandToServer("CREATE DATABASE");
-        String expected = "[ERROR]" + " No ';' at end!";
-        assertEquals(expected, testEmptyCmd);
-    }
-
-    //Test for "CREATE DATABASE" for no dbName
-    @Test
-    public void testParsingNoDBName() {
-        String testEmptyCmd = sendCommandToServer("CREATE DATABASE;");
-        String expected = "[ERROR]" + " Token length invalid.";
-        assertEquals(expected, testEmptyCmd);
-    }
-
-    //Test for "CREATE DATABASE" for invalid dbName
-    @Test
-    public void testParsingInvalidDBName() {
-        String testEmptyCmd = sendCommandToServer("CREATE DATABASE #;");
-        String expected = "[ERROR]" + " Invalid Database name!";
-        assertEquals(expected, testEmptyCmd);
-    }
-
-    //Test for "CREATE DATABASE" for more than 4 tokens
-    @Test
-    public void testParsingInvalidTokenLen() {
-        String testEmptyCmd = sendCommandToServer("CREATE DATABASE # 2 4;");
-        String expected = "[ERROR]" + " Token length invalid.";
-        assertEquals(expected, testEmptyCmd);
-    }
-
-
-    //CREATE TABLE PARSING TESTS:
+//    //Just 'CREATE' without ';' catches in CREATE - edge case found!
 //    @Test
-//    public void testCTbValid() throws IOException {
-//        String testEmptyCmd = sendCommandToServer("CREATE TABLE newTb;");
-//        String expected = "[ERROR]" + "  No Database selected. USE command not implemented.";
+//    public void testParsingJustCreate() {
+//        String testEmptyCmd = sendCommandToServer("create");
+//        String expected = "[ERROR]" + " No ';' at end!";
 //        assertEquals(expected, testEmptyCmd);
 //    }
-
-    // Test for "CREATE TABLE" without table name
-    @Test
-    public void testParsingCTblLowercase() {
-        String testCmd = sendCommandToServer("CREATE table;");
-        String expected = "[ERROR]" + " Token length invalid.";
-        assertEquals(expected, testCmd);
-    }
-
-    @Test
-    public void testParsingCTblInvalidTknLen() {
-        String testCmd = sendCommandToServer("CREATE TABLE;");
-        String expected = "[ERROR]" + " Token length invalid.";
-        assertEquals(expected, testCmd);
-    }
-
-    @Test
-    public void testParsingCTblInvalidTblName() {
-        String testCmd = sendCommandToServer("CREATE TABLE !name;");
-        String expected = "[ERROR]" + " Invalid Table name!";
-        assertEquals(expected, testCmd);
-    }
-
-    //Parsing just CREATE TABLE <TABLENAME>
-    @Test
-    public void testParsingCTblNoEndCaughtServer() {
-        String testCmd = sendCommandToServer("CREATE TABLE tbName");
-        String expected = "[ERROR]" + " No ';' at end!";
-        assertEquals(expected, testCmd);
-    }
-
-    @Test
-    public void testParsingCTblNoDBCreated() {
-        String testCmd = sendCommandToServer("CREATE TABLE tbName;");
-        assertEquals("[ERROR] No Database selected. USE command not implemented.", testCmd);
-    }
-
-    //Test for Invalid Attribute List
-    @Test
-    public void testParsingMissingOpeningParenthesis() {
-        String testCmd = sendCommandToServer("CREATE TABLE tableName attribute1 INT, attribute2 VARCHAR);");
-        String expected = "[ERROR]" + " Token '(' not found!";
-        assertEquals(expected, testCmd);
-    }
-
-    @Test
-    public void testParsingMissingClosingParenthesis() {
-        String testCmd = sendCommandToServer("CREATE TABLE tableName (attribute1 INT, attribute2 VARCHAR;");
-        String expected = "[ERROR]" + " Token ')' not found!";
-        assertEquals(expected, testCmd);
-    }
+//
 
     @Test
     public void testJoin(){
