@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,6 +47,20 @@ class DBCreateTest {
         // Try to send a command to the server - this call will timeout if it takes too long (in case the server enters an infinite loop)
         return assertTimeoutPreemptively(Duration.ofMillis(1000000), () -> { return server.handleCommand(command);},
                 "Server took too long to respond (probably stuck in an infinite loop)");
+    }
+
+    // Randomizes the case of characters in the input string
+    public static String randomiseCasing(String inFromGenerateRandomName) {
+        StringBuilder randomiseCaseForName = new StringBuilder();
+        Random random = new Random();
+        for (char c : inFromGenerateRandomName.toCharArray()) {
+            if (random.nextBoolean()) {
+                randomiseCaseForName.append(Character.toUpperCase(c));
+            } else {
+                randomiseCaseForName.append(Character.toLowerCase(c));
+            }
+        }
+        return randomiseCaseForName.toString();
     }
 
     @Test
@@ -92,24 +107,25 @@ class DBCreateTest {
 
     @Test
     public void testNormalCreateDbAndUseIsValidWithCaseIns(){
-        String randomName = "miHirSqlDaTabAse";
-        String response = sendCommandToServer("cReAtE dAtabasE " +  randomName + ";");
-        String expected = "[OK] mihirsqldatabase Database Created";
-        System.out.println(response);
+        String randomName = generateRandomName();
+        String randomNameWithRandomCasing = randomiseCasing(randomName);
+        String response = sendCommandToServer("cReAtE dAtabasE " +  randomNameWithRandomCasing + ";");
+        String expected = "[OK] " + randomNameWithRandomCasing.toLowerCase() + " Database Created";
         assertEquals(expected, response);
-        String testUse = sendCommandToServer("uSe " + "mIhIRSQLDATABASE" + ";");
-        System.out.println(testUse);
-        assertTrue(testUse.contains("[OK]"));
+        String testUse = sendCommandToServer("uSe " + randomNameWithRandomCasing + ";");
+        String expectedUse = "[OK] " + randomNameWithRandomCasing.toLowerCase() + " selected. USE Executed Successfully";
+        assertEquals(expectedUse, testUse);
     }
 
     @Test
     public void testSameNowWithWrongTableSpell(){
-        String randomName = "mYSqlDaTabAse";
+        String randomName = generateRandomName();
         String response = sendCommandToServer("cReAtE dAtabasE " +  randomName + ";");
         assertTrue(response.contains("[OK]"));
-        String testUse = sendCommandToServer("uSe " + "mSQLDATABASE" + ";");
-        System.out.println(testUse);
-        assertTrue(testUse.contains("[ERROR]"));
+        String wrongName = generateRandomName();
+        String testUse = sendCommandToServer("uSe " + wrongName + ";");
+        String expectedUseResponse = "[ERROR] [USE]:" + wrongName.toLowerCase() + " is not an existing database.";
+        assertEquals(expectedUseResponse, testUse);
     }
 
     @Test
