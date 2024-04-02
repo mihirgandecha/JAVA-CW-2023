@@ -96,7 +96,17 @@ class DBCreateTest {
         String response = sendCommandToServer("cReAtE dAtabasE " +  randomName + ";");
         assertTrue(response.contains("[OK]"));
         String testUse = sendCommandToServer("uSe " + "mySQLDATABASE" + ";");
+        assertTrue(testUse.contains("[OK]"));
+    }
+
+    @Test
+    public void testSameNowWithWrongSpell(){
+        String randomName = "mYSqlDaTabAse";
+        String response = sendCommandToServer("cReAtE dAtabasE " +  randomName + ";");
         assertTrue(response.contains("[OK]"));
+        String testUse = sendCommandToServer("uSe " + "mSQLDATABASE" + ";");
+        System.out.println(testUse);
+        assertTrue(testUse.contains("[ERROR]"));
     }
 
     @Test
