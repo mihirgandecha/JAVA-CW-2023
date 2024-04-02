@@ -155,9 +155,6 @@ class DBCreateTest {
         assertEquals(expected, response);
     }
 
-    //Create Table Testing:
-    //TODO clean up test names for rest:
-
     @Test
     public void testCreateTableIsValid() {
         String randomName = generateRandomName();
@@ -245,11 +242,11 @@ class DBCreateTest {
         String colTwo = randomiseCasing(generateRandomName());
         String randomTableName = generateRandomName();
         String testCmd = sendCommandToServer("CREATE TABLE " + randomTableName + " ( " + colOne + "," + colTwo + ") "+ ";");
-        System.out.println(server.dbStore.table);
-        //Avoiding null exception error
         File f = new File((server.dbStore.currentDbPath + File.separator + randomTableName + server.dbStore.EXTENSION));
         assertTrue(f.exists());
-        assertTrue(server.dbStore.table != null);
+        assertNotNull(server.dbStore.table);
+        assertEquals(randomName, server.dbStore.dbName);
+        assertNotNull(server.dbStore.dbPath);
         ArrayList<String> colNames = (server.dbStore.table.getColumns());
         String actualCol1 = colNames.get(1);
         assertEquals(colOne.toLowerCase(), actualCol1);
