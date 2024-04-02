@@ -145,9 +145,22 @@ class DBCreateTest {
     }
 
     @Test
+    public void testSameNowWithMultipleSemiColons(){
+        String randomName = generateRandomName();
+        String response = sendCommandToServer("cReAtE dAtabasE; " +  "invalidD;b;"+ ";");
+        System.out.println(response);
+        String expected = "[ERROR] Token length invalid.";
+        assertEquals(expected, response);
+    }
+
+
+    //Create Table Testing:
+    //TODO clean up test names for rest:
+    @Test
     public void testCreateTableIsValid() {
-        sendCommandToServer("create database NeWdB;");
-        sendCommandToServer("use newdb;");
+        String randomName = generateRandomName();
+        sendCommandToServer("create database " + randomName + ";");
+        sendCommandToServer("use " + randomName + ";");
         String testEmptyCmd = sendCommandToServer("CREATE TABLE newTb;");
         assertTrue(testEmptyCmd.contains("[OK]"));
     }
@@ -173,7 +186,6 @@ class DBCreateTest {
         assertEquals(expected, testCmd);
     }
 
-    //Parsing just CREATE TABLE <TABLENAME>
     @Test
     public void testParsingCTblNoEndCaughtServer() {
         String testCmd = sendCommandToServer("CREATE TABLE tbName");
@@ -187,7 +199,6 @@ class DBCreateTest {
         assertEquals("[ERROR] No Database selected. USE command not implemented.", testCmd);
     }
 
-    //Test for Invalid Attribute List
     @Test
     public void testParsingMissingOpeningParenthesis() {
         String testCmd = sendCommandToServer("CREATE TABLE tableName attribute1 INT, attribute2 VARCHAR);");
