@@ -66,6 +66,13 @@ class DBCreateTest {
     }
 
     @Test
+    public void testEmptyCmd() {
+        String testEmptyCmd = sendCommandToServer("");
+        String expected = " [SERVER]: Command Query is empty.";
+        assertTrue(testEmptyCmd.contains(expected));
+    }
+
+    @Test
     public void testParsingJustCreate() {
         String testEmptyCmd = sendCommandToServer("create");
         String expected = "[ERROR]" + " No ';' at end!";
