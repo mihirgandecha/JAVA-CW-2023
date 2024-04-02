@@ -1,5 +1,6 @@
 package edu.uob;
 
+import edu.uob.DBCmnd.SyntaxException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -198,7 +199,7 @@ class DBCreateTest {
     }
 
     @Test
-    public void testParsingCTblNoEndCaughtServer() {
+    public void testParsingCTblNoEndSemiColon() {
         String testCmd = sendCommandToServer("CREATE TABLE tbName");
         String expected = "[ERROR]" + " No ';' at end!";
         assertEquals(expected, testCmd);
@@ -244,14 +245,16 @@ class DBCreateTest {
         String colTwo = randomiseCasing(generateRandomName());
         String randomTableName = generateRandomName();
         String testCmd = sendCommandToServer("CREATE TABLE " + randomTableName + " ( " + colOne + "," + colTwo + ") "+ ";");
+        System.out.println(server.dbStore.table);
         //Avoiding null exception error
-        if(server.dbStore.table != null){
-            ArrayList<String> colNames = (server.dbStore.table.getColumns());
-            String actualCol1 = colNames.get(1);
-            assertEquals(colOne.toLowerCase(), actualCol1);
-            String actualCol2 = colNames.get(2);
-            assertEquals(colTwo.toLowerCase(), actualCol2);
-        }
+        File f = new File((server.dbStore.currentDbPath + File.separator + randomTableName + server.dbStore.EXTENSION));
+        assertTrue(f.exists());
+        assertTrue(server.dbStore.table != null);
+        ArrayList<String> colNames = (server.dbStore.table.getColumns());
+        String actualCol1 = colNames.get(1);
+        assertEquals(colOne.toLowerCase(), actualCol1);
+        String actualCol2 = colNames.get(2);
+        assertEquals(colTwo.toLowerCase(), actualCol2);
         assertTrue(testCmd.contains("[OK]"));
     }
 }
