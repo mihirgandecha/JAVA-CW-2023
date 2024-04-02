@@ -92,10 +92,13 @@ class DBCreateTest {
 
     @Test
     public void testNormalCreateDbAndUseIsValidWithCaseIns(){
-        String randomName = "mYSqlDaTabAse";
+        String randomName = "miHirSqlDaTabAse";
         String response = sendCommandToServer("cReAtE dAtabasE " +  randomName + ";");
-        assertTrue(response.contains("[OK]"));
-        String testUse = sendCommandToServer("uSe " + "mySQLDATABASE" + ";");
+        String expected = "[OK] mihirsqldatabase Database Created";
+        System.out.println(response);
+        assertEquals(expected, response);
+        String testUse = sendCommandToServer("uSe " + "mIhIRSQLDATABASE" + ";");
+        System.out.println(testUse);
         assertTrue(testUse.contains("[OK]"));
     }
 
@@ -111,7 +114,7 @@ class DBCreateTest {
 
     @Test
     public void testSameNowWithWrongCreateSpelling(){
-        String randomName = "mYSqlDaTabAse";
+        String randomName = "DebIaNSqlDaTabAse";
         String response = sendCommandToServer("ceAtE dAtabasE " +  randomName + ";");
         String expected = "[ERROR] [SERVER]: Empty/Invalid Command";
         assertEquals(expected, response);
@@ -119,7 +122,7 @@ class DBCreateTest {
 
     @Test
     public void testSameNowWithWrongDatabaseSpelling(){
-        String randomName = "mYSqlDaTabAse";
+        String randomName = generateRandomName();
         String response = sendCommandToServer("cReAtE dAtaasE " +  randomName + ";");
         String expected = "[ERROR] Parsing [CREATE]: Token 'DATABASE'/'TABLE' not found!";
         assertEquals(expected, response);

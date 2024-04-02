@@ -1,4 +1,4 @@
-package edu.uob.DBParseTest;
+package edu.uob;
 
 import edu.uob.DBCmnd.Tokenizer;
 import org.junit.jupiter.api.BeforeEach;
