@@ -225,6 +225,17 @@ class DBCreateTest {
     }
 
     @Test
+    public void testInterpretingCreateDbTbIsSameIsValid(){
+        String randomName = generateRandomName();
+        String createDb = " CREATE Database " + randomName + ";";
+        sendCommandToServer(createDb);
+        String useDb = "USE " + randomName + ";";
+        sendCommandToServer(useDb);
+        String testQueryCreateTb = sendCommandToServer("CREATE TABLE " + randomName + ";");
+        assertTrue(testQueryCreateTb.contains("[OK]"));
+    }
+
+    @Test
     public void testColumnNamesAreCaseInsensitive() {
         String randomName = generateRandomName();
         sendCommandToServer("create database " + randomName + ";");
