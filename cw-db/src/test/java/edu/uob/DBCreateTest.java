@@ -100,13 +100,29 @@ class DBCreateTest {
     }
 
     @Test
-    public void testSameNowWithWrongSpell(){
+    public void testSameNowWithWrongTableSpell(){
         String randomName = "mYSqlDaTabAse";
         String response = sendCommandToServer("cReAtE dAtabasE " +  randomName + ";");
         assertTrue(response.contains("[OK]"));
         String testUse = sendCommandToServer("uSe " + "mSQLDATABASE" + ";");
         System.out.println(testUse);
         assertTrue(testUse.contains("[ERROR]"));
+    }
+
+    @Test
+    public void testSameNowWithWrongCreateSpelling(){
+        String randomName = "mYSqlDaTabAse";
+        String response = sendCommandToServer("ceAtE dAtabasE " +  randomName + ";");
+        String expected = "[ERROR] [SERVER]: Empty/Invalid Command";
+        assertEquals(expected, response);
+    }
+
+    @Test
+    public void testSameNowWithWrongDatabaseSpelling(){
+        String randomName = "mYSqlDaTabAse";
+        String response = sendCommandToServer("cReAtE dAtaasE " +  randomName + ";");
+        String expected = "[ERROR] Parsing [CREATE]: Token 'DATABASE'/'TABLE' not found!";
+        assertEquals(expected, response);
     }
 
     @Test
