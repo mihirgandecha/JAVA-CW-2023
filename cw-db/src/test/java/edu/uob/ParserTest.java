@@ -1,4 +1,4 @@
-package edu.uob.DBParseTest;
+package edu.uob;
 
 import edu.uob.DBCmnd.Parser;
 import edu.uob.DBCmnd.SyntaxException;
