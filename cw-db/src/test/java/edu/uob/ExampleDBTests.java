@@ -42,13 +42,10 @@ public class ExampleDBTests {
 
     private String sendCommandToServer(String command) {
         // Try to send a command to the server - this call will timeout if it takes too long (in case the server enters an infinite loop)
-        return assertTimeoutPreemptively(Duration.ofMillis(1000000), () -> { return server.handleCommand(command);},
+        return assertTimeoutPreemptively(Duration.ofMillis(1000), () -> { return server.handleCommand(command);},
         "Server took too long to respond (probably stuck in an infinite loop)");
     }
 
-
-
-    //Empty Command stops at SERVER:
     @Test
     public void testEmptyCmd() {
         String testEmptyCmd = sendCommandToServer("");
@@ -56,17 +53,8 @@ public class ExampleDBTests {
         assertTrue(testEmptyCmd.contains(expected));
     }
 
-//    //Just 'CREATE' without ';' catches in CREATE - edge case found!
-//    @Test
-//    public void testParsingJustCreate() {
-//        String testEmptyCmd = sendCommandToServer("create");
-//        String expected = "[ERROR]" + " No ';' at end!";
-//        assertEquals(expected, testEmptyCmd);
-//    }
-//
-
     @Test
-    public void testJoin(){
+    public void testGivenScript(){
         String createDbResult = sendCommandToServer("CREATE DATABASE markbook;");
         assertTrue(createDbResult.contains("[OK]"));
         String useDbResult = sendCommandToServer("USE markbook;");
@@ -98,117 +86,6 @@ public class ExampleDBTests {
         String joinResult = sendCommandToServer("JOIN coursework AND marks ON submission AND id;");
         assertTrue(joinResult.contains("[OK]"));
     }
-
-
-//    @Test
-//    public void testParsingCTblBasicValid() throws IOException {
-//        server.dbStore.deleteEmptyDir("newdb");
-//        sendCommandToServer("CREATE DATABASE newdb;");
-//        sendCommandToServer("USE newdb;");
-//        String testCmd = sendCommandToServer("CREATE TABLE tbName;");
-//        assertTrue(testCmd.contains("[OK]"));
-//    }
-
-    // Test for "CREATE TABLE" with invalid attribute syntax
-    @Test
-    public void testParsingInvalidAttributeSyntax() {
-        String testCmd = sendCommandToServer("CREATE TABLE tableName (attribute1 INT, attribute2);");
-        String expected = "[ERROR]" + " No comma found!";
-        assertEquals(expected, testCmd);
-    }
-
-
-    //Testing DROP DB
-//    @Test
-//    public void testDropDatabaseIsValid() {
-//        sendCommandToServer("CREATE DATABASE testDrop;");
-//        sendCommandToServer("USE testDrop;");
-//        String testCmd = sendCommandToServer("DROP DATABASE testDrop;");
-//        System.out.println(testCmd);
-//        assertTrue(testCmd.contains("[OK]"));
-//
-//    }
-
-    // Test for successful "CREATE TABLE" command with attribute list
-//    @Test
-//    public void testParsingValidCreateTable() {
-//        sendCommandToServer("CREATE DATABASE testDbTb");
-//        sendCommandToServer("USE testDbTb");
-//        String testCmd = sendCommandToServer("CREATE TABLE tableName (attribute1, attribute2, attribute3);");
-//        String expected = "[OK]" + "Table 'tableName' created successfully.";
-//        assertEquals(expected, testCmd);
-//    }
-//
-//
-//
-//    //CREATE TABLE IMPLEMENT TESTS:
-//    @Test
-//    public void testCTbUseNotImplemented() throws IOException {
-//        server.dbStore.deleteEmptyDir("newDb");
-//        sendCommandToServer("CREATE DATABASE newDb;");
-//        String testEmptyCmd = "CREATE TABLE newTb;";
-//        SyntaxException thrown = assertThrows(
-//                SyntaxException.class,
-//                () -> sendCommandToServer(testEmptyCmd),
-//                "[ERROR]"
-//        );
-//        String expected = "[ERROR]" + "  No Database selected. USE command not implemented.";
-//        String actual = thrown.getMessage();
-//        assertEquals(expected, thrown.getMessage());
-//        assertTrue(thrown.getMessage().contains(expected));
-//    }
-
-
-
-
-
-
-    //    @Test
-//    public void testInvalidDatabase() {
-//        String randomUseNameTest = generateRandomName();
-//        String command = "USE " + randomUseNameTest + ";";
-//        SyntaxException thrown = assertThrows(
-//                SyntaxException.class,
-//                () -> sendCommandToServer(command),
-//                "[ERROR]"
-//        );
-//        assertTrue(thrown.getMessage().contains("[ERROR]"));
-//        assertNotEquals(randomUseNameTest, server.dbStore.dbName);
-//    }
-
-//    @Test
-//    public void testInvalidCreate() throws IOException {
-////        server.dbStore.deleteEmptyDir("testDb");
-//        String database = "testDb";
-////        String validCr = sendCommandToServer("CREATE DATABASE " + database + ";");
-////        assertTrue(validCr.contains("[OK]"));
-//        //String invalidCr = "CREATE DATABASE " + database + ";";
-//        SyntaxException thrown = assertThrows(SyntaxException.class, () -> sendCommandToServer("CREATE DATABASE testDb;"));
-//        //System.out.println(thrown.getMessage());
-//        assertTrue(thrown.getMessage().contains("[ERROR]"));
-////        server.dbStore.deleteEmptyDir(database);
-////        assertNotEquals(database, server.dbStore.dbName);
-////        assertEquals(null, server.dbStore.dbName);
-////        assertEquals(null, server.dbStore.dbPath);
-//    }
-//
-////    @Test
-////    public void testCreateDbOk() {
-////        String randomName = generateRandomName();
-////        String response = sendCommandToServer("CREATE DATABASE " + randomName + ";");
-////        assertTrue(response.contains("[OK]"));
-////    }
-//
-////    @Disabled
-////    @Test
-////    public void testUseOk() {
-////        String randomName = "mihirTest";
-////        sendCommandToServer("CREATE DATABASE " + randomName + ";");
-////        String response = sendCommandToServer("USE " + randomName + ";");
-////        assertTrue(response.contains("[OK]"));
-////
-////    }
-////
 
     // A basic test that creates a database, creates a table, inserts some test data, then queries it.
     // It then checks the response to see that a couple of the entries in the table are returned as expected
