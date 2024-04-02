@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -223,4 +224,23 @@ class DBCreateTest {
         assertEquals(expected, testCmd);
     }
 
+    @Test
+    public void testColumnNamesAreCaseInsensitive() {
+        String randomName = generateRandomName();
+        sendCommandToServer("create database " + randomName + ";");
+        sendCommandToServer("use " + randomName + ";");
+        String colOne = randomiseCasing(generateRandomName());
+        String colTwo = randomiseCasing(generateRandomName());
+        String randomTableName = generateRandomName();
+        String testCmd = sendCommandToServer("CREATE TABLE " + randomTableName + " ( " + colOne + "," + colTwo + ") "+ ";");
+        //Avoiding null exception error
+        if(server.dbStore.table != null){
+            ArrayList<String> colNames = (server.dbStore.table.getColumns());
+            String actualCol1 = colNames.get(1);
+            assertEquals(colOne.toLowerCase(), actualCol1);
+            String actualCol2 = colNames.get(2);
+            assertEquals(colTwo.toLowerCase(), actualCol2);
+        }
+        assertTrue(testCmd.contains("[OK]"));
+    }
 }
