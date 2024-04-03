@@ -48,17 +48,8 @@ public class Insert implements DBCmnd {
                 nextToken = p.getNextToken();
             }
         }
-//        parseValueType(p);
-
     }
 
-//    public void parseValueType(Parser p) throws SyntaxException {
-//        for (String token : values) {
-//            if (!(p.isStringLiteral(token) || p.isBooleanLiteral(token) || p.isFloatLiteral(token) || p.isIntegerLiteral(token) || "NULL".equals(token))) {
-//                throw new SyntaxException(" Invalid row token: " + token);
-//            }
-//        }
-//    }
 
     public String execute(Parser p) throws SyntaxException, FileNotFoundException {
         if (dbStore.currentDbPath == null) {
