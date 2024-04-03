@@ -26,9 +26,9 @@ public class Select implements DBCmnd {
         if (p.getIndex() < p.getTokenLen() - 1) {
             nextToken = p.getNextToken();
             if (nextToken.equals("WHERE")) {
-                String whereCondition = p.getNextToken();
+                StringBuilder whereCondition = new StringBuilder(p.getNextToken());
                 while (p.getIndex() < p.getTokenLen() - 1) {
-                    whereCondition += " " + p.getNextToken();
+                    whereCondition.append(" ").append(p.getNextToken());
                 }
             }
         }
