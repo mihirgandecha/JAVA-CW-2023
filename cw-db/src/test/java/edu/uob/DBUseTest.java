@@ -69,15 +69,14 @@ class DBUseTest {
         assert(query2.contains("[OK]"));
     }
 
-//    @Test
-//    public void testUseCaseInsensitive(){
-//        String randomName = generateRandomName();
-//        String response = "CREATE DATABASE " + randomName + ";";
-//        dbServer.handleCommand(response);
-//        response = "UsE " + randomName.toUpperCase() + ";";
-//        response = dbServer.handleCommand(response);
-//        assert(response.contains("[OK]"));
-//    }
+    @Test
+    public void testUseCaseInsensitiveAndTokenisedWhiteSpace(){
+        String randomName = randomiseCasing(generateRandomName());
+        String query1 = sendCommandToServer("CREATE DATABASE " + randomName + ";");
+        assertTrue(query1.contains("[OK]"));
+        String query2 = sendCommandToServer("uSE       " + randomName + "        ;");
+        assert(query2.contains("[OK]"));
+    }
 //
 //    @Test
 //    public void testUseWithSpaces(){
