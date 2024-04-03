@@ -82,8 +82,6 @@ public class Select implements DBCmnd {
         if (dbStore.tbName == null){
             dbStore.tbName = tableName;
         }
-        if (dbStore.table == null){
-            dbStore.readTbFile(withTbFile);
-        }
+        dbStore.readTbFile(withTbFile);
     }
 }
