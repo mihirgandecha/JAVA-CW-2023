@@ -53,7 +53,7 @@ public class Select implements DBCmnd {
             if (!dbStore.table.columns.contains(column.toLowerCase()) && !"*".equalsIgnoreCase(column)) throw new SyntaxException(column + " is not an attribute in the table.");
             line.append(column).append("\t");
         }
-        output.add(line.toString().trim());
+        output.add(line.toString());
         for (Map<String, String> row : dbStore.table.table) {
             line.setLength(0);
             if ("*".equals(selectedColumns.get(0))) {
@@ -65,7 +65,7 @@ public class Select implements DBCmnd {
                     line.append(row.getOrDefault(column, "NULL")).append("\t");
                 }
             }
-            output.add(line.toString().trim());
+            output.add(line.toString());
         }
         return "[OK]\n" + String.join("\n", output);
     }
