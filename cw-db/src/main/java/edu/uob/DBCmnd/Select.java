@@ -10,7 +10,6 @@ public class Select implements DBCmnd {
     private Metadata dbStore;
     private String tableName;
     private ArrayList<String> selectedColumns = new ArrayList<>();
-    private String whereCondition = "";
 
     public Select(Metadata dbStore) {
         this.dbStore = dbStore;
@@ -27,7 +26,7 @@ public class Select implements DBCmnd {
         if (p.getIndex() < p.getTokenLen() - 1) {
             nextToken = p.getNextToken();
             if (nextToken.equals("WHERE")) {
-                whereCondition = p.getNextToken();
+                String whereCondition = p.getNextToken();
                 while (p.getIndex() < p.getTokenLen() - 1) {
                     whereCondition += " " + p.getNextToken();
                 }
