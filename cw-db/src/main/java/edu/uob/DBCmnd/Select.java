@@ -33,7 +33,7 @@ public class Select implements DBCmnd {
                 }
             }
         }
-        else if(!nextToken.equals(";")){
+        else {
             throw new SyntaxException(" Expected semi colon at the end!");
         }
     }
