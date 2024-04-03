@@ -51,7 +51,7 @@ public class Select implements DBCmnd {
             throw new SyntaxException(e.getMessage());
         }
         for (String column : selectedColumns) {
-            if (!dbStore.table.columns.contains(column.toLowerCase()) && !"*".equals(column.toLowerCase())) throw new SyntaxException(column + " is not an attribute in the table.");
+            if (!dbStore.table.columns.contains(column.toLowerCase()) && !"*".equalsIgnoreCase(column)) throw new SyntaxException(column + " is not an attribute in the table.");
             line.append(column).append("\t");
         }
         output.add(line.toString().trim());
