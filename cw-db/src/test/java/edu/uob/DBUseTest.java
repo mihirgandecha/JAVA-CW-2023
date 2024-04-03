@@ -62,7 +62,7 @@ class DBUseTest {
     }
 
     @Test
-    public void testUse(){
+    public void testUseIsValid(){
         String randomName = randomiseCasing(generateRandomName());
         String query1 = sendCommandToServer("CREATE DATABASE " + randomName + ";");
         String query2 = sendCommandToServer("USE " + randomName + ";");
