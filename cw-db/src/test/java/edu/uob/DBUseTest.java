@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.sql.SQLOutput;
 import java.time.Duration;
 import java.util.Random;
 
@@ -104,6 +105,8 @@ class DBUseTest {
         String query2 = sendCommandToServer("uSE       " + randomName + "        ;        ");
         assertTrue(query2.contains("[OK]"));
         String drop = sendCommandToServer("drop database " + randomName + ";");
-        System.out.println(drop);
+        String query3 = sendCommandToServer("uSE       " + randomName + "        ;        ");
+        String expected = "[ERROR] " + randomName.toLowerCase() + " is not an existing database.";
+        assertEquals(expected, query3);
     }
 }

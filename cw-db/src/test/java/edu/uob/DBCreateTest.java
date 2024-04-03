@@ -132,7 +132,7 @@ class DBCreateTest {
         assertTrue(response.contains("[OK]"));
         String wrongName = generateRandomName();
         String testUse = sendCommandToServer("uSe " + wrongName + ";");
-        String expectedUseResponse = "[ERROR] [USE]:" + wrongName.toLowerCase() + " is not an existing database.";
+        String expectedUseResponse = "[ERROR] " + wrongName.toLowerCase() + " is not an existing database.";
         assertEquals(expectedUseResponse, testUse);
     }
 

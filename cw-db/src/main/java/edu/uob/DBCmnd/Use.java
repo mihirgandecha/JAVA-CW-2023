@@ -40,7 +40,7 @@ public class Use implements DBCmnd {
             return "[OK] " + dbName + " selected. " + "USE Executed Successfully";
         }
         else {
-            throw new SyntaxException(" [USE]:" + dbName + " is not an existing database.");
+            throw new SyntaxException(" " + dbName + " is not an existing database.");
         }
     }
 }
