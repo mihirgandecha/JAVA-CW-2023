@@ -63,4 +63,16 @@ public class DBDropTest {
         }
         return randomiseCaseForName.toString();
     }
+
+    @Test
+    public void testValidDropQueryWithInvalidUseAfterDropped(){
+        String randomName = randomiseCasing(generateRandomName());
+        sendCommandToServer("CREATE DATABASE " + randomName + ";");
+        String query = sendCommandToServer("DROP DATABASE " + randomName + ";");
+        assertTrue(query.contains("[OK]"));
+        String query2 = sendCommandToServer("USE " + randomName + ";");
+        assertTrue(query2.contains("[ERROR]"));
+    }
+
+
 }
