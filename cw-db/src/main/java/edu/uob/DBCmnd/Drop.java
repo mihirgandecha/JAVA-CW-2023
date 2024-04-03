@@ -17,7 +17,7 @@ public class Drop implements DBCmnd {
     @Override
     public void parse(Parser p) throws IOException {
         String nextToken = p.getNextToken();
-        switch (nextToken) {
+        switch (nextToken.toUpperCase()) {
             case "DATABASE":
                 parseDb(p);
                 isDb = true;
@@ -27,7 +27,7 @@ public class Drop implements DBCmnd {
                 isTb = true;
                 break;
             default:
-                throw new SyntaxException(" Parsing [CREATE]: Token 'DATABASE'/'TABLE' not found!");
+                throw new SyntaxException(" Parsing [DROP]: Token 'DATABASE'/'TABLE' not found!");
         }
     }
 

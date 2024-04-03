@@ -18,14 +18,9 @@ public class Use implements DBCmnd {
     @Override
     public void parse(Parser p) throws SyntaxException, IOException {
         p.checkTokensLen(3);
-        String firstTkn = p.getCurrentToken().toUpperCase();
-        String expectedFirstTkn = "USE";
-        if (!expectedFirstTkn.equals(firstTkn)){
-            throw new SyntaxException("");
-        }
         String dbNameTkn = p.getNextToken();
         if (!p.isTbAtrDbName(dbNameTkn.toLowerCase())) {
-            throw new SyntaxException("");
+            throw new SyntaxException(" " + dbNameTkn + " Database syntax is not a valid name!");
         }
         dbName = dbNameTkn.toLowerCase();
     }

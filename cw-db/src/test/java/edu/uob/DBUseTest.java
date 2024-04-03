@@ -66,7 +66,7 @@ class DBUseTest {
         String randomName = randomiseCasing(generateRandomName());
         String query1 = sendCommandToServer("CREATE DATABASE " + randomName + ";");
         String query2 = sendCommandToServer("USE " + randomName + ";");
-        assert(query2.contains("[OK]"));
+        assertTrue(query2.contains("[OK]"));
     }
 
     @Test
@@ -75,7 +75,7 @@ class DBUseTest {
         String query1 = sendCommandToServer("CREATE DATABASE " + randomName + ";");
         assertTrue(query1.contains("[OK]"));
         String query2 = sendCommandToServer("uSE       " + randomName + "        ;        ");
-        assert(query2.contains("[OK]"));
+        assertTrue(query2.contains("[OK]"));
     }
 
     @Test
@@ -83,6 +83,27 @@ class DBUseTest {
         String randomName = randomiseCasing(generateRandomName());
         String query2 = sendCommandToServer("use " + randomName + ";");
         String response = sendCommandToServer(query2);
-        assert(response.contains("[ERROR]"));
+        assertTrue(response.contains("[ERROR]"));
+    }
+    @Test
+    public void testInvalidDatabaseName(){
+        String randomName = randomiseCasing(generateRandomName());
+        //Modify string such that invalid:
+        String response = sendCommandToServer("cReAtE dAtabasE " +  randomName + ";");
+        assertTrue(response.contains("[OK]"));
+        randomName = "#" + randomName.substring(1);
+        String testUse = sendCommandToServer("uSe " + randomName + ";");
+        String expectedUseResponse = "[ERROR] " + randomName + " Database syntax is not a valid name!";
+        assertEquals(expectedUseResponse, testUse);
+    }
+    @Test
+    public void testWBoxDirRemoved(){
+        String randomName = randomiseCasing(generateRandomName());
+        String query1 = sendCommandToServer("CREATE DATABASE " + randomName + ";");
+        assertTrue(query1.contains("[OK]"));
+        String query2 = sendCommandToServer("uSE       " + randomName + "        ;        ");
+        assertTrue(query2.contains("[OK]"));
+        String drop = sendCommandToServer("drop database " + randomName + ";");
+        System.out.println(drop);
     }
 }
