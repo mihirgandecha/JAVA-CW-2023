@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DBCreateTest {
     public DBServer server;
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     // Create a new server _before_ every @Test
     @BeforeEach
     public void setup() {
