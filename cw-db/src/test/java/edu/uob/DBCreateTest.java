@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DBCreateTest {
     public DBServer server;
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     // Create a new server _before_ every @Test
     @BeforeEach
     public void setup() {
@@ -51,7 +50,7 @@ class DBCreateTest {
                 "Server took too long to respond (probably stuck in an infinite loop)");
     }
 
-    // Randomizes the case of characters in the input string
+    // Randomises the case of characters in the input string
     public static String randomiseCasing(String inFromGenerateRandomName) {
         StringBuilder randomiseCaseForName = new StringBuilder();
         Random random = new Random();
@@ -133,7 +132,7 @@ class DBCreateTest {
         assertTrue(response.contains("[OK]"));
         String wrongName = generateRandomName();
         String testUse = sendCommandToServer("uSe " + wrongName + ";");
-        String expectedUseResponse = "[ERROR] [USE]:" + wrongName.toLowerCase() + " is not an existing database.";
+        String expectedUseResponse = "[ERROR] " + wrongName.toLowerCase() + " is not an existing database.";
         assertEquals(expectedUseResponse, testUse);
     }
 
