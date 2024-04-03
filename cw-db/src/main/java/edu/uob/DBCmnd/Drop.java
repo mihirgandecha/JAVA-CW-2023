@@ -40,7 +40,7 @@ public class Drop implements DBCmnd {
         if (!p.isTbAtrDbName(databaseName)) {
             throw new SyntaxException(" Invalid Database name!");
         }
-        name = databaseName;
+        name = databaseName.toLowerCase();
     }
 
     private void parseTb(Parser p) throws IOException {
@@ -55,14 +55,14 @@ public class Drop implements DBCmnd {
         String nextTkn = p.getNextToken();
         if (p.ensureCmdEnd(nextTkn)){
             isTb = true;
-            name = tableName;
+            name = tableName.toLowerCase();
         }
     }
 
     @Override
     public String execute(Parser p) throws IOException {
         if ((isTb && isDb) || (!isTb && !isDb)){
-            throw new SyntaxException(" Error when parsing DROP");
+            throw new SyntaxException(" DROP should be towards table or database, not both or neither.");
         }
         if (isDb){
             if(metadata.currentDbPath == null) throw new SyntaxException(" 'USE' command not executed.");
