@@ -217,7 +217,7 @@ public class Parser {
     }
 
     public boolean isValue(String token) {
-        return isStringLiteral(token) || isBooleanLiteral(token) || isFloatLiteral(token) || isIntegerLiteral(token) || "NULL".equals(token);
+        return isStringLiteral(token) || isBooleanLiteral(token) || isFloatLiteral(token) || isIntegerLiteral(token) || "NULL".equalsIgnoreCase(token);
     }
 
     public boolean isTbAtrDbName(String token){

@@ -67,4 +67,28 @@ class DBInsertTest {
         return randomiseCaseForName.toString();
     }
 
+    @Test
+    public void testInsertCommandIsValid(){
+        String randomName = randomiseCasing(generateRandomName());
+        sendCommandToServer("CREATE DATABASE "+randomName+";");
+        sendCommandToServer("use "+randomName+";");
+        String randomTbName = randomiseCasing(generateRandomName());
+        String query1 = sendCommandToServer("CREATE TABLE "+ randomTbName +" (studentName, mark, pass, graduated, allergies);");
+        sendCommandToServer(query1);
+        String studentName = generateRandomName();
+        double mark = 39.0;
+        boolean pass = false;
+        boolean graduated = false;
+        String query2 = sendCommandToServer("Insert into " + randomTbName + " values ('" + studentName + "'," + mark + "," + pass + "," + graduated + "," + "null);");
+        System.out.println(query2);
+        assertTrue(query2.contains("[OK]"));
+        String query3 = sendCommandToServer("Select  * from " + randomTbName + " ;");
+        System.out.println(query3);
+        assert(query3.contains(studentName)); // + "\t39.0\tFALSE\tFALSE\tNULL"));
+        assert(query3.contains("39.0")); // + "\t39.0\tFALSE\tFALSE\tNULL"));
+        assert(query3.contains("FALSE")); // + "\t39.0\tFALSE\tFALSE\tNULL"));
+        assert(query3.contains("NULL")); // + "\t39.0\tFALSE\tFALSE\tNULL"));
+    }
+
+
 }

@@ -16,16 +16,13 @@ public class Insert implements DBCmnd {
     }
 
     public void parse(Parser p) throws SyntaxException {
-        String expectedFirstTkn = "INTO";
-        String firstTkn = p.getNextToken();
-        if (!expectedFirstTkn.equals(firstTkn)) {
-            throw new SyntaxException("Expected INTO");
-        }
+        String intoToken = p.getNextToken();
+        if (!"into".equals(intoToken.toLowerCase())) throw new SyntaxException(" expected into token!");
         String tableToken = p.getNextToken();
         if (!p.isTbAtrDbName(tableToken)) throw new SyntaxException(" " + tableToken + " is not a valid table name!");
         tableName = tableToken.toLowerCase();
-        String nextToken = p.getNextToken();
-        if (!"VALUES".equals(nextToken)) {
+        String nextToken = p.getNextToken().toLowerCase();
+        if (!"values".equals(nextToken)) {
             throw new SyntaxException("Expected VALUES after table name");
         }
         nextToken = p.getNextToken();
@@ -37,23 +34,31 @@ public class Insert implements DBCmnd {
             if (!p.isValue(nextToken)) {
                 throw new SyntaxException("Invalid value: " + nextToken);
             }
-            values.add(nextToken);
+            if("NULL".equalsIgnoreCase(nextToken)){
+                values.add(nextToken.toUpperCase());
+            }
+            else if(p.isBooleanLiteral(nextToken)){
+                values.add(nextToken.toUpperCase());
+            }
+            else{
+                values.add(nextToken);
+            }
             nextToken = p.getNextToken();
             if (",".equals(nextToken)) {
                 nextToken = p.getNextToken();
             }
         }
-        parseValueType(p);
+//        parseValueType(p);
 
     }
 
-    public void parseValueType(Parser p) throws SyntaxException {
-        for (String token : values) {
-            if (!(p.isStringLiteral(token) || p.isBooleanLiteral(token) || p.isFloatLiteral(token) || p.isIntegerLiteral(token) || "NULL".equals(token))) {
-                throw new SyntaxException(" Invalid row token: " + token);
-            }
-        }
-    }
+//    public void parseValueType(Parser p) throws SyntaxException {
+//        for (String token : values) {
+//            if (!(p.isStringLiteral(token) || p.isBooleanLiteral(token) || p.isFloatLiteral(token) || p.isIntegerLiteral(token) || "NULL".equals(token))) {
+//                throw new SyntaxException(" Invalid row token: " + token);
+//            }
+//        }
+//    }
 
     public String execute(Parser p) throws SyntaxException, FileNotFoundException {
         if (dbStore.currentDbPath == null) {
