@@ -27,12 +27,6 @@ public class Use implements DBCmnd {
 
     @Override
     public String execute(Parser p) throws IOException, SyntaxException {
-        if (!Files.isDirectory(Path.of(storePath))) {
-            throw new SyntaxException(" Root path does exist!");
-        }
-        if (dbStore.storagePath == null){
-            dbStore.setStoragePath(storePath);
-        }
         Path newPath = Path.of(storePath + File.separator + dbName);
         if (Files.exists(newPath)) {
             dbStore.dbName = dbName;

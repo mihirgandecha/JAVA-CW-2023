@@ -109,4 +109,17 @@ class DBUseTest {
         String expected = "[ERROR] " + randomName.toLowerCase() + " is not an existing database.";
         assertEquals(expected, query3);
     }
+
+    @Test
+    public void testSetPathIfNullInUseWhiteBox(){
+        String randomName = randomiseCasing(generateRandomName());
+        String query1 = sendCommandToServer("CREATE DATABASE " + randomName + ";");
+        assertTrue(query1.contains("[OK]"));
+        String query2 = sendCommandToServer("uSE       " + randomName + "        ;        ");
+        assertTrue(query2.contains("[OK]"));
+        server.dbStore.storagePath = null;
+        String query3 = sendCommandToServer("uSE       " + randomName + "        ;        ");
+        //Removed method from use DBServer will always set
+        assertTrue(server.dbStore.storagePath != null);
+    }
 }
