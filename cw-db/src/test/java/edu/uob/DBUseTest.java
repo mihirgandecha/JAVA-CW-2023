@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.sql.SQLOutput;
 import java.time.Duration;
 import java.util.Random;
 
@@ -65,13 +64,13 @@ class DBUseTest {
     @Test
     public void testUseIsValid(){
         String randomName = randomiseCasing(generateRandomName());
-        String query1 = sendCommandToServer("CREATE DATABASE " + randomName + ";");
+        sendCommandToServer("CREATE DATABASE " + randomName + ";");
         String query2 = sendCommandToServer("USE " + randomName + ";");
         assertTrue(query2.contains("[OK]"));
     }
 
     @Test
-    public void testUseCaseInsensitiveAndTokenisedWhiteSpace(){
+    public void testUseCaseInsensitiveAndTokenizedWhiteSpace(){
         String randomName = randomiseCasing(generateRandomName());
         String query1 = sendCommandToServer("CREATE DATABASE " + randomName + ";");
         assertTrue(query1.contains("[OK]"));
@@ -86,6 +85,7 @@ class DBUseTest {
         String response = sendCommandToServer(query2);
         assertTrue(response.contains("[ERROR]"));
     }
+
     @Test
     public void testInvalidDatabaseName(){
         String randomName = randomiseCasing(generateRandomName());
@@ -97,6 +97,7 @@ class DBUseTest {
         String expectedUseResponse = "[ERROR] " + randomName + " Database syntax is not a valid name!";
         assertEquals(expectedUseResponse, testUse);
     }
+
     @Test
     public void testWBoxDirRemoved(){
         String randomName = randomiseCasing(generateRandomName());
@@ -104,7 +105,7 @@ class DBUseTest {
         assertTrue(query1.contains("[OK]"));
         String query2 = sendCommandToServer("uSE       " + randomName + "        ;        ");
         assertTrue(query2.contains("[OK]"));
-        String drop = sendCommandToServer("drop database " + randomName + ";");
+        sendCommandToServer("drop database " + randomName + ";");
         String query3 = sendCommandToServer("uSE       " + randomName + "        ;        ");
         String expected = "[ERROR] " + randomName.toLowerCase() + " is not an existing database.";
         assertEquals(expected, query3);
@@ -118,8 +119,9 @@ class DBUseTest {
         String query2 = sendCommandToServer("uSE       " + randomName + "        ;        ");
         assertTrue(query2.contains("[OK]"));
         server.dbStore.storagePath = null;
-        String query3 = sendCommandToServer("uSE       " + randomName + "        ;        ");
+        sendCommandToServer("uSE       " + randomName + "        ;        ");
         //Removed method from use DBServer will always set
-        assertTrue(server.dbStore.storagePath != null);
+        assertNotNull(server.dbStore.storagePath);
     }
+
 }
