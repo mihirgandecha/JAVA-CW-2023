@@ -2,16 +2,17 @@ package edu.uob.DBCmnd;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class Drop implements DBCmnd {
     private boolean isDb = false;
     private boolean isTb = false;
-    private final Metadata metadata;
+    private final Metadata dbStore;
     private String name;
 
     public Drop(Metadata metadata) {
-        this.metadata = metadata;
+        this.dbStore = metadata;
     }
 
     @Override
@@ -65,14 +66,17 @@ public class Drop implements DBCmnd {
             throw new SyntaxException(" DROP should be towards table or database, not both or neither.");
         }
         if (isDb){
-            if(metadata.currentDbPath == null) throw new SyntaxException(" 'USE' command not executed.");
-            if (!metadata.isDirAtEndOfPath(name)) throw new SyntaxException(" " + name + " database does not match path given by USE: " + metadata.currentDbPath);
-            metadata.dropDatabase(metadata.currentDbPath);
-            return "[OK] " + name + " database successfully dropped";
+            Path dropPath = Path.of(dbStore.storagePath + File.separator + name);
+            if (Files.exists(dropPath)) {
+                dbStore.dropDatabase(dropPath);
+                return "[OK] " + name + " database successfully dropped";
+            } else{
+                throw new SyntaxException(" " + name + " cannot be dropped as it is not an initiated database.");
+            }
         }
-        if (metadata.currentDbPath == null) throw new SyntaxException(" 'USE' command not executed.");
-        name = name + metadata.EXTENSION;
-        Path withTbFile = Path.of(metadata.currentDbPath + File.separator + name);
+        if (dbStore.currentDbPath == null) throw new SyntaxException(" 'USE' command not executed.");
+        name = name + dbStore.EXTENSION;
+        Path withTbFile = Path.of(dbStore.currentDbPath + File.separator + name);
         File f = new File(String.valueOf(withTbFile));
         if (!f.exists()) throw new SyntaxException(" " + name + " file does not match path given by USE: " + withTbFile);
         if (!f.delete()) throw new SyntaxException(" " + name + " Error when deleting");

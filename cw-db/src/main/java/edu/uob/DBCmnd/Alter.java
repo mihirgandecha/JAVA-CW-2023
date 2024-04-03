@@ -40,24 +40,15 @@ public class Alter implements DBCmnd {
             throw new SyntaxException(" File does not exist!");
         }
         Path pathToTable = Path.of(dbStore.currentDbPath + File.separator + this.tbName + dbStore.EXTENSION);
-        if(dbStore.table == null){
-            dbStore.readTbFile(pathToTable);
-        }
+        dbStore.readTbFile(pathToTable);
         if("add".equals(this.alterType)){
-            try {
-                dbStore.table.addColumn(this.attrName);
-            } catch (Exception e) {
-                throw new SyntaxException(" Error when adding column to table.");
-            }
-        } else if("drop".equals(this.alterType)){
+            dbStore.table.addColumn(this.attrName);
+        }
+        else if("drop".equals(this.alterType)){
             if("id".equals(this.attrName)){
                 throw new SyntaxException("id cannot be dropped");
             }
-            try {
-                dbStore.table.removeColumn(this.attrName);
-            } catch (Exception e) {
-                throw new SyntaxException(" Error when removing column to table");
-            }
+            dbStore.table.removeColumn(this.attrName);
         } else {
             throw new SyntaxException(" Error occurred when executing Alter");
         }

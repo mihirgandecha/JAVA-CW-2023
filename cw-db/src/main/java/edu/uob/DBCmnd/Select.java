@@ -10,7 +10,6 @@ public class Select implements DBCmnd {
     private Metadata dbStore;
     private String tableName;
     private ArrayList<String> selectedColumns = new ArrayList<>();
-    private String whereCondition = "";
 
     public Select(Metadata dbStore) {
         this.dbStore = dbStore;
@@ -27,33 +26,20 @@ public class Select implements DBCmnd {
         if (p.getIndex() < p.getTokenLen() - 1) {
             nextToken = p.getNextToken();
             if (nextToken.equals("WHERE")) {
-                whereCondition = p.getNextToken();
+                StringBuilder whereCondition = new StringBuilder(p.getNextToken());
                 while (p.getIndex() < p.getTokenLen() - 1) {
-                    whereCondition += " " + p.getNextToken();
+                    whereCondition.append(" ").append(p.getNextToken());
                 }
             }
         }
-        else if(!nextToken.equals(";")){
+        else {
             throw new SyntaxException(" Expected semi colon at the end!");
         }
     }
 
     @Override
     public String execute(Parser p) throws SyntaxException, IOException {
-        if(dbStore.currentDbPath == null){
-            throw new SyntaxException(" USE command not executed on current DB!");
-        }
-        Path withTbFile = Path.of(dbStore.currentDbPath + File.separator + tableName + dbStore.EXTENSION);
-        File tableFile = new File(withTbFile.toString());
-        if(!tableFile.exists()){
-            throw new SyntaxException(" " + tableFile + " does not exist in path: " + withTbFile);
-        }
-        if (dbStore.tbName == null){
-            dbStore.tbName = tableName;
-        }
-        if (dbStore.table == null){
-            dbStore.readTbFile(withTbFile);
-        }
+        checkThatDbAndTbExisting();
         ArrayList<String> output = new ArrayList<>();
         StringBuilder line = new StringBuilder();
         try {
@@ -64,10 +50,10 @@ public class Select implements DBCmnd {
             throw new SyntaxException(e.getMessage());
         }
         for (String column : selectedColumns) {
-            if (!dbStore.table.columns.contains(column.toLowerCase()) && !"*".equals(column.toLowerCase())) throw new SyntaxException(column + " is not an attribute in the table.");
+            if (!dbStore.table.columns.contains(column.toLowerCase()) && !"*".equalsIgnoreCase(column)) throw new SyntaxException(column + " is not an attribute in the table.");
             line.append(column).append("\t");
         }
-        output.add(line.toString().trim());
+        output.add(line.toString());
         for (Map<String, String> row : dbStore.table.table) {
             line.setLength(0);
             if ("*".equals(selectedColumns.get(0))) {
@@ -79,8 +65,23 @@ public class Select implements DBCmnd {
                     line.append(row.getOrDefault(column, "NULL")).append("\t");
                 }
             }
-            output.add(line.toString().trim());
+            output.add(line.toString());
         }
         return "[OK]\n" + String.join("\n", output);
+    }
+
+    private void checkThatDbAndTbExisting() throws SyntaxException, IOException {
+        if(dbStore.currentDbPath == null){
+            throw new SyntaxException(" USE command not executed on current DB!");
+        }
+        Path withTbFile = Path.of(dbStore.currentDbPath + File.separator + tableName + dbStore.EXTENSION);
+        File tableFile = new File(withTbFile.toString());
+        if(!tableFile.exists()){
+            throw new SyntaxException(" " + tableFile + " does not exist in path: " + withTbFile);
+        }
+        if (dbStore.tbName == null){
+            dbStore.tbName = tableName;
+        }
+        dbStore.readTbFile(withTbFile);
     }
 }

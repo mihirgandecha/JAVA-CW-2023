@@ -104,10 +104,10 @@ public class Table {
         }
     }
 
-    public void addColumn(String colName) throws Exception {
+    public void addColumn(String colName) throws IOException {
         colName = colName.toLowerCase();
         if (this.columns.contains(colName)) {
-            throw new Exception("Column " + colName + " already exists.");
+            throw new SyntaxException("Column " + colName + " already exists.");
         }
         addColumnToArray(colName);
         for (Map<String, String> row : this.table) {
@@ -115,13 +115,13 @@ public class Table {
         }
     }
 
-    public void removeColumn(String colName) throws Exception {
+    public void removeColumn(String colName) throws IOException {
         colName = colName.toLowerCase();
         if ("id".equals(colName)) {
-            throw new Exception("Cannot remove the 'id' column.");
+            throw new SyntaxException("Cannot remove the 'id' column.");
         }
         if (!this.columns.contains(colName)) {
-            throw new Exception("Column " + colName + " does not exist.");
+            throw new SyntaxException("Column " + colName + " does not exist.");
         }
         this.columns.remove(colName);
         for (Map<String, String> row : this.table) {
