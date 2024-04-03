@@ -47,7 +47,7 @@ class DBUseTest {
                 "Server took too long to respond (probably stuck in an infinite loop)");
     }
 
-    // Randomizes the case of characters in the input string
+    // Randomises the case of characters in the input string
     public static String randomiseCasing(String inFromGenerateRandomName) {
         StringBuilder randomiseCaseForName = new StringBuilder();
         Random random = new Random();
@@ -74,82 +74,15 @@ class DBUseTest {
         String randomName = randomiseCasing(generateRandomName());
         String query1 = sendCommandToServer("CREATE DATABASE " + randomName + ";");
         assertTrue(query1.contains("[OK]"));
-        String query2 = sendCommandToServer("uSE       " + randomName + "        ;");
+        String query2 = sendCommandToServer("uSE       " + randomName + "        ;        ");
         assert(query2.contains("[OK]"));
     }
-//
-//    @Test
-//    public void testUseWithSpaces(){
-//        String randomName = generateRandomName();
-//        String response = "CREATE DATABASE " + randomName + ";";
-//        dbServer.handleCommand(response);
-//        response = "        USE          " + randomName + "  ;   ";
-//        response = dbServer.handleCommand(response);
-//        assert(response.contains("[OK]"));
-//    }
-//
-//    @Test
-//    public void testUseSpacesAndCase(){
-//        String randomName = generateRandomName();
-//        String response = "CREATE DATABASE " + randomName + ";";
-//        dbServer.handleCommand(response);
-//        response = "  Use   " + randomName + "            ;  ";
-//        response = dbServer.handleCommand(response);
-//        assert(response.contains("[OK]"));
-//    }
-//
-//    @Test
-//    public void testUseNonExistingDB(){
-//        String randomName = generateRandomName();
-//        String response = "  Use   " + randomName + "            ;  ";
-//        response = dbServer.handleCommand(response);
-//        assert(response.contains("[ERROR]"));
-//    }
-//
-//    @Test
-//    public void testMissingSemiColon(){
-//        String randomName = generateRandomName();
-//        String response = "  Use   " + randomName + "             ";
-//        response = dbServer.handleCommand(response);
-//        assert(response.contains("[ERROR]"));
-//    }
-//
-//    @Test
-//    public void testCase1(){
-//        dbServer.handleCommand("CREATE DATABASE testDB;");
-//        sendCommandToServer("use testDB;");
-//        dbServer.handleCommand("CREATE TABLE people(Name, Age, Email);");
-//        dbServer.handleCommand("CREATE TABLE sheds(Name, Height, PurchaserID);");
-//        dbServer.handleCommand("insert into sheds values('Dorchester', 1800, 2);");
-//        dbServer.handleCommand("insert into sheds values('Plaza', 1200, 1);");
-//        dbServer.handleCommand("insert into sheds values('Excelsior', 1000, 0);");
-//        dbServer.handleCommand("insert into people values('Bob', 21, 'bob@bob.net');");
-//        dbServer.handleCommand("insert into people values('Harry', 32, 'harry@harry.net');");
-//        dbServer.handleCommand("insert into people values('Chris', 42, 'chris@chris.net');");
-//        String response = "use testDB;";
-//        dbServer.handleCommand(response);
-//        response = "update people set age = -21 where name == 'Bob';";
-//        response = dbServer.handleCommand(response);
-//        assert(response.contains("[OK]"));
-//        cleanFolder("testDB");
-//    }
-//
-//    @Test
-//    public void testCase2(){
-//        sendCommandToServer("CREATE DATABASE testDB;");
-//        sendCommandToServer("use testDB;");
-//        sendCommandToServer("CREATE TABLE people(Name, Age, Email);");
-//        sendCommandToServer("CREATE TABLE sheds(Name, Height, PurchaserID);");
-//        sendCommandToServer("insert into sheds values('Dorchester', 1800, 2);");
-//        sendCommandToServer("insert into sheds values('Plaza', 1200, 1);");
-//        sendCommandToServer("insert into sheds values('Excelsior', 1000, 0);");
-//        sendCommandToServer("insert into people values('Bob', 21, 'bob@bob.net');");
-//        sendCommandToServer("insert into people values('Harry', 32, 'harry@harry.net');");
-//        sendCommandToServer("insert into people values('Chris', 42, 'chris@chris.net');");
-//        String response = "use testDB;";
-//        sendCommandToServer(response);
-//        response = "insert into people values('hello my name is space', 45, 'email@email.com');";
-//        response = sendCommandToServer(response);
-//        assert(response.contains("[OK]"));
-//    }
+
+    @Test
+    public void testCreateDbNotExecuted(){
+        String randomName = randomiseCasing(generateRandomName());
+        String query2 = sendCommandToServer("use " + randomName + ";");
+        String response = sendCommandToServer(query2);
+        assert(response.contains("[ERROR]"));
+    }
 }

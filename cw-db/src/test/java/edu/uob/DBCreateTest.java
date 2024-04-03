@@ -50,7 +50,7 @@ class DBCreateTest {
                 "Server took too long to respond (probably stuck in an infinite loop)");
     }
 
-    // Randomizes the case of characters in the input string
+    // Randomises the case of characters in the input string
     public static String randomiseCasing(String inFromGenerateRandomName) {
         StringBuilder randomiseCaseForName = new StringBuilder();
         Random random = new Random();
