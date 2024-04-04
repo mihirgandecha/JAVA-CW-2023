@@ -127,13 +127,21 @@ class DBInsertTest {
     //test in query: perhaps create multiple databases dir, attempt to delete databases with .keep cannot be allowed.
     //test parsing (ie wrong spelling, no into tkn, no values tkn, no brackets, missing brackets, attribName)
     //test handling same column names handling
-    //test no columns inserted
-    //test just create table (no cols)-> insert into
-    //test alter works? Y. what if one col removed/added - does expected change?
-    //test more columns inserted than there are
+    //test no columns inserted - working
+    //test just create table (no cols)-> insert into; working -> change msg if 0 cannot insert into id?
+    //test alter works? Y. what if one col removed/added - does expected change? -> TODO: handle spacing (eg insert name age only adds name)
+    //insert into TODO should mihir and 'mihir' work? it displays 'mihir' when output
+    //test more columns inserted than there are: TODO just change messaging if no attrib,
+    //TODO error with expected: actual: not showing!
     //test vice versa ^
-    //test col names have spaces
-    //test with NULL
+    //test col names have spaces //TODO this needs handling!
+
+    //test with NULL:
+    //alter table interesting add null;
+    // select * from interesting;
+    //[ERROR]Incorrect number of values. Expected: 2, but received: 1
+    //TODO ^ this shouldnt come with select: error found in readValues!
+
     //id generation matches
     //tab spaces are correct (maybe select testing incorp)
 }
