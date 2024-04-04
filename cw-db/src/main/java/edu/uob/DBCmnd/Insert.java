@@ -16,23 +16,33 @@ public class Insert implements DBCmnd {
     }
 
     public void parse(Parser p) throws SyntaxException {
-        String intoToken = p.getNextToken();
-        if (!"into".equals(intoToken.toLowerCase())) throw new SyntaxException(" expected into token!");
+        String intoToken = p.getNextToken().toLowerCase();
+        if (!"into".equalsIgnoreCase(intoToken)) throw new SyntaxException(" expected INTO token after INSERT.");
         String tableToken = p.getNextToken();
-        if (!p.isTbAtrDbName(tableToken)) throw new SyntaxException(" " + tableToken + " is not a valid table name!");
+        if (!p.isTbAtrDbName(tableToken) || p.isKeyword(tableToken)) throw new SyntaxException(" " + tableToken + " is not a valid table name!");
         tableName = tableToken.toLowerCase();
         String nextToken = p.getNextToken().toLowerCase();
-        if (!"values".equals(nextToken)) {
-            throw new SyntaxException("Expected VALUES after table name");
+        if (!"values".equalsIgnoreCase(nextToken)) {
+            throw new SyntaxException(" Expected VALUES after table name.");
         }
         nextToken = p.getNextToken();
         if (!"(".equals(nextToken)) {
-            throw new SyntaxException("Expected '(' after VALUES");
+            throw new SyntaxException(" Expected '(' after VALUES");
         }
-        nextToken = p.getNextToken();
+        if (!")".equals(p.getPenultimateToken())) {
+            throw new SyntaxException(" Expected ')' after VALUES");
+        }
+        if (p.getTokenLen() <= 7){
+            throw new SyntaxException(" No value(s) inside brackets or invalid token length error");
+        }
+        processValues(p);
+    }
+
+    private void processValues(Parser p) throws SyntaxException {
+        String nextToken = p.getNextToken();
         while (!")".equals(nextToken)) {
             if (!p.isValue(nextToken)) {
-                throw new SyntaxException("Invalid value: " + nextToken);
+                throw new SyntaxException(" Invalid value: " + nextToken);
             }
             if("NULL".equalsIgnoreCase(nextToken)){
                 values.add(nextToken.toUpperCase());
@@ -50,14 +60,13 @@ public class Insert implements DBCmnd {
         }
     }
 
-
     public String execute(Parser p) throws SyntaxException, FileNotFoundException {
         if (dbStore.currentDbPath == null) {
             throw new SyntaxException(" No Database selected. USE command not executed.");
         }
         File f = new File((dbStore.currentDbPath + File.separator + this.tableName + dbStore.EXTENSION));
         if(!f.exists()){
-            throw new SyntaxException(" File already exists!");
+            throw new SyntaxException(" File does not exists!");
         }
         Path pathToTable = Path.of(dbStore.currentDbPath + File.separator + this.tableName + dbStore.EXTENSION);
         if(dbStore.table == null){

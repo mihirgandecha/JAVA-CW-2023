@@ -144,6 +144,23 @@ public class Table {
         this.table.add(row);
     }
 
+    public void addEntryForReading(ArrayList<String> entry) throws SyntaxException {
+        if (this.table == null) {
+            this.table = new ArrayList<>();
+        }
+        Map<String, String> row = new LinkedHashMap<>();
+        row.put("id", Integer.toString(id++));
+        for (int i = 0; i < entry.size(); i++) {
+            row.put(columns.get(i + 1), entry.get(i));
+        }
+        for (String column : columns) {
+            if (!row.containsKey(column)) {
+                row.put(column, "NULL");
+            }
+        }
+        this.table.add(row);
+    }
+
     public String displayTableToString() {
         ArrayList<Integer> maxWidths = new ArrayList<>();
         for (String column : this.columns) {
