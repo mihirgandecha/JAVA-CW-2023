@@ -136,7 +136,7 @@ class DBInsertTest {
     @Test
     public void testInsertNoColumns() {
         String testCmd = sendCommandToServer("INSERT INTO tableName VALUES ();");
-        String expected = "[ERROR]" + " No columns inside brackets or invalid token length error";
+        String expected = "[ERROR]" + " No value(s) inside brackets or invalid token length error";
         assertEquals(expected, testCmd);
     }
 

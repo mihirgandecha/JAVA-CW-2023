@@ -33,7 +33,7 @@ public class Insert implements DBCmnd {
             throw new SyntaxException(" Expected ')' after VALUES");
         }
         if (p.getTokenLen() <= 7){
-            throw new SyntaxException(" No columns inside brackets or invalid token length error");
+            throw new SyntaxException(" No value(s) inside brackets or invalid token length error");
         }
         processValues(p);
     }
