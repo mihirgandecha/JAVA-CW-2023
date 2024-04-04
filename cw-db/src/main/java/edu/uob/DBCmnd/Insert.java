@@ -66,7 +66,7 @@ public class Insert implements DBCmnd {
         }
         File f = new File((dbStore.currentDbPath + File.separator + this.tableName + dbStore.EXTENSION));
         if(!f.exists()){
-            throw new SyntaxException(" File already exists!");
+            throw new SyntaxException(" File does not exists!");
         }
         Path pathToTable = Path.of(dbStore.currentDbPath + File.separator + this.tableName + dbStore.EXTENSION);
         if(dbStore.table == null){
