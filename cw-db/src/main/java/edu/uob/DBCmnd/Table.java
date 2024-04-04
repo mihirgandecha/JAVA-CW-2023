@@ -133,10 +133,19 @@ public class Table {
         if (this.table == null) {
             this.table = new ArrayList<>();
         }
-        if(columns.contains("NULL") && (entry.size() - 1 != columns.size())){
-            int columnIndexOfNull = columns.indexOf("NULL");
-            entry.add(columnIndexOfNull, "NULL");
-        }
+//        boolean containsIgnoreCase = columns.stream().anyMatch(s -> s.equalsIgnoreCase("NULL"));
+//        if (containsIgnoreCase) {
+//            int columnIndexOfNull = columns.indexOf("NULL");
+//            if (!entry.get(columnIndexOfNull).equalsIgnoreCase("NULL")) {
+//                entry.add(columnIndexOfNull, "NULL");
+//            }
+//        }
+//        if(columns.contains("NULL")){
+//            int columnIndexOfNull = columns.indexOf("NULL");
+//            if(entry.get(columnIndexOfNull) != "NULL"){
+//                entry.add(columnIndexOfNull, "NULL");
+//            }
+//        }
         if (entry.size() != columns.size() - 1) {
             throw new SyntaxException("Incorrect number of values. Expected: " + (columns.size() - 1) + ", but received: " + entry.size());
         }
@@ -145,6 +154,26 @@ public class Table {
         for (int i = 0; i < entry.size(); i++) {
             row.put(columns.get(i + 1), entry.get(i));
         }
+        this.table.add(row);
+    }
+
+    public void addEntryForReading(ArrayList<String> entry) throws SyntaxException {
+        if (this.table == null) {
+            this.table = new ArrayList<>();
+        }
+
+        Map<String, String> row = new LinkedHashMap<>();
+        row.put("id", Integer.toString(id++));
+        for (int i = 0; i < entry.size(); i++) {
+            row.put(columns.get(i + 1), entry.get(i));
+        }
+
+        for (String column : columns) {
+            if (!row.containsKey(column)) {
+                row.put(column, "NULL");
+            }
+        }
+
         this.table.add(row);
     }
 

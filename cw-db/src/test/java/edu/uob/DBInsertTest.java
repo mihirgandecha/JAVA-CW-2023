@@ -285,6 +285,12 @@ class DBInsertTest {
         String testCmd = sendCommandToServer("INSERT INTO " + randomTb + " VALUES ('mihir Gandecha');");
         System.out.println(testCmd);
         assertTrue(testCmd.contains("OK"));
+        String testSelect1 = sendCommandToServer("select * from " + randomTb + ";");
+        System.out.println(testSelect1);
+        assertTrue(testSelect1.contains("OK"));
+        sendCommandToServer("alter table " + randomTb + " add NULL" + ";");
+        String testSelect2 = sendCommandToServer("select * from " + randomTb + ";");
+        System.out.println(testSelect2);
     }
     //test in query: perhaps create multiple databases dir, attempt to delete databases with .keep cannot be allowed.
     //DONE:test parsing (ie wrong spelling, no into tkn, no values tkn, no brackets, missing brackets, attribName)

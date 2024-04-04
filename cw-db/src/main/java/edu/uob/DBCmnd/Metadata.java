@@ -113,7 +113,7 @@ public class Metadata {
                     tableLines.remove(0);
                 }
                 if(readEntry != null){
-                    this.table.addEntry(readEntry);
+                    this.table.addEntryForReading(readEntry);
                 }
             }
         }
