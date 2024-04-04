@@ -35,7 +35,11 @@ public class Insert implements DBCmnd {
         if (p.getTokenLen() <= 7){
             throw new SyntaxException(" No columns inside brackets or invalid token length error");
         }
-        nextToken = p.getNextToken();
+        processValues(p);
+    }
+
+    private void processValues(Parser p) throws SyntaxException {
+        String nextToken = p.getNextToken();
         while (!")".equals(nextToken)) {
             if (!p.isValue(nextToken)) {
                 throw new SyntaxException(" Invalid value: " + nextToken);
@@ -55,7 +59,6 @@ public class Insert implements DBCmnd {
             }
         }
     }
-
 
     public String execute(Parser p) throws SyntaxException, FileNotFoundException {
         if (dbStore.currentDbPath == null) {
