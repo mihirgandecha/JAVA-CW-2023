@@ -1,18 +1,16 @@
 package edu.uob;
 
-import edu.uob.DBCmnd.SyntaxException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DBInsertTest {
     public DBServer server;
@@ -84,10 +82,10 @@ class DBInsertTest {
         assertTrue(query2.contains("[OK]"));
         String query3 = sendCommandToServer("Select  * from " + randomTbName + " ;");
         System.out.println(query3);
-        assert(query3.contains(studentName)); // + "\t39.0\tFALSE\tFALSE\tNULL"));
-        assert(query3.contains("39.0")); // + "\t39.0\tFALSE\tFALSE\tNULL"));
-        assert(query3.contains("FALSE")); // + "\t39.0\tFALSE\tFALSE\tNULL"));
-        assert(query3.contains("NULL")); // + "\t39.0\tFALSE\tFALSE\tNULL"));
+        assert(query3.contains(studentName));
+        assert(query3.contains("39.0"));
+        assert(query3.contains("FALSE"));
+        assert(query3.contains("NULL"));
     }
 
 
