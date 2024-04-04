@@ -32,6 +32,9 @@ public class Insert implements DBCmnd {
         if (!")".equals(p.getPenultimateToken())) {
             throw new SyntaxException(" Expected ')' after VALUES");
         }
+        if (p.getTokenLen() <= 7){
+            throw new SyntaxException(" No columns inside brackets or invalid token length error");
+        }
         nextToken = p.getNextToken();
         while (!")".equals(nextToken)) {
             if (!p.isValue(nextToken)) {

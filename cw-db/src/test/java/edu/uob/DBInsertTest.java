@@ -134,6 +134,13 @@ class DBInsertTest {
     }
 
     @Test
+    public void testInsertNoColumns() {
+        String testCmd = sendCommandToServer("INSERT INTO tableName VALUES ();");
+        String expected = "[ERROR]" + " No columns inside brackets or invalid token length error";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
     public void testInsertInvalidTableName() {
         String testCmd = sendCommandToServer("INSERT INTO !names!  VALUES ('value');");
         String expected = "[ERROR]" + " " + "!names!" + " is not a valid table name!";
@@ -267,12 +274,9 @@ class DBInsertTest {
         assertEquals(expected, testCmd);
     }
 
-
-
-
     //test in query: perhaps create multiple databases dir, attempt to delete databases with .keep cannot be allowed.
-    //test parsing (ie wrong spelling, no into tkn, no values tkn, no brackets, missing brackets, attribName)
-    //test handling same column names handling
+    //DONE:test parsing (ie wrong spelling, no into tkn, no values tkn, no brackets, missing brackets, attribName)
+    //DONE:test handling same column names handling
     //test no columns inserted - working
     //test just create table (no cols)-> insert into; working -> change msg if 0 cannot insert into id?
     //test alter works? Y. what if one col removed/added - does expected change? -> TODO: handle spacing (eg insert name age only adds name)
