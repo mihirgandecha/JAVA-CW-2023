@@ -7,10 +7,11 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class DBInsertTest {
     public DBServer server;
@@ -72,20 +73,39 @@ class DBInsertTest {
         sendCommandToServer("use "+randomName+";");
         String randomTbName = randomiseCasing(generateRandomName());
         String query1 = sendCommandToServer("CREATE TABLE "+ randomTbName +" (studentName, mark, pass, graduated, allergies);");
-        sendCommandToServer(query1);
         String studentName = generateRandomName();
         double mark = 39.0;
         boolean pass = false;
         boolean graduated = false;
         String query2 = sendCommandToServer("Insert into " + randomTbName + " values ('" + studentName + "'," + mark + "," + pass + "," + graduated + "," + "null);");
-        System.out.println(query2);
-        assertTrue(query2.contains("[OK]"));
+        String expectedQ2 = "[OK] " + "Values inserted into " + randomTbName.toLowerCase();
+        assertEquals(expectedQ2, query2);
+        ArrayList<String> expectedColumns = new ArrayList<>();
+        expectedColumns.addAll(Arrays.asList("id", "studentname", "mark", "pass", "graduated", "allergies"));
+        ArrayList<String> actualColumns = server.dbStore.table.getColumns();
+        assertEquals(expectedColumns, actualColumns);
+        actualColumns.forEach(item -> assertTrue(item.equals(item.toLowerCase())));
         String query3 = sendCommandToServer("Select  * from " + randomTbName + " ;");
-        System.out.println(query3);
-        assert(query3.contains(studentName));
-        assert(query3.contains("39.0"));
-        assert(query3.contains("FALSE"));
-        assert(query3.contains("NULL"));
+        assertTrue(query3.contains(studentName));
+        assertTrue(query3.contains("39.0"));
+        assertTrue(query3.contains("FALSE"));
+        assertTrue(query3.contains("NULL"));
+    }
+
+    @Test
+    public void testColumnsAreAllToLowerCase () {
+        String randomName = randomiseCasing(generateRandomName());
+        sendCommandToServer("CREATE DATABASE "+randomName+";");
+        sendCommandToServer("use "+randomName+";");
+        String randomTbName = randomiseCasing(generateRandomName());
+        sendCommandToServer("CREATE TABLE "+ randomTbName +" (studentName, mark, pass, graduated, allergies);");
+        String studentName = generateRandomName();
+        double mark = 39.0;
+        boolean pass = false;
+        boolean graduated = false;
+        sendCommandToServer("Insert into " + randomTbName + " values ('" + studentName + "'," + mark + "," + pass + "," + graduated + "," + "null);");
+        ArrayList<String> actualColumns = server.dbStore.table.getColumns();
+        actualColumns.forEach(item -> assertTrue(item.equals(item.toLowerCase())));
     }
 
 
