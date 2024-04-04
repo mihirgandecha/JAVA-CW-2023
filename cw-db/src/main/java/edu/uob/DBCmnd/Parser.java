@@ -263,9 +263,10 @@ public class Parser {
         return token.matches("==|>|<|>=|<=|!=|LIKE");
     }
 
+    //TODO update at end
     public boolean isKeyword(String token) {
         String[] keywords = {"SELECT", "UPDATE", "DELETE", "INSERT",
-                "JOIN", "ON", "AND", "OR", "WHERE",
+                "VALUES", "JOIN", "ON", "AND", "OR", "WHERE",
                 "CREATE", "DROP", "USE", "ALTER",
                 "LIKE", "<", "<=", "=", "<>", ">=", ">"};
         for (String keyword : keywords) {

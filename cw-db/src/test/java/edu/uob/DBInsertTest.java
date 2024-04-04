@@ -124,6 +124,87 @@ class DBInsertTest {
         actualColumns.forEach(item -> assertTrue(item.equalsIgnoreCase(item)));
     }
 
+    //Parsing Tests: "INSERT " "INTO " [TableName] " VALUES" "(" <ValueList> ")"
+    //TODO every check for isdb or istb should also check for isKeyword
+    @Test
+    public void testInsertNoTableName() {
+        String testCmd = sendCommandToServer("INSERT INTO  VALUES ('value');");
+        String expected = "[ERROR]" + " " + "VALUES" + " is not a valid table name!";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testInsertInvalidTableName() {
+        String testCmd = sendCommandToServer("INSERT INTO !names!  VALUES ('value');");
+        String expected = "[ERROR]" + " " + "!names!" + " is not a valid table name!";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testInsertInvalidTableNameIsSemiColon() {
+        String testCmd = sendCommandToServer("INSERT INTO ;; VALUES ('value');");
+        String expected = "[ERROR]" + " " + ";" + " is not a valid table name!";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testInsertIntoInvalidInsertSpellingCaughtAtServer() {
+        String testCmd = sendCommandToServer("ISERT INto tableName VALUES ('value');");
+        String expected = "[ERROR] [SERVER]: Empty/Invalid Command";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testInsertIntoInvalidIntoSpelling() {
+        String testCmd = sendCommandToServer("INSERT INOT tableName VALUES ('value');");
+        String expected = "[ERROR]" + " expected INTO token after INSERT.";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testInsertIntoInvalidValuesSpelling() {
+        String testCmd = sendCommandToServer("INSERT INto tableName VALES ('value');");
+        String expected = "[ERROR]" + " Expected VALUES after table name.";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testInsertNoEndSemiColon() {
+        String testCmd = sendCommandToServer("INSERT INTO tableName VALUES ('value')");
+        String expected = "[ERROR]" + " No ';' at end!";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testInsertNoDBCreated() {
+        String testCmd = sendCommandToServer("INSERT INTO tableName VALUES ('value');");
+        assertEquals("[ERROR] No Database selected. USE command not executed.", testCmd);
+    }
+
+    @Test
+    public void testInsertMissingOpeningParenthesis() {
+        String testCmd = sendCommandToServer("INSERT INTO tableName VALUES 'value');");
+        String expected = "[ERROR]" + " Expected '(' after VALUES";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testInsertMissingClosingParenthesis() {
+        String testCmd = sendCommandToServer("INSERT INTO tableName VALUES ('value';");
+        String expected = "[ERROR]" + " Expected ')' after VALUES";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testInsertInvalidColumnIsSemiCol() {
+        String testCmd = sendCommandToServer("INSERT INTO tableName VALUES ('value', ;);");
+        String expected = "[ERROR]" + "Invalid value: ;";
+        assertEquals(expected, testCmd);
+    }
+
+
+
+
     //test in query: perhaps create multiple databases dir, attempt to delete databases with .keep cannot be allowed.
     //test parsing (ie wrong spelling, no into tkn, no values tkn, no brackets, missing brackets, attribName)
     //test handling same column names handling
