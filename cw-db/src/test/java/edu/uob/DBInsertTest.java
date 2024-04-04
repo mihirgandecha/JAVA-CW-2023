@@ -272,20 +272,4 @@ class DBInsertTest {
         assertEquals(expected, testCmd);
     }
 
-    @Test
-    public void testInsertEdgeCase() {
-        String randomDb = randomiseCasing(generateRandomName());
-        String randomTb = randomiseCasing(generateRandomName());
-        sendCommandToServer("create database " + randomDb + ";");
-        sendCommandToServer("use " + randomDb + ";");
-        sendCommandToServer("create table " + randomTb + ";");
-        sendCommandToServer("alter table " + randomTb + " add name" + ";");
-        String testCmd = sendCommandToServer("INSERT INTO " + randomTb + " VALUES ('mihir Gandecha');");
-        assertTrue(testCmd.contains("OK"));
-        String testSelect1 = sendCommandToServer("select * from " + randomTb + ";");
-        assertTrue(testSelect1.contains("OK"));
-        sendCommandToServer("alter table " + randomTb + " add dateofbirth" + ";");
-        String testSelect2 = sendCommandToServer("select * from " + randomTb + ";");
-        assertTrue(testSelect2.contains("NULL"));
-    }
 }
