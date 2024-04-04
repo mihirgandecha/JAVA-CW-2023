@@ -31,7 +31,6 @@ public class Alter implements DBCmnd {
 
     @Override
     public String execute(Parser p) throws IOException {
-        //Check if file exist
         if (dbStore.currentDbPath == null) {
             throw new SyntaxException(" No Database selected. USE command not implemented.");
         }

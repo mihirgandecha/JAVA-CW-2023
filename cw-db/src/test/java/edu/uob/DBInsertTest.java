@@ -124,8 +124,6 @@ class DBInsertTest {
         actualColumns.forEach(item -> assertTrue(item.equalsIgnoreCase(item)));
     }
 
-    //Parsing Tests: "INSERT " "INTO " [TableName] " VALUES" "(" <ValueList> ")"
-    //TODO every check for isdb or istb should also check for isKeyword
     @Test
     public void testInsertNoTableName() {
         String testCmd = sendCommandToServer("INSERT INTO  VALUES ('value');");
@@ -283,34 +281,11 @@ class DBInsertTest {
         sendCommandToServer("create table " + randomTb + ";");
         sendCommandToServer("alter table " + randomTb + " add name" + ";");
         String testCmd = sendCommandToServer("INSERT INTO " + randomTb + " VALUES ('mihir Gandecha');");
-        System.out.println(testCmd);
         assertTrue(testCmd.contains("OK"));
         String testSelect1 = sendCommandToServer("select * from " + randomTb + ";");
-        System.out.println(testSelect1);
         assertTrue(testSelect1.contains("OK"));
-        sendCommandToServer("alter table " + randomTb + " add NULL" + ";");
+        sendCommandToServer("alter table " + randomTb + " add dateofbirth" + ";");
         String testSelect2 = sendCommandToServer("select * from " + randomTb + ";");
-        System.out.println(testSelect2);
+        assertTrue(testSelect2.contains("NULL"));
     }
-    //test in query: perhaps create multiple databases dir, attempt to delete databases with .keep cannot be allowed.
-    //DONE:test parsing (ie wrong spelling, no into tkn, no values tkn, no brackets, missing brackets, attribName)
-    //DONE:test handling same column names handling
-    //DONE:test no columns inserted - working
-    //DONE:test just create table (no cols)-> insert into; working -> change msg if 0 cannot insert into id?
-
-    //test alter works? Y. what if one col removed/added - does expected change? -> TODO: handle spacing (eg insert name age only adds name)
-    //insert into TODO should mihir and 'mihir' work? it displays 'mihir' when output
-    //test more columns inserted than there are: TODO just change messaging if no attrib,
-    //TODO error with expected: actual: not showing!
-    //test vice versa ^
-    //test col names have spaces //TODO this needs handling!
-
-    //test with NULL:
-    //alter table interesting add null;
-    // select * from interesting;
-    //[ERROR]Incorrect number of values. Expected: 2, but received: 1
-    //TODO ^ this shouldnt come with select: error found in readValues!
-
-    //id generation matches
-    //tab spaces are correct (maybe select testing incorp)
 }
