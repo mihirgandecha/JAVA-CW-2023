@@ -81,8 +81,8 @@ public class Create implements DBCmnd {
     }
 
     public void parseTbAtrb(Parser p) throws SyntaxException, IOException {
-        String nextTkn = p.getNextToken();
-        while (nextTkn.toLowerCase() != null && !")".equals(nextTkn)) {
+        String nextTkn = p.getNextToken().toLowerCase();
+        while (nextTkn != null && !")".equals(nextTkn)) {
             if (!p.isAttributeList(nextTkn)) {
                 throw new SyntaxException(" Invalid Table Attribute!");
             }
