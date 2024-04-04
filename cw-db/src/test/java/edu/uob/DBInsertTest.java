@@ -93,12 +93,12 @@ class DBInsertTest {
     }
 
     @Test
-    public void testColumnsAreAllToLowerCase () {
+    public void testColumnsOutputAreAllToLowerCase () {
         String randomName = randomiseCasing(generateRandomName());
         sendCommandToServer("CREATE DATABASE "+randomName+";");
         sendCommandToServer("use "+randomName+";");
-        String randomTbName = randomiseCasing(generateRandomName());
-        sendCommandToServer("CREATE TABLE "+ randomTbName +" (studentName, mark, pass, graduated, allergies);");
+        String randomTbName = generateRandomName().toUpperCase();
+        sendCommandToServer("CREATE TABLE "+ randomTbName +" (STUDENTNAME, MARK, PASS, GRADUATED, ALLERGIES);");
         String studentName = generateRandomName();
         double mark = 39.0;
         boolean pass = false;
@@ -108,5 +108,32 @@ class DBInsertTest {
         actualColumns.forEach(item -> assertTrue(item.equals(item.toLowerCase())));
     }
 
+    @Test
+    public void testColumnsAreCaseInsensitive () {
+        String randomName = randomiseCasing(generateRandomName());
+        sendCommandToServer("CREATE DATABASE "+randomName+";");
+        sendCommandToServer("use "+randomName+";");
+        String randomTbName = generateRandomName().toUpperCase();
+        sendCommandToServer("CREATE TABLE "+ randomTbName +" (STUDENTNAME, MARK, PASS, GRADUATED, ALLERGIES);");
+        String studentName = generateRandomName();
+        double mark = 39.0;
+        boolean pass = false;
+        boolean graduated = false;
+        sendCommandToServer("Insert into " + randomTbName + " values ('" + studentName + "'," + mark + "," + pass + "," + graduated + "," + "null);");
+        ArrayList<String> actualColumns = server.dbStore.table.getColumns();
+        actualColumns.forEach(item -> assertTrue(item.equalsIgnoreCase(item)));
+    }
 
+    //test in query: perhaps create multiple databases dir, attempt to delete databases with .keep cannot be allowed.
+    //test parsing (ie wrong spelling, no into tkn, no values tkn, no brackets, missing brackets, attribName)
+    //test handling same column names handling
+    //test no columns inserted
+    //test just create table (no cols)-> insert into
+    //test alter works? Y. what if one col removed/added - does expected change?
+    //test more columns inserted than there are
+    //test vice versa ^
+    //test col names have spaces
+    //test with NULL
+    //id generation matches
+    //tab spaces are correct (maybe select testing incorp)
 }
