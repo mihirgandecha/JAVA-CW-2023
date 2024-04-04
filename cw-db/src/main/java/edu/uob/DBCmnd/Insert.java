@@ -35,7 +35,7 @@ public class Insert implements DBCmnd {
         nextToken = p.getNextToken();
         while (!")".equals(nextToken)) {
             if (!p.isValue(nextToken)) {
-                throw new SyntaxException("Invalid value: " + nextToken);
+                throw new SyntaxException(" Invalid value: " + nextToken);
             }
             if("NULL".equalsIgnoreCase(nextToken)){
                 values.add(nextToken.toUpperCase());

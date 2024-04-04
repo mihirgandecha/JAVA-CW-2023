@@ -198,7 +198,72 @@ class DBInsertTest {
     @Test
     public void testInsertInvalidColumnIsSemiCol() {
         String testCmd = sendCommandToServer("INSERT INTO tableName VALUES ('value', ;);");
-        String expected = "[ERROR]" + "Invalid value: ;";
+        String expected = "[ERROR]" + " Invalid value: ;";
+        assertEquals(expected, testCmd);
+    }
+
+    //Parsing testing values:
+    @Test
+    public void testInsertIncompleteFloatLiteral() {
+        String testCmd = sendCommandToServer("INSERT INTO tableName VALUES (123.);");
+        String expected = "[ERROR] Invalid value: 123.";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testInsertInvalidBooleanLiteral() {
+        String testCmd = sendCommandToServer("INSERT INTO tableName VALUES (TRU);");
+        String expected = "[ERROR] Invalid value: TRU";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testInsertInvalidNegativeInteger() {
+        String testCmd = sendCommandToServer("INSERT INTO tableName VALUES (-);");
+        String expected = "[ERROR] Invalid value: -";
+        assertEquals(expected, testCmd);
+    }
+    //TODO check if needs to be surrounded in ''
+    @Test
+    public void testInsertStringWithoutQuotes() {
+        String testCmd = sendCommandToServer("INSERT INTO tableName VALUES (SomeString);");
+        String expected = "[ERROR] Invalid value: SomeString";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testInsertExtraCommaBetweenValues() {
+        String testCmd = sendCommandToServer("INSERT INTO tableName VALUES ('ValidString', , 123);");
+        String expected = "[ERROR] Invalid value: ,";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testInsertOnlyCommaNoValue() {
+        String testCmd = sendCommandToServer("INSERT INTO tableName VALUES (,);");
+        String expected = "[ERROR] Invalid value: ,";
+        assertEquals(expected, testCmd);
+    }
+
+    //TODO edge case found! Last token check! fails at p.firstCheck
+//    @Test
+//    public void testInsertUnmatchedQuotes() {
+//        String testCmd = sendCommandToServer("INSERT INTO tableName VALUES ('Mismatch);");
+//        String expected = "[ERROR] Invalid value: 'Mismatch";
+//        assertEquals(expected, testCmd);
+//    }
+
+    @Test
+    public void testInsertInvalidFloatMultipleDots() {
+        String testCmd = sendCommandToServer("INSERT INTO tableName VALUES (123.4.56);");
+        String expected = "[ERROR] Invalid value: 123.4.56";
+        assertEquals(expected, testCmd);
+    }
+
+    @Test
+    public void testInsertInvalidValueCombination() {
+        String testCmd = sendCommandToServer("INSERT INTO tableName VALUES ('String', TRUE, 123, -45A.678);");
+        String expected = "[ERROR] Invalid value: -45A.678";
         assertEquals(expected, testCmd);
     }
 
