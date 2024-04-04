@@ -274,11 +274,24 @@ class DBInsertTest {
         assertEquals(expected, testCmd);
     }
 
+    @Test
+    public void testInsertEdgeCase() {
+        String randomDb = randomiseCasing(generateRandomName());
+        String randomTb = randomiseCasing(generateRandomName());
+        sendCommandToServer("create database " + randomDb + ";");
+        sendCommandToServer("use " + randomDb + ";");
+        sendCommandToServer("create table " + randomTb + ";");
+        sendCommandToServer("alter table " + randomTb + " add name" + ";");
+        String testCmd = sendCommandToServer("INSERT INTO " + randomTb + " VALUES ('mihir Gandecha');");
+        System.out.println(testCmd);
+        assertTrue(testCmd.contains("OK"));
+    }
     //test in query: perhaps create multiple databases dir, attempt to delete databases with .keep cannot be allowed.
     //DONE:test parsing (ie wrong spelling, no into tkn, no values tkn, no brackets, missing brackets, attribName)
     //DONE:test handling same column names handling
-    //test no columns inserted - working
-    //test just create table (no cols)-> insert into; working -> change msg if 0 cannot insert into id?
+    //DONE:test no columns inserted - working
+    //DONE:test just create table (no cols)-> insert into; working -> change msg if 0 cannot insert into id?
+
     //test alter works? Y. what if one col removed/added - does expected change? -> TODO: handle spacing (eg insert name age only adds name)
     //insert into TODO should mihir and 'mihir' work? it displays 'mihir' when output
     //test more columns inserted than there are: TODO just change messaging if no attrib,

@@ -16,13 +16,13 @@ public class Insert implements DBCmnd {
     }
 
     public void parse(Parser p) throws SyntaxException {
-        String intoToken = p.getNextToken();
-        if (!"into".equals(intoToken.toLowerCase())) throw new SyntaxException(" expected INTO token after INSERT.");
+        String intoToken = p.getNextToken().toLowerCase();
+        if (!"into".equalsIgnoreCase(intoToken)) throw new SyntaxException(" expected INTO token after INSERT.");
         String tableToken = p.getNextToken();
         if (!p.isTbAtrDbName(tableToken) || p.isKeyword(tableToken)) throw new SyntaxException(" " + tableToken + " is not a valid table name!");
         tableName = tableToken.toLowerCase();
         String nextToken = p.getNextToken().toLowerCase();
-        if (!"values".equals(nextToken)) {
+        if (!"values".equalsIgnoreCase(nextToken)) {
             throw new SyntaxException(" Expected VALUES after table name.");
         }
         nextToken = p.getNextToken();
