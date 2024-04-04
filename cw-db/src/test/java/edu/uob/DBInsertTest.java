@@ -223,7 +223,7 @@ class DBInsertTest {
         String expected = "[ERROR] Invalid value: -";
         assertEquals(expected, testCmd);
     }
-    //TODO check if needs to be surrounded in ''
+
     @Test
     public void testInsertStringWithoutQuotes() {
         String testCmd = sendCommandToServer("INSERT INTO tableName VALUES (SomeString);");
@@ -245,13 +245,13 @@ class DBInsertTest {
         assertEquals(expected, testCmd);
     }
 
-    //TODO edge case found! Last token check! fails at p.firstCheck
-//    @Test
-//    public void testInsertUnmatchedQuotes() {
-//        String testCmd = sendCommandToServer("INSERT INTO tableName VALUES ('Mismatch);");
-//        String expected = "[ERROR] Invalid value: 'Mismatch";
-//        assertEquals(expected, testCmd);
-//    }
+    //No time to change Tokeniser, however edge case found when tokeniser splits "'" causing mismatch to glue with ');'
+    @Test
+    public void testInsertUnmatchedQuotes() {
+        String testCmd = sendCommandToServer("INSERT INTO tableName VALUES ('Mismatch);");
+        String expected = "[ERROR] No ';' at end!";
+        assertEquals(expected, testCmd);
+    }
 
     @Test
     public void testInsertInvalidFloatMultipleDots() {
