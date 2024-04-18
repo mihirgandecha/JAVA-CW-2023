@@ -30,6 +30,11 @@ public final class GameServer {
     */
     public GameServer(File entitiesFile, File actionsFile) {
         // TODO implement your server logic here
+        try {
+            Locations l = new Locations(entitiesFile);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());;
+        }
     }
 
     /**
