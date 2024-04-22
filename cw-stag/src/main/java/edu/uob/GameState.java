@@ -23,11 +23,4 @@ public class GameState {
     paths = new ArrayList<>();
   }
 
-  boolean isFilePresent() {
-    return true;
-  }
-
-  void setParser() throws ParseException {
-  }
-
 }
