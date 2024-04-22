@@ -39,7 +39,6 @@ public final class GameServer {
     // 2. Ensure both exists
     // 3. Ensure in valid form of .dot and .xml
     // 4. Pass in state classes
-    GameState gameState = new GameState(entitiesFile, actionsFile);
   }
 
   /**
