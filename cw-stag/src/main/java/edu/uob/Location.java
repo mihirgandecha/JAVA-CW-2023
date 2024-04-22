@@ -23,4 +23,28 @@ public class Location extends GameEntity {
     this.furnitures = new ArrayList<>();
   }
 
+  public void addArtefact(Artefact artefact) {
+
+  }
+
+  public void getArtefact(Artefact artefact) {
+
+  }
+
+
+  public void addCharacters(Character character) {
+
+  }
+
+  public void getCharacters(Character character) {
+
+  }
+
+  public void addFurniture(Furniture furniture) {
+
+  }
+
+  public void getFurniture(Furniture furniture) {
+
+  }
 }
