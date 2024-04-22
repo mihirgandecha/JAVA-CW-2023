@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Java CI for DB
+name: Java CI for STAG
 
 on:
   push:
@@ -30,11 +30,11 @@ jobs:
     
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-      working-directory: cw-db
+      working-directory: cw-stag
     
     - name: Build and Run Tests
       run: mvn test --batch-mode --fail-at-end
-      working-directory: cw-db
+      working-directory: cw-stag
     
     - name: Publish Test Report
       if: success() || failure()
