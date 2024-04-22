@@ -34,6 +34,11 @@ public final class GameServer {
    */
   public GameServer(File entitiesFile, File actionsFile) {
     // TODO implement your server logic here
+    // 1. when running java GameServer, ensure entitiesFile and actionsFile is given
+    // in command
+    // 2. Ensure both exists
+    // 3. Ensure in valid form of .dot and .xml
+    // 4. Pass in state classes
     // Parser class for parsing entities + actionsFile
     try {
       Locations l = new Locations(entitiesFile);
