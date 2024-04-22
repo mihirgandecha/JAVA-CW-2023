@@ -32,13 +32,14 @@ public final class GameServer {
    * @param actionsFile  The game configuration file containing all game actions
    *                     to use in your game
    */
-  public GameServer(File entitiesFile, File actionsFile) {
+  public GameServer(File entitiesFile, File actionsFile) throws Exception {
     // TODO implement your server logic here
     // 1. when running java GameServer, ensure entitiesFile and actionsFile is given
     // in command
     // 2. Ensure both exists
     // 3. Ensure in valid form of .dot and .xml
     // 4. Pass in state classes
+    GameState gameState = new GameState(entitiesFile, actionsFile);
   }
 
   /**

@@ -13,7 +13,7 @@ import com.alexmerz.graphviz.objects.Graph;
 public class GameState { // extends GameEntity - d.set for storing entities (furniture, character,
                                // artefacts)
 
-  public GameState(File entitiesFile) throws Exception {
+  public GameState(File entitiesFile, File actionsFile) throws Exception {
 
   }
 
