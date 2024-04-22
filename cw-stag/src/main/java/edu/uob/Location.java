@@ -1,7 +1,6 @@
 package edu.uob;
 
 import java.util.ArrayList;
-import java.io.File;
 import java.util.List;
 
 /*
@@ -14,7 +13,6 @@ public class Location extends GameEntity {
   private List<Character> characters;
   private List<Furniture> furnitures;
 
-
   public Location(String name, String description) throws Exception {
     //saving locations itself as Game Entity
     super(name, description);
@@ -24,27 +22,26 @@ public class Location extends GameEntity {
   }
 
   public void addArtefact(Artefact artefact) {
-
+    this.artefacts.add(artefact);
   }
 
-  public void getArtefact(Artefact artefact) {
-
+  public List<Artefact> getArtefact(Artefact artefact) {
+    return this.artefacts;
   }
-
 
   public void addCharacters(Character character) {
-
+    this.characters.add(character);
   }
 
-  public void getCharacters(Character character) {
-
+  public List<Character> getCharacters(Character character) {
+    return this.characters;
   }
 
   public void addFurniture(Furniture furniture) {
-
+    this.furnitures.add(furniture);
   }
 
-  public void getFurniture(Furniture furniture) {
-
+  public List<Furniture> getFurniture(Furniture furniture) {
+    return this.furnitures;
   }
 }
