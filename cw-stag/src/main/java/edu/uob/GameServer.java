@@ -39,13 +39,6 @@ public final class GameServer {
     // 2. Ensure both exists
     // 3. Ensure in valid form of .dot and .xml
     // 4. Pass in state classes
-    // Parser class for parsing entities + actionsFile
-    try {
-      Locations l = new Locations(entitiesFile);
-    } catch (Exception e) {
-      System.out.println("Error: " + e.getMessage());
-      ;
-    }
   }
 
   /**
