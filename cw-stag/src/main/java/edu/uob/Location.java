@@ -2,21 +2,25 @@ package edu.uob;
 
 import java.util.ArrayList;
 import java.io.File;
+import java.util.List;
 
 /*
     Represents a location with a name, description, and a collection of entities within it.
     Entities include: Artefact, Character, and Furniture.
  */
 
-public class Location {
-  ArrayList<Furniture> furnitures;
-  ArrayList<Character> characters;
-  ArrayList<Path> paths;
+public class Location extends GameEntity {
+  private List<Artefact> artefacts;
+  private List<Character> characters;
+  private List<Furniture> furnitures;
 
-  public Location (File entitiesFile, File actionsFile) throws Exception {
-    furnitures = new ArrayList<>();
-    characters = new ArrayList<>();
-    paths = new ArrayList<>();
+
+  public Location(String name, String description) throws Exception {
+    //saving locations itself as Game Entity
+    super(name, description);
+    this.artefacts = new ArrayList<>();
+    this.characters = new ArrayList<>();
+    this.furnitures = new ArrayList<>();
   }
 
 }
