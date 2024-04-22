@@ -10,11 +10,17 @@ import com.alexmerz.graphviz.objects.Graph;
 
 // 1. list for checking if location is true
 //
-public class GameState { // extends GameEntity - d.set for storing entities (furniture, character,
-                               // artefacts)
+public class GameState {
+  ArrayList<Location> locations;
+  ArrayList<Furniture> furnitures;
+  ArrayList<Character> characters;
+  ArrayList<Path> paths;
 
   public GameState(File entitiesFile, File actionsFile) throws Exception {
-
+    locations = new ArrayList<>();
+    furnitures = new ArrayList<>();
+    characters = new ArrayList<>();
+    paths = new ArrayList<>();
   }
 
   boolean isFilePresent() {
