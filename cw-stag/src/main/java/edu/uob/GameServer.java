@@ -14,7 +14,7 @@ public final class GameServer {
 
   private static final char END_OF_TRANSMISSION = 4;
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws Exception {
     File entitiesFile = Paths.get("config" + File.separator + "basic-entities.dot").toAbsolutePath().toFile();
     File actionsFile = Paths.get("config" + File.separator + "basic-actions.xml").toAbsolutePath().toFile();
     GameServer server = new GameServer(entitiesFile, actionsFile);
@@ -32,15 +32,13 @@ public final class GameServer {
    * @param actionsFile  The game configuration file containing all game actions
    *                     to use in your game
    */
-  public GameServer(File entitiesFile, File actionsFile) {
+  public GameServer(File entitiesFile, File actionsFile) throws Exception {
     // TODO implement your server logic here
-    // Parser class for parsing entities + actionsFile
-    try {
-      Locations l = new Locations(entitiesFile);
-    } catch (Exception e) {
-      System.out.println("Error: " + e.getMessage());
-      ;
-    }
+    // 1. when running java GameServer, ensure entitiesFile and actionsFile is given
+    // in command
+    // 2. Ensure both exists
+    // 3. Ensure in valid form of .dot and .xml
+    // 4. Pass in state classes
   }
 
   /**
