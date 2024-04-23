@@ -86,6 +86,7 @@ class ExampleSTAGTests {
         gameMap.add(new Location("cabin", "cosy area"));
         Player playerOne = new Player("simon", gameMap.get(1));
         assertEquals("cabin",playerOne.getPlayerCurrentLocation().getName());
+        playerOne = new Player("simon", gameMap.get(0));
+        assertEquals("forest",playerOne.getPlayerCurrentLocation().getName());
     }
-
 }
