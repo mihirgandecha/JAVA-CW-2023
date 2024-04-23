@@ -53,8 +53,18 @@ public final class GameServer {
    *
    * @param command The incoming command to be processed
    */
-  public String handleCommand(String command) {
+  public String handleCommand(String command) { //extends Exception
     // TODO implement your server logic here
+//    try {
+//      if (command.equals("end")) {
+//        throw new GameError("Cannot end game");
+//      }
+//      else{
+//        return "";
+//      }
+//    } catch (Exception e){
+//      return "" + e.getMessage();
+//    }
     return "";
   }
 
@@ -62,9 +72,9 @@ public final class GameServer {
     return map.size();
   }
 
-  public int getMapIndexOfLocation(String locationRequested){
-
-  }
+//  public int getMapIndexOfLocation(String locationRequested){
+//
+//  }
 
   /**
    * Do not change the following method signature or we won't be able to mark your
