@@ -79,4 +79,13 @@ class ExampleSTAGTests {
         //Now get name,desc,type of different entities to locations (extra work?)
     }
 
+    @Test
+    void testBasicAddNewPlayerToGameMap() throws Exception {
+        ArrayList<Location>gameMap = server.map;
+        gameMap.add(new Location("forest", "dark scary woodlands area"));
+        gameMap.add(new Location("cabin", "cosy area"));
+        Player playerOne = new Player("simon", gameMap.get(1));
+        assertEquals("cabin",playerOne.getPlayerCurrentLocation().getName());
+    }
+
 }
