@@ -72,8 +72,15 @@ public final class GameServer {
     return map.size();
   }
 
-//  public int getMapIndexOfLocation(String locationRequested){
-//
+//  public ArrayList<Location> getMapLocations(){
+//    return map;
+//  }
+
+//  public String getMapNameGivenIndex(int index){
+//    if(locationRequested == null){
+//      return 1;
+//    }
+//    if map.
 //  }
 
   /**
