@@ -62,6 +62,10 @@ public final class GameServer {
     return map.size();
   }
 
+  public int getMapIndexOfLocation(String locationRequested){
+
+  }
+
   /**
    * Do not change the following method signature or we won't be able to mark your
    * submission
