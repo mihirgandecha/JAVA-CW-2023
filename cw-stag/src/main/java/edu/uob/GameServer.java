@@ -9,8 +9,10 @@ import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 public final class GameServer {
+  private ArrayList<Location>map;
 
   private static final char END_OF_TRANSMISSION = 4;
 
@@ -39,6 +41,7 @@ public final class GameServer {
     // 2. Ensure both exists
     // 3. Ensure in valid form of .dot and .xml
     // 4. Pass in state classes
+    map = new ArrayList<>();
   }
 
   /**
