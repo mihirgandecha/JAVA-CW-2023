@@ -30,30 +30,33 @@ public class LocationTest {
     public void testAddAndRetrieveArtefact() throws Exception {
         Artefact axe = new Artefact("Axe", "A razor-sharp axe");
         location.addArtefact(axe);
-
         List<Artefact> artefacts = location.getArtefact(null);
+
         assertEquals(1, artefacts.size());
         assertEquals("Axe", artefacts.get(0).getName());
+        assertEquals(GameEntityType.ARTEFACT, artefacts.get(0).getType());
     }
 
     @Test
     public void testAddAndRetrieveCharacter() {
         Character elf = new Character("Elf", "A grumpy forest elf");
         location.addCharacters(elf);
-
         List<Character> characters = location.getCharacters(null);
+
         assertEquals(1, characters.size());
         assertEquals("Elf", characters.get(0).getName());
+        assertEquals(GameEntityType.CHARACTER, characters.get(0).getType());
     }
 
     @Test
     public void testAddAndRetrieveFurniture() {
         Furniture chair = new Furniture("Chair", "A comfortable wooden chair");
         location.addFurniture(chair);
-
         List<Furniture> furnitures = location.getFurniture(null);
+
         assertEquals(1, furnitures.size());
         assertEquals("Chair", furnitures.get(0).getName());
+        assertEquals(GameEntityType.FURNITURE, furnitures.get(0).getType());
     }
 
     @Test
@@ -66,6 +69,7 @@ public class LocationTest {
     @Test
     public void testAddNullArtefact() {
         location.addArtefact(null);
+
         assertEquals(1, location.getArtefact(null).size());
         assertNull(location.getArtefact(null).get(0));
     }
@@ -73,6 +77,7 @@ public class LocationTest {
     @Test
     public void testAddNullCharacter() {
         location.addCharacters(null);
+
         assertEquals(1, location.getCharacters(null).size());
         assertNull(location.getCharacters(null).get(0));
     }
@@ -80,6 +85,7 @@ public class LocationTest {
     @Test
     public void testAddNullFurniture() {
         location.addFurniture(null);
+
         assertEquals(1, location.getFurniture(null).size());
         assertNull(location.getFurniture(null).get(0));
     }

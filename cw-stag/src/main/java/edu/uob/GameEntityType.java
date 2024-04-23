@@ -10,7 +10,9 @@ public enum GameEntityType {
     //Characters: The various creatures or people involved in game
     CHARACTER,
     //Players: A special kind of character that represents the user in the game
-    PLAYER
+    PLAYER,
+    //Path:
+    PATH
 }
 
 

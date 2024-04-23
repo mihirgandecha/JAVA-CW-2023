@@ -13,9 +13,9 @@ public class Location extends GameEntity {
   private List<Character> characters;
   private List<Furniture> furnitures;
 
-  public Location(String name, String description, GameEntityType type) throws Exception {
+  public Location(String name, String description) throws Exception {
     //saving locations itself as Game Entity
-    super(name, description, type);
+    super(name, description, GameEntityType.LOCATION);
     this.artefacts = new ArrayList<>();
     this.characters = new ArrayList<>();
     this.furnitures = new ArrayList<>();

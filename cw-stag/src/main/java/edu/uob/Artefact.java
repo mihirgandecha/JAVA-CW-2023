@@ -1,7 +1,7 @@
 package edu.uob;
 
 public class Artefact extends GameEntity {
-    public Artefact(String name, String description, GameEntity type) {
-        super(name, description, type);
+    public Artefact(String name, String description) {
+        super(name, description, GameEntityType.ARTEFACT);
     }
 }

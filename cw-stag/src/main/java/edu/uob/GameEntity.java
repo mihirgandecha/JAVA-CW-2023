@@ -4,7 +4,7 @@ public abstract class GameEntity
 {
     private String name;
     private String description;
-    private GameEntity type;
+    private GameEntityType type;
 
     public GameEntity(String name, String description, GameEntityType type)
     {
@@ -21,5 +21,10 @@ public abstract class GameEntity
     public String getDescription()
     {
         return description;
+    }
+
+    public GameEntityType getType()
+    {
+        return type;
     }
 }
