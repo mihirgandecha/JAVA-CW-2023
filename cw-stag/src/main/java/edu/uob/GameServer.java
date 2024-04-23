@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public final class GameServer {
-  private ArrayList<Location>map;
+  ArrayList<Location>map;
 
   private static final char END_OF_TRANSMISSION = 4;
 
@@ -56,6 +56,10 @@ public final class GameServer {
   public String handleCommand(String command) {
     // TODO implement your server logic here
     return "";
+  }
+
+  public int getMapSize(){
+    return map.size();
   }
 
   /**

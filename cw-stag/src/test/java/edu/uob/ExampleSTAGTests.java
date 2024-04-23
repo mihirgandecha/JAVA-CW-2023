@@ -1,14 +1,14 @@
 package edu.uob;
 
-import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.nio.file.Paths;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class ExampleSTAGTests {
 
@@ -65,5 +65,17 @@ class ExampleSTAGTests {
 //  }
 
   // Add more unit tests or integration tests here.
+    @Test
+    void testAddingBasicEntitiesToGameMap() throws Exception {
+        ArrayList<Location>gameMap = server.map;
+        assertTrue(gameMap.isEmpty());
+        gameMap.add(new Location("forest", "dark scary woodlands area"));
+        assertTrue(gameMap.size() == 1);
+        gameMap.add(new Location("cabin", "cosy area"));
+        assertTrue(gameMap.size() == 2);
+        gameMap.add(new Location("castle", "boogy area"));
+        assertTrue(gameMap.size() == 3);
+        assertEquals(3, server.getMapSize());
+    }
 
 }
