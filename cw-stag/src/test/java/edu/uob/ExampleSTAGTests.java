@@ -76,6 +76,7 @@ class ExampleSTAGTests {
         gameMap.add(new Location("castle", "boogy area"));
         assertTrue(gameMap.size() == 3);
         assertEquals(3, server.getMapSize());
+        //Now get name,desc,type of different entities to locations (extra work?)
     }
 
 }
