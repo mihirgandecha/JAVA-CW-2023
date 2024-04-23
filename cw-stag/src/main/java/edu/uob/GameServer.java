@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 public final class GameServer {
   ArrayList<Location>map;
+  //Need to Map<String, Location>gameMap
 
   private static final char END_OF_TRANSMISSION = 4;
 
