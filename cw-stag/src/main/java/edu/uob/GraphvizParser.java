@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import com.alexmerz.graphviz.ParseException;
 import com.alexmerz.graphviz.Parser;
 import com.alexmerz.graphviz.objects.Graph;
+import com.alexmerz.graphviz.objects.Node;
 
 public class GraphvizParser {
     private final String entityFileName;
@@ -50,6 +51,10 @@ public class GraphvizParser {
         this.wholeDocument = p.getGraphs();
     }
 
+    public boolean checkWholeDocument(){
+        return (wholeDocument == null || wholeDocument.isEmpty());
+    }
+
     public ArrayList<Graph> getWholeDocumentAsGraph(){
         return p.getGraphs();
     }
@@ -60,6 +65,14 @@ public class GraphvizParser {
 
     public ArrayList<Graph> getClusters(){
         return p.getGraphs().get(0).getSubgraphs();
+    }
+
+    public boolean checkClusterSubGraphs(){
+        return (clusters == null || clusters.isEmpty());
+    }
+
+    public Location loadLocationFromNode(Node node){
+
     }
 
     public String toString() {
