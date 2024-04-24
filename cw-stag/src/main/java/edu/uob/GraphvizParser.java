@@ -21,15 +21,17 @@ public class GraphvizParser {
     public GraphvizParser(String entityFileName) throws FileNotFoundException {
         this.entityFileName = entityFileName;
         this.entityFilePath = Paths.get("config" + File.separator + entityFileName).toAbsolutePath();
+        this.p = new Parser();
         this.locationArrayList = new ArrayList<>();
     }
 
+    //Takes .dot file and parses to load elements into entities:
     public void setup() throws GameError, FileNotFoundException, ParseException {
         if (doesDOTFileExist()){
-            reader = new FileReader(Paths.get("config" + File.separator + entityFileName).toAbsolutePath().toFile());
+            reader = new FileReader(this.entityFilePath.toFile());
+            p.parse(reader);
+            setWholeDocument();
         }
-        p = new Parser();
-        p.parse(reader);
     }
 
     public boolean doesDOTFileExist(){
@@ -65,7 +67,7 @@ public class GraphvizParser {
         try (BufferedReader br = new BufferedReader(new FileReader(String.valueOf(entityFilePath)))) {
             String line;
             while ((line = br.readLine()) != null) {
-                content.append(line).append("\n"); // Keep newline character for accurate comparison
+                content.append(line).append("\n");
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
