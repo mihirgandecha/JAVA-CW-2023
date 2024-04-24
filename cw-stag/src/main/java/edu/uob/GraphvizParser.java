@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import com.alexmerz.graphviz.ParseException;
@@ -100,23 +101,29 @@ public class GraphvizParser {
     public Node loadLocationsAndEntities() throws Exception {
         Graph rootGraph = getRootGraph();
         List<Graph> clusters = getClusters();
+//        int size = clusters.size();
 
-        for (Graph cluster : clusters) {
-            List<Node> nodesList = cluster.getNodes(false);
-            if (isNodeListEmpty(nodesList)) {
-                throw new GameError("Node list is empty");
+        String locations = clusters.get(0).getAttribute("locations");
+        List<Node> nodesList = clusters.get(0).getNodes(true);
+        int size = nodesList.size();
+        if (isNodeListEmpty(nodesList)) {
+            throw new GameError("Node list is empty");
+        }
+        for (int i = 0; i < size; i++) {
+            Node locationNode = nodesList.get(i);
+            String description = locationNode.getAttribute("description");
+            if (locationNode == null || description == null || description.isEmpty()) {
+                continue;
             }
-            Node locationNode = nodesList.get(0);
+            if (locationNode == null || locationNode.getAttribute("description").isEmpty()){
+                continue;
+            }
             String locationName = locationNode.getId().getId();
             String locationDesc = locationNode.getAttribute("description");
             Location location = new Location(locationName, locationDesc);
-            addLocation(location);
-            List<Graph> entitySubGraphs = cluster.getSubgraphs();
-//            addLocationEntities(entitySubGraphs, location);
             return locationNode;
         }
         return null;
-
     }
 
     private Location createLocationFromNode(Node node) throws Exception {
