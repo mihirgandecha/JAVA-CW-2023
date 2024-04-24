@@ -4,7 +4,6 @@ import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
 import com.alexmerz.graphviz.ParseException;
@@ -84,65 +83,62 @@ public class GraphvizParser {
         return wholeDocument.get(0);
     }
 
-    private boolean isNodeListEmpty(List<Node> nodeList) {
+    private boolean checkNodeListIsEmpty(List<Node> nodeList) {
         return nodeList == null || nodeList.isEmpty();
     }
 
-    public int getClusterNodeListSize(){
-        List<Graph> clusters = getClusters();
-        for (Graph cluster : clusters) {
-            List<Node> nodesList = cluster.getNodes(false);
-            return nodesList.size();
-        }
-        return 1;
+    public List<Node> getNodesOfLocations () {
+        return getClusters().get(0).getNodes(true);
     }
 
-    //TODO change to private and include in setup()
-    public Node loadLocationsAndEntities() throws Exception {
-        Graph rootGraph = getRootGraph();
-        List<Graph> clusters = getClusters();
-//        int size = clusters.size();
+    public int getSizeOfLocationNodes (){
+        return getNodesOfLocations().size();
+    }
 
-        String locations = clusters.get(0).getAttribute("locations");
-        List<Node> nodesList = clusters.get(0).getNodes(true);
-        int size = nodesList.size();
-        if (isNodeListEmpty(nodesList)) {
-            throw new GameError("Node list is empty");
+    //TODO check if line break is ok
+    public boolean checkLocationHasNameAndDescription(Node lNode) {
+        return lNode != null &&
+                lNode.getAttribute("name") != null &&
+                !lNode.getAttribute("name").isEmpty() &&
+                lNode.getAttribute("description") != null &&
+                !lNode.getAttribute("description").isEmpty();
+    }
+
+    private List<List<Node>> storeLocationClusters(List<Graph> graphs){
+        List<List<Node>> nodeLists = new ArrayList<>();
+        for (Graph graph : graphs) {
+            ArrayList<Node> Node = graph.getNodes(true);
+            nodeLists.add(Node);
         }
-        for (int i = 0; i < size; i++) {
-            Node locationNode = nodesList.get(i);
-            String description = locationNode.getAttribute("description");
-            if (locationNode == null || description == null || description.isEmpty()) {
-                continue;
-            }
-            if (locationNode == null || locationNode.getAttribute("description").isEmpty()){
-                continue;
-            }
-            String locationName = locationNode.getId().getId();
-            String locationDesc = locationNode.getAttribute("description");
-            Location location = new Location(locationName, locationDesc);
-            return locationNode;
-        }
-        return null;
+        return nodeLists;
+    }
+    //TODO change to private and include in setup()
+    public void getLocationLoadedIntoClasses() throws Exception {
+        List<Graph> graphs = getClusters().get(0).getSubgraphs();
+        int locationCount = graphs.size();
+        List<List<Node>> nodeLists = storeLocationClusters(graphs);
+//        List<Node> lNodes = getNodesOfLocations();
+//        ArrayList<Node> nodes = graphs.get(0).getNodes(true);
+//        ArrayList<Node> nodes2 = graphs.get(1).getNodes(true);
+//        ArrayList<Node> nodes3 = graphs.get(2).getNodes(true);
+//        ArrayList<Node> nodes4 = graphs.get(3).getNodes(true);
+//        ArrayList<Node> nodes5 = graphs.get(4).getNodes(true);
+//
+//        int size = getSizeOfLocationNodes();
+//        if (checkNodeListIsEmpty(lNodes)) throw new GameError("Node list is empty");
+//        for (int i = 0; i < size; i++) {
+//            Node locationNode = lNodes.get(i);
+//            if (!checkLocationHasNameAndDescription(locationNode)) {
+//                throw new GameError("Node " + locationNode.getId() + " has no name and description");
+//            }
+//            Location l = createLocationFromNode(locationNode);
+//            locationList.add(l);
+//        }
     }
 
     private Location createLocationFromNode(Node node) throws Exception {
-        String locationName = node.getId().getId();
-        String description = node.getAttribute("description");
-        return new Location(locationName, description);
+        return new Location(node.getId().getId(), node.getAttribute("description"));
     }
-
-    //TODO null pointer exception
-    private void addLocation(Location location) {
-        locationList.add(location);
-    }
-
-
-
-    public void loadEntities() {
-
-    }
-
 
     public String toString() {
         StringBuilder content = new StringBuilder();
