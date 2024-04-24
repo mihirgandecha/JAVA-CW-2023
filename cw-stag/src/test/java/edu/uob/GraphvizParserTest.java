@@ -2,6 +2,7 @@ package edu.uob;
 
 import com.alexmerz.graphviz.ParseException;
 import com.alexmerz.graphviz.objects.Graph;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
@@ -10,6 +11,13 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GraphvizParserTest {
+
+    @BeforeEach
+    void setup() throws GameError, FileNotFoundException, ParseException {
+        GraphvizParser p = new GraphvizParser("basic-entities.dot");
+        p.setup();
+    }
+
 
     //100% coverage
     @Test
@@ -34,14 +42,11 @@ class GraphvizParserTest {
 
     //Testing Setup
     @Test
-    public void parserGraphIsSetupSuccessfully() throws Exception {
-        GraphvizParser graphvizParser = new GraphvizParser("basic-entities.dot");
-        graphvizParser.setup();
+    public void test() {
     }
 
     @Test
     public void testGetWholeGraphIsSizeOne() throws FileNotFoundException, GameError, ParseException {
-
         GraphvizParser graphvizParser = new GraphvizParser("basic-entities.dot");
         graphvizParser.setup();
         ArrayList<Graph> g = graphvizParser.getWholeDocumentGraphList();
