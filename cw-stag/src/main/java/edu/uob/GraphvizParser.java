@@ -14,8 +14,8 @@ public class GraphvizParser {
     private Path entityFilePath;
     private Parser p;
     private FileReader reader;
-    private ArrayList<Graph> wholeDocument;
-//    private ArrayList<Graph> sections;
+    public ArrayList<Graph> wholeDocument;
+    public ArrayList<Graph> clusters;
     private ArrayList<Location> locationArrayList;
 
     public GraphvizParser(String entityFileName) throws FileNotFoundException {
@@ -44,6 +44,21 @@ public class GraphvizParser {
         return p.getGraphs();
     }
 
+    public void setWholeDocument() {
+        this.wholeDocument = p.getGraphs();
+    }
+
+    public ArrayList<Graph> getWholeDocumentAsGraph(){
+        return p.getGraphs();
+    }
+
+    public void setClusterSubGraphs() {
+        this.clusters = getClusters();
+    }
+
+    public ArrayList<Graph> getClusters(){
+        return p.getGraphs().get(0).getSubgraphs();
+    }
     public String toString() {
         StringBuilder content = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new FileReader(String.valueOf(entityFilePath)))) {

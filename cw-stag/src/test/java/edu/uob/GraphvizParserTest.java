@@ -11,10 +11,11 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GraphvizParserTest {
+    GraphvizParser p;
 
     @BeforeEach
     void setup() throws GameError, FileNotFoundException, ParseException {
-        GraphvizParser p = new GraphvizParser("basic-entities.dot");
+        p = new GraphvizParser("basic-entities.dot");
         p.setup();
     }
 
@@ -52,5 +53,15 @@ class GraphvizParserTest {
         ArrayList<Graph> g = graphvizParser.getWholeDocumentGraphList();
         assertEquals(1, g.size());
         assertThrows(IndexOutOfBoundsException.class, () -> graphvizParser.getWholeDocumentGraphList().get(1));
+    }
+
+
+    @Test
+    public void setWholeDocumentGraphIsResetEachTime() throws FileNotFoundException, GameError, ParseException {
+        p.setWholeDocument();
+        assertEquals(1, p.wholeDocument.size());
+        System.out.println(p.wholeDocument);
+        System.out.println("---------------");
+        System.out.println(p.wholeDocument.get(0).getSubgraphs());
     }
 }
