@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 public final class GameServer {
   ArrayList<Location>map;
+  //Need to Map<String, Location>gameMap
 
   private static final char END_OF_TRANSMISSION = 4;
 
@@ -53,14 +54,35 @@ public final class GameServer {
    *
    * @param command The incoming command to be processed
    */
-  public String handleCommand(String command) {
+  public String handleCommand(String command) { //extends Exception
     // TODO implement your server logic here
+//    try {
+//      if (command.equals("end")) {
+//        throw new GameError("Cannot end game");
+//      }
+//      else{
+//        return "";
+//      }
+//    } catch (Exception e){
+//      return "" + e.getMessage();
+//    }
     return "";
   }
 
   public int getMapSize(){
     return map.size();
   }
+
+//  public ArrayList<Location> getMapLocations(){
+//    return map;
+//  }
+
+//  public String getMapNameGivenIndex(int index){
+//    if(locationRequested == null){
+//      return 1;
+//    }
+//    if map.
+//  }
 
   /**
    * Do not change the following method signature or we won't be able to mark your
