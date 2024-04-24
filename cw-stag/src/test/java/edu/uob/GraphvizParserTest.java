@@ -84,6 +84,8 @@ class GraphvizParserTest {
     public void getGameMap() throws Exception {
         p.setupGameMap();
         Map<String, Location> gameMap = p.getGameMap();
+        System.out.println(gameMap.get("forest").toString());
+
 
     }
 

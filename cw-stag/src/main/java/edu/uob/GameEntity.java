@@ -27,4 +27,8 @@ public abstract class GameEntity
     {
         return type;
     }
+    @Override
+    public String toString() {
+        return "GameEntity{name='" + name + "', description='" + description + "', type=" + type + "}";
+    }
 }
