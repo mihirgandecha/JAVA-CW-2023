@@ -112,7 +112,7 @@ public class GraphvizParser {
         return nodeLists;
     }
     //TODO change to private and include in setup()
-    public void getLocationLoadedIntoClasses() throws Exception {
+    public void setupGameMap() throws Exception {
         List<Graph> graphs = getClusters().get(0).getSubgraphs();
         int locationCount = graphs.size();
         List<List<Node>> nodeLists = storeLocationClusters(graphs);
@@ -129,6 +129,10 @@ public class GraphvizParser {
 
     private Location createLocationFromNode(Node node) throws Exception {
         return new Location(node.getId().getId(), node.getAttribute("description"));
+    }
+
+    public Map<String, Location> getGameMap() {
+        return this.gameMap;
     }
 
     public String toString() {

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -80,8 +81,9 @@ class GraphvizParserTest {
 
 
     @Test
-    public void tester() throws Exception {
-        p.getLocationLoadedIntoClasses();
+    public void getGameMap() throws Exception {
+        p.setupGameMap();
+        Map<String, Location> gameMap = p.getGameMap();
 
     }
 
