@@ -77,4 +77,12 @@ class GraphvizParserTest {
 //        assertTrue(p.clusters.contains("locations"));
 //        assertTrue(p.clusters.contains("paths"));
     }
+
+
+    @Test
+    public void tester() throws Exception {
+        p.loadLocationsAndEntities();
+        System.out.println(p.loadLocationsAndEntities());
+
+    }
 }

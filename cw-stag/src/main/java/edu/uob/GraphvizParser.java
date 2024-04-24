@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.alexmerz.graphviz.ParseException;
 import com.alexmerz.graphviz.Parser;
@@ -18,6 +19,7 @@ public class GraphvizParser {
     public ArrayList<Graph> wholeDocument;
     public ArrayList<Graph> clusters;
     private ArrayList<Location> locationArrayList;
+    private List<Location> locationList;
 
     public GraphvizParser(String entityFileName) throws FileNotFoundException {
         this.entityFileName = entityFileName;
@@ -71,9 +73,57 @@ public class GraphvizParser {
         return (clusters == null || clusters.isEmpty());
     }
 
-    public Location loadLocationFromNode(Node node){
+    public String getLocationFromNode(Node node){
+        String lName = node.getId().getId();
+        return lName;
+    }
+
+    private Graph getRootGraph() {
+        checkWholeDocument();
+        return wholeDocument.get(0);
+    }
+
+
+    //TODO change to private and include in setup()
+    public Node loadLocationsAndEntities() throws Exception {
+        Graph rootGraph = getRootGraph();
+        List<Graph> subGraphs = getClusters();
+
+        for (Graph subGraph : subGraphs) {
+            List<Node> nodesList = subGraph.getNodes(false);
+            if (nodesList.isEmpty()) {
+                continue;
+            }
+            Node locationNode = nodesList.get(0);
+            String locationName = locationNode.getId().getId();
+            String locationDesc = locationNode.getAttribute("description");
+            Location location = new Location(locationName, locationDesc);
+            addLocation(location);
+            List<Graph> entitySubGraphs = subGraph.getSubgraphs();
+//            addLocationEntities(entitySubGraphs, location);
+            return locationNode;
+        }
+        return null;
 
     }
+
+    private Location createLocationFromNode(Node node) throws Exception {
+        String locationName = node.getId().getId();
+        String description = node.getAttribute("description");
+        return new Location(locationName, description);
+    }
+
+    //TODO null pointer exception
+    private void addLocation(Location location) {
+        locationList.add(location);
+    }
+
+
+
+    public void loadEntities() {
+
+    }
+
 
     public String toString() {
         StringBuilder content = new StringBuilder();
