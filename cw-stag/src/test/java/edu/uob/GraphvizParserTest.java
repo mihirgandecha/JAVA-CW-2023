@@ -79,10 +79,18 @@ class GraphvizParserTest {
     }
 
 
-    @Test
-    public void tester() throws Exception {
-        p.loadLocationsAndEntities();
-        System.out.println(p.loadLocationsAndEntities());
+//    @Test
+//    public void tester() throws Exception {
+//        p.loadLocationsAndEntities();
+//        System.out.println(p.loadLocationsAndEntities());
+//
+//    }
 
+    @Test
+    void testBasicEntitiesNodeSize(){
+        int size = p.getClusterNodeListSize();
+        assertEquals(18, size);
     }
+
+
 }

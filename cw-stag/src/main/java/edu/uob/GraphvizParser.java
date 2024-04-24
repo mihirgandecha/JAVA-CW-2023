@@ -83,23 +83,35 @@ public class GraphvizParser {
         return wholeDocument.get(0);
     }
 
+    private boolean isNodeListEmpty(List<Node> nodeList) {
+        return nodeList == null || nodeList.isEmpty();
+    }
+
+    public int getClusterNodeListSize(){
+        List<Graph> clusters = getClusters();
+        for (Graph cluster : clusters) {
+            List<Node> nodesList = cluster.getNodes(false);
+            return nodesList.size();
+        }
+        return 1;
+    }
 
     //TODO change to private and include in setup()
     public Node loadLocationsAndEntities() throws Exception {
         Graph rootGraph = getRootGraph();
-        List<Graph> subGraphs = getClusters();
+        List<Graph> clusters = getClusters();
 
-        for (Graph subGraph : subGraphs) {
-            List<Node> nodesList = subGraph.getNodes(false);
-            if (nodesList.isEmpty()) {
-                continue;
+        for (Graph cluster : clusters) {
+            List<Node> nodesList = cluster.getNodes(false);
+            if (isNodeListEmpty(nodesList)) {
+                throw new GameError("Node list is empty");
             }
             Node locationNode = nodesList.get(0);
             String locationName = locationNode.getId().getId();
             String locationDesc = locationNode.getAttribute("description");
             Location location = new Location(locationName, locationDesc);
             addLocation(location);
-            List<Graph> entitySubGraphs = subGraph.getSubgraphs();
+            List<Graph> entitySubGraphs = cluster.getSubgraphs();
 //            addLocationEntities(entitySubGraphs, location);
             return locationNode;
         }
