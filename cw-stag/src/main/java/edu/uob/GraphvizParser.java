@@ -59,6 +59,7 @@ public class GraphvizParser {
     public ArrayList<Graph> getClusters(){
         return p.getGraphs().get(0).getSubgraphs();
     }
+
     public String toString() {
         StringBuilder content = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new FileReader(String.valueOf(entityFilePath)))) {

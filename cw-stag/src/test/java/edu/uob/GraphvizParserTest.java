@@ -57,11 +57,24 @@ class GraphvizParserTest {
 
 
     @Test
-    public void setWholeDocumentGraphIsResetEachTime() throws FileNotFoundException, GameError, ParseException {
+    public void topLevelGraphHasKeywordsLayoutAndSplinesButClustersDoesNot() throws FileNotFoundException, GameError, ParseException {
         p.setWholeDocument();
         assertEquals(1, p.wholeDocument.size());
-        System.out.println(p.wholeDocument);
-        System.out.println("---------------");
-        System.out.println(p.wholeDocument.get(0).getSubgraphs());
+//        System.out.println(p.wholeDocument);
+//        System.out.println("---------------");
+//        System.out.println(p.wholeDocument.get(0).getSubgraphs());
+        p.setClusterSubGraphs();
+//        System.out.println(p.clusters);
+//        assertTrue(p.wholeDocument.contains("locations"));
+//        assertTrue(p.wholeDocument.contains("paths"));
+//        boolean hasLocations = p.clusters.stream()
+//                .anyMatch(graph -> graph.getType().equals("locations"));
+//        boolean hasPaths = p.clusters.stream()
+//                .anyMatch(graph -> graph.getType().equals("paths"));
+//        assertTrue(hasLocations);
+//        assertTrue(hasPaths);
+//
+//        assertTrue(p.clusters.contains("locations"));
+//        assertTrue(p.clusters.contains("paths"));
     }
 }
