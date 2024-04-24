@@ -4,7 +4,9 @@ import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.alexmerz.graphviz.ParseException;
 import com.alexmerz.graphviz.Parser;
@@ -18,14 +20,15 @@ public class GraphvizParser {
     private FileReader reader;
     public ArrayList<Graph> wholeDocument;
     public ArrayList<Graph> clusters;
-    private ArrayList<Location> locationArrayList;
-    private List<Location> locationList;
+    //private ArrayList<Location> locationArrayList;
+    Map<String, Location> gameMap;
 
     public GraphvizParser(String entityFileName) throws FileNotFoundException {
         this.entityFileName = entityFileName;
         this.entityFilePath = Paths.get("config" + File.separator + entityFileName).toAbsolutePath();
         this.p = new Parser();
-        this.locationArrayList = new ArrayList<>();
+//        this.locationArrayList = new ArrayList<>();
+        this.gameMap = new HashMap<>();
     }
 
     //Takes .dot file and parses to load elements into entities:
@@ -83,7 +86,7 @@ public class GraphvizParser {
         return wholeDocument.get(0);
     }
 
-    private boolean checkNodeListIsEmpty(List<Node> nodeList) {
+    private boolean checkNodeListIsEmpty(List<List<Node>> nodeList) {
         return nodeList == null || nodeList.isEmpty();
     }
 
@@ -96,12 +99,8 @@ public class GraphvizParser {
     }
 
     //TODO check if line break is ok
-    public boolean checkLocationHasNameAndDescription(Node lNode) {
-        return lNode != null &&
-                lNode.getAttribute("name") != null &&
-                !lNode.getAttribute("name").isEmpty() &&
-                lNode.getAttribute("description") != null &&
-                !lNode.getAttribute("description").isEmpty();
+    public boolean checkLocationHasNameAndDescription(Node node) {
+        return node != null && node.getId() != null && !node.getId().getId().isEmpty();
     }
 
     private List<List<Node>> storeLocationClusters(List<Graph> graphs){
@@ -117,23 +116,15 @@ public class GraphvizParser {
         List<Graph> graphs = getClusters().get(0).getSubgraphs();
         int locationCount = graphs.size();
         List<List<Node>> nodeLists = storeLocationClusters(graphs);
-//        List<Node> lNodes = getNodesOfLocations();
-//        ArrayList<Node> nodes = graphs.get(0).getNodes(true);
-//        ArrayList<Node> nodes2 = graphs.get(1).getNodes(true);
-//        ArrayList<Node> nodes3 = graphs.get(2).getNodes(true);
-//        ArrayList<Node> nodes4 = graphs.get(3).getNodes(true);
-//        ArrayList<Node> nodes5 = graphs.get(4).getNodes(true);
-//
-//        int size = getSizeOfLocationNodes();
-//        if (checkNodeListIsEmpty(lNodes)) throw new GameError("Node list is empty");
-//        for (int i = 0; i < size; i++) {
-//            Node locationNode = lNodes.get(i);
-//            if (!checkLocationHasNameAndDescription(locationNode)) {
-//                throw new GameError("Node " + locationNode.getId() + " has no name and description");
-//            }
-//            Location l = createLocationFromNode(locationNode);
-//            locationList.add(l);
-//        }
+        if (checkNodeListIsEmpty(nodeLists)) throw new GameError("Node list is empty");
+        for (int i = 0; i < locationCount; i++) {
+            Node locationNode = nodeLists.get(i).get(0);
+            if (!checkLocationHasNameAndDescription(locationNode)) {
+                throw new GameError("Node " + locationNode.getId() + " has no name and description");
+            }
+            Location l = createLocationFromNode(locationNode);
+            this.gameMap.put(locationNode.getId().getId(), l);
+        }
     }
 
     private Location createLocationFromNode(Node node) throws Exception {
