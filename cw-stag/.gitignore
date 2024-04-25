@@ -34,4 +34,4 @@ mvnw
 mvnw.cmd
 pom.xml
 qodana.yaml
-../cw-db*
+../cw-db
