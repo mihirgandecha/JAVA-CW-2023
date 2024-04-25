@@ -2,6 +2,7 @@ package edu.uob;
 
 import com.alexmerz.graphviz.ParseException;
 import com.alexmerz.graphviz.Parser;
+import com.alexmerz.graphviz.objects.Edge;
 import com.alexmerz.graphviz.objects.Graph;
 import com.alexmerz.graphviz.objects.Node;
 
@@ -122,12 +123,12 @@ public class GraphvizParser {
     }
 
     public void setPaths() throws GameError {
-        Graph paths = getPaths();
-        int size = gameMap.size() - 1;
+        ArrayList<Edge> edges = getPaths().getEdges();
+        int size = edges.size();
         for (int i = 0; i < size; i++) {
-            String[] path = extractPathInformation(paths.getEdges().get(i).toString().replace("\n", ""));
+            String[] path = extractPathInformation(edges.get(i).toString().replace("\n", ""));
             if(gameMap.containsKey(path[0])) {
-                gameMap.get(path[0]).pathTo = path[1];
+                gameMap.get(path[0]).pathTo.add(path[1]);
             }
         }
     }

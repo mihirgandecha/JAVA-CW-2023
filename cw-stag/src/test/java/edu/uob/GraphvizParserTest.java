@@ -101,15 +101,33 @@ class GraphvizParserTest {
     }
 
     @Test
-    void pathToSetReturnsCorrectPaths() throws Exception {
-        p.setupGameMap();
+    void pathToSetReturnsCorrectPathsForBasic() throws Exception {
+        p.setPaths();
         Map<String, Location> map = p.getGameMap();
         Location cabin = map.get("cabin");
         Location forest = map.get("forest");
         Location cellar = map.get("cellar");
-        p.setPaths();
         assertTrue(cabin.pathTo.contains("forest"));
         assertTrue(forest.pathTo.contains("cabin"));
         assertTrue(cellar.pathTo.contains("cabin"));
+    }
+
+    @Test
+    void pathToSetReturnsCorrectPathsForExtended() throws Exception {
+        p = new GraphvizParser("extended-entities.dot");
+        p.setup();
+        p.setPaths();
+        Map<String, Location> map = p.getGameMap();
+        Location cabin = map.get("cabin");
+        Location forest = map.get("forest");
+        Location cellar = map.get("cellar");
+        Location riverbank = map.get("riverbank");
+        Location clearing = map.get("clearing");
+        assertTrue(cabin.pathTo.contains("forest"));
+        assertTrue(forest.pathTo.contains("cabin"));
+        assertTrue(cellar.pathTo.contains("cabin"));
+        assertTrue(forest.pathTo.contains("riverbank"));
+        assertTrue(riverbank.pathTo.contains("forest"));
+        assertTrue(clearing.pathTo.contains("riverbank"));
     }
 }
