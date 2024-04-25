@@ -11,15 +11,14 @@ import java.io.IOException;
 
 public class DocumentParser {
     private final javax.xml.parsers.DocumentBuilder p;
-    private String actionFileName;
     private Element root;
     private NodeList actions;
+    private Document parsedDocument;
 
     public DocumentParser(String actionsFileString) throws IOException, SAXException, ParserConfigurationException {
-        this.actionFileName = actionsFileString;
         this.p = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document document = p.parse("config" + File.separator + this.actionFileName);
-        this.root = document.getDocumentElement();
+        this.parsedDocument = p.parse("config" + File.separator + actionsFileString);
+        this.root = this.parsedDocument.getDocumentElement();
         this.actions = root.getChildNodes();
     }
 }
