@@ -12,6 +12,7 @@ public class GameEngine {
     private File actionsFile;
     public Map<String, Location> map;
     public DocumentParser p;
+    public Map<String, Action> playerActions;
 
     public GameEngine(File entitiesFile, File actionsFile) {
         this.entitiesFile = entitiesFile;
