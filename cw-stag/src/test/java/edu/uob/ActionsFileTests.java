@@ -21,6 +21,7 @@ final class ActionsFileTests {
   @Test
   void testBasicActionsFileIsReadable() {
       try {
+          DocumentParser p = new DocumentParser("basic-actions.xml");
           DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
           Document document = builder.parse("config" + File.separator + "basic-actions.xml");
           Element root = document.getDocumentElement();
