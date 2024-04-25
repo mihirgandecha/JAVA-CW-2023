@@ -12,7 +12,6 @@ public class GameEngine {
     private File actionsFile;
     public Map<String, Location> map;
     public DocumentParser p;
-    public Map<String, Action> playerActions;
 
     public GameEngine(File entitiesFile, File actionsFile) {
         this.entitiesFile = entitiesFile;
@@ -25,7 +24,4 @@ public class GameEngine {
         return p.getGameMap();
     }
 
-    private void setJsonParser() throws IOException, SAXException, ParserConfigurationException {
-        this.p = new DocumentParser(this.actionsFile.toString());
-    }
 }
