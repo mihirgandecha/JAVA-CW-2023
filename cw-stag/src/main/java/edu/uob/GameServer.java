@@ -18,6 +18,7 @@ public final class GameServer {
   private static final char END_OF_TRANSMISSION = 4;
 
   public static void main(String[] args) throws Exception {
+    if(args.length != 2) throw new GameError("Invalid Arguement, format: java [.DOT FILE] [.XML FILE]");
     File entitiesFile = Paths.get("config" + File.separator + "basic-entities.dot").toAbsolutePath().toFile();
     File actionsFile = Paths.get("config" + File.separator + "basic-actions.xml").toAbsolutePath().toFile();
     GameServer server = new GameServer(entitiesFile, actionsFile);
@@ -37,6 +38,7 @@ public final class GameServer {
    */
   public GameServer(File entitiesFile, File actionsFile) throws Exception {
     // TODO implement your server logic here
+    GameEngine game = new GameEngine(entitiesFile, actionsFile);
     // 1. when running java GameServer, ensure entitiesFile and actionsFile is given
     // in command
     // 2. Ensure both exists
