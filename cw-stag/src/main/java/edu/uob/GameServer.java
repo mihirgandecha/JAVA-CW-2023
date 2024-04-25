@@ -63,20 +63,6 @@ public final class GameServer {
     return "";
   }
 
-  public int getMapSize(){
-    return map.size();
-  }
-
-//  public ArrayList<Location> getMapLocations(){
-//    return map;
-//  }
-
-//  public String getMapNameGivenIndex(int index){
-//    if(locationRequested == null){
-//      return 1;
-//    }
-//    if map.
-//  }
 
   /**
    * Do not change the following method signature or we won't be able to mark your

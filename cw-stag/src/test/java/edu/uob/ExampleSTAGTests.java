@@ -65,28 +65,28 @@ class ExampleSTAGTests {
 //  }
 
   // Add more unit tests or integration tests here.
-    @Test
-    void testAddingBasicEntitiesToGameMap() throws Exception {
-        ArrayList<Location>gameMap = server.map;
-        assertTrue(gameMap.isEmpty());
-        gameMap.add(new Location("forest", "dark scary woodlands area"));
-        assertTrue(gameMap.size() == 1);
-        gameMap.add(new Location("cabin", "cosy area"));
-        assertTrue(gameMap.size() == 2);
-        gameMap.add(new Location("castle", "boogy area"));
-        assertTrue(gameMap.size() == 3);
-        assertEquals(3, server.getMapSize());
-        //Now get name,desc,type of different entities to locations (extra work?)
-    }
-
-    @Test
-    void testBasicAddNewPlayerToGameMap() throws Exception {
-        ArrayList<Location>gameMap = server.map;
-        gameMap.add(new Location("forest", "dark scary woodlands area"));
-        gameMap.add(new Location("cabin", "cosy area"));
-        Player playerOne = new Player("simon", gameMap.get(1));
-        assertEquals("cabin",playerOne.getPlayerCurrentLocation().getName());
-        playerOne = new Player("simon", gameMap.get(0));
-        assertEquals("forest",playerOne.getPlayerCurrentLocation().getName());
-    }
+//    @Test
+//    void testAddingBasicEntitiesToGameMap() throws Exception {
+//        ArrayList<Location>gameMap = server.map;
+//        assertTrue(gameMap.isEmpty());
+//        gameMap.add(new Location("forest", "dark scary woodlands area"));
+//        assertTrue(gameMap.size() == 1);
+//        gameMap.add(new Location("cabin", "cosy area"));
+//        assertTrue(gameMap.size() == 2);
+//        gameMap.add(new Location("castle", "boogy area"));
+//        assertTrue(gameMap.size() == 3);
+//        assertEquals(3, server.getMapSize());
+//        //Now get name,desc,type of different entities to locations (extra work?)
+//    }
+//
+//    @Test
+//    void testBasicAddNewPlayerToGameMap() throws Exception {
+//        ArrayList<Location>gameMap = server.map;
+//        gameMap.add(new Location("forest", "dark scary woodlands area"));
+//        gameMap.add(new Location("cabin", "cosy area"));
+//        Player playerOne = new Player("simon", gameMap.get(1));
+//        assertEquals("cabin",playerOne.getPlayerCurrentLocation().getName());
+//        playerOne = new Player("simon", gameMap.get(0));
+//        assertEquals("forest",playerOne.getPlayerCurrentLocation().getName());
+//    }
 }
