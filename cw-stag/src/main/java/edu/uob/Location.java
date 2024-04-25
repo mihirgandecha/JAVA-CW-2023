@@ -29,6 +29,13 @@ public class Location extends GameEntity {
     return this.artefacts;
   }
 
+  public String getArtefactsToString() {
+    if(this.artefacts.isEmpty()) {
+      return "No artefacts found";
+    }
+    return this.artefacts.toString();
+  }
+
   public void addCharacters(Character character) {
     this.characters.add(character);
   }
@@ -37,11 +44,25 @@ public class Location extends GameEntity {
     return this.characters;
   }
 
+  public String getCharactersToString() {
+    if(this.characters.isEmpty()) {
+      return "No characters found";
+    }
+    return this.furnitures.toString();
+  }
+
   public void addFurniture(Furniture furniture) {
     this.furnitures.add(furniture);
   }
 
   public List<Furniture> getFurniture(Furniture furniture) {
     return this.furnitures;
+  }
+
+  public String getFurnitureToString() {
+    if(this.furnitures.isEmpty()) {
+      return "No furnitures found";
+    }
+    return this.furnitures.toString();
   }
 }
