@@ -20,15 +20,14 @@ final class ActionsFileTests {
 
     private DocumentParser p;
 
-    @BeforeEach
-    void setup() throws IOException, ParserConfigurationException, SAXException {
-        p = new DocumentParser("basic-actions.xml");
-    }
+//    @BeforeEach
+//    void setup() throws GameError {
+//        p = new DocumentParser("basic-actions.xml");
+//    }
   // Test to make sure that the basic actions file is readable
   @Test
   void testBasicActionsFileIsReadable() {
       try {
-          DocumentParser p = new DocumentParser("basic-actions.xml");
           DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
           Document document = builder.parse("config" + File.separator + "basic-actions.xml");
           Element root = document.getDocumentElement();

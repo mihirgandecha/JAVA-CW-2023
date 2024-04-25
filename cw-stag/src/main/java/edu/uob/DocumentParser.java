@@ -32,7 +32,7 @@ public class DocumentParser {
         for (int i = 0; i < actionNodes.getLength(); i++) {
             Element actionElement = (Element) actionNodes.item(i);
             GameAction gameAction = parseGameAction(actionElement);
-            addGameActionToMap(gameAction);
+//            addGameActionToMap(gameAction);
         }
     }
 
