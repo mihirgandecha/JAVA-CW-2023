@@ -12,8 +12,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public final class GameServer {
-  ArrayList<Location>map;
-  //Need to Map<String, Location>gameMap
 
   private static final char END_OF_TRANSMISSION = 4;
 
@@ -39,12 +37,6 @@ public final class GameServer {
   public GameServer(File entitiesFile, File actionsFile) throws Exception {
     // TODO implement your server logic here
     GameEngine game = new GameEngine(entitiesFile, actionsFile);
-    // 1. when running java GameServer, ensure entitiesFile and actionsFile is given
-    // in command
-    // 2. Ensure both exists
-    // 3. Ensure in valid form of .dot and .xml
-    // 4. Pass in state classes
-    map = new ArrayList<>();
   }
 
   /**
