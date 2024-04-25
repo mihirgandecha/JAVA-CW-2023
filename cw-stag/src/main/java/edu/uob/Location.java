@@ -12,7 +12,7 @@ public class Location extends GameEntity {
   public List<Artefact> artefacts;
   public List<Character> characters;
   public List<Furniture> furnitures;
-  public String pathTo;
+  public ArrayList<String> pathTo;
 
   public Location(String name, String description) throws Exception {
     //saving locations itself as Game Entity
@@ -20,6 +20,7 @@ public class Location extends GameEntity {
     this.artefacts = new ArrayList<>();
     this.characters = new ArrayList<>();
     this.furnitures = new ArrayList<>();
+    this.pathTo = new ArrayList<>();
   }
 
   public void addArtefact(Artefact artefact) {
