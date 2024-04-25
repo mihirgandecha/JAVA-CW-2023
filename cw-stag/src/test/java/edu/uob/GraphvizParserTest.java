@@ -81,20 +81,22 @@ class GraphvizParserTest {
         assertTrue(paths.toString().contains("->"));
     }
 
-    String getPathsFromDOTFile(String dotFile) throws Exception {
-        GraphvizParser graphvizParser = new GraphvizParser(dotFile);
-        graphvizParser.setup();
-        Graph p = graphvizParser.getPaths();
-        return (p.getEdges().toString());
-    }
+    //TODO High-Level Testing
+//    String getPathsFromDOTFile(String dotFile) throws Exception {
+//        GraphvizParser graphvizParser = new GraphvizParser(dotFile);
+//        graphvizParser.setup();
+//        Graph p = graphvizParser.getPaths();
+//        return (p.getEdges().toString());
+//    }
 
     @Test
     void pathStringSplitSetup() throws Exception {
         Graph paths = p.getPaths();
-//        int inputLen = getPathsFromDOTFile("basic-entities.dot").length;
-//        System.out.println(getPathsFromDOTFile("basic-entities.dot"));
 //        String[] expectedFirstPath = {"cabin", "forest"};
-//        System.out.println(p.extractPathInformation("cabin -> forest;").toString());
+        for (String pathNape: p.extractPathInformation("cabin -> forest;")) {
+            System.out.println(pathNape);
+        }
+//        System.out.println(p.extractPathInformation("cabin -> forest;"));
 //        assertTrue(p.extractPathInformation("cabin -> forest;").equals(expectedFirstPath));
     }
 
@@ -106,11 +108,8 @@ class GraphvizParserTest {
         Location forest = map.get("forest");
         Location cellar = map.get("cellar");
         p.setPaths();
-        Graph paths = p.getPaths();
-//        System.out.println(paths.getEdges().toString());
-        System.out.println(paths.getEdges().get(0));
-//        assertTrue(cabin.pathTo.contains("forest"));
-//        assertTrue(forest.pathTo.contains("cabin"));
-//        assertTrue(cellar.pathTo.contains("cabin"));
+        assertTrue(cabin.pathTo.contains("forest"));
+        assertTrue(forest.pathTo.contains("cabin"));
+        assertTrue(cellar.pathTo.contains("cabin"));
     }
 }

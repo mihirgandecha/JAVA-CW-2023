@@ -121,14 +121,14 @@ public class GraphvizParser {
         return splitPath;
     }
 
-    public void setPaths() {
+    public void setPaths() throws GameError {
         Graph paths = getPaths();
-
-        for (Location location : gameMap.values()) {
-//            String pathFrom = paths.getEdges().get(0).toString();
-//            String pathTo;
-
+        int size = gameMap.size() - 1;
+        for (int i = 0; i < size; i++) {
+            String[] path = extractPathInformation(paths.getEdges().get(i).toString().replace("\n", ""));
+            if(gameMap.containsKey(path[0])) {
+                gameMap.get(path[0]).pathTo = path[1];
+            }
         }
-
     }
 }
