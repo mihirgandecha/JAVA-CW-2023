@@ -2,11 +2,13 @@ package edu.uob;
 
 import com.alexmerz.graphviz.ParseException;
 import com.alexmerz.graphviz.objects.Graph;
+import com.alexmerz.graphviz.objects.Node;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,40 +17,31 @@ class GraphvizParserTest {
     GraphvizParser p;
 
     @BeforeEach
-    void setup() throws GameError, FileNotFoundException, ParseException {
+    void setup() throws FileNotFoundException, ParseException {
         p = new GraphvizParser("basic-entities.dot");
         p.setup();
     }
 
-
-    //100% coverage
     @Test
-    public void testFileExistReturnsTrue() throws Exception {
+    public void testFileExistReturnsTrue() {
         GraphvizParser graphvizParser = new GraphvizParser("basic-entities.dot");
         assertTrue(graphvizParser.doesDOTFileExist());
     }
 
     @Test
-    public void testFileNotExistReturnsFalse() throws Exception {
+    public void testFileNotExistReturnsFalse() {
         GraphvizParser graphvizParser = new GraphvizParser("fails.dot");
         assertFalse(graphvizParser.doesDOTFileExist());
     }
 
     @Test
-    public void directoryShouldNotParseReturnFalse() throws Exception {
+    public void directoryShouldNotParseReturnFalse() {
         GraphvizParser graphvizParser = new GraphvizParser("");
         assertFalse(graphvizParser.doesDOTFileExist());
     }
 
-    //TODO Extra: .dot extension, if none add .dot extension and allow
-
-    //Testing Setup
     @Test
-    public void test() {
-    }
-
-    @Test
-    public void testGetWholeGraphIsSizeOne() throws FileNotFoundException, GameError, ParseException {
+    public void testGetWholeGraphIsSizeOne() throws FileNotFoundException, ParseException {
         GraphvizParser graphvizParser = new GraphvizParser("basic-entities.dot");
         graphvizParser.setup();
         ArrayList<Graph> g = graphvizParser.getWholeDocumentGraphList();
@@ -56,45 +49,24 @@ class GraphvizParserTest {
         assertThrows(IndexOutOfBoundsException.class, () -> graphvizParser.getWholeDocumentGraphList().get(1));
     }
 
-
     @Test
-    public void topLevelGraphHasKeywordsLayoutAndSplinesButClustersDoesNot() throws FileNotFoundException, GameError, ParseException {
-        p.setWholeDocument();
-        assertEquals(1, p.wholeDocument.size());
-//        System.out.println(p.wholeDocument);
-//        System.out.println("---------------");
-//        System.out.println(p.wholeDocument.get(0).getSubgraphs());
-        p.setClusterSubGraphs();
-//        System.out.println(p.clusters);
-//        assertTrue(p.wholeDocument.contains("locations"));
-//        assertTrue(p.wholeDocument.contains("paths"));
-//        boolean hasLocations = p.clusters.stream()
-//                .anyMatch(graph -> graph.getType().equals("locations"));
-//        boolean hasPaths = p.clusters.stream()
-//                .anyMatch(graph -> graph.getType().equals("paths"));
-//        assertTrue(hasLocations);
-//        assertTrue(hasPaths);
-//
-//        assertTrue(p.clusters.contains("locations"));
-//        assertTrue(p.clusters.contains("paths"));
-    }
-
-
-    @Test
-    public void getGameMap() throws Exception {
+    public void hashMapReturnsCorrectLocationNamesAndSize() throws Exception {
         p.setupGameMap();
         Map<String, Location> gameMap = p.getGameMap();
-        System.out.println(gameMap.get("forest").toString());
-        System.out.println(gameMap.get("forest").toString());
-
-
+        assertEquals(4, gameMap.size());
+        assertEquals("forest", gameMap.get("forest").getName());
+        assertEquals("cabin", gameMap.get("cabin").getName());
+        assertEquals("cellar", gameMap.get("cellar").getName());
+        assertEquals("storeroom", gameMap.get("storeroom").getName());
     }
-
-//    @Test
-//    void testBasicEntitiesNodeSize(){
-//        int size = p.getClusterNodeListSize();
-//        assertEquals(18, size);
-//    }
-
-
+    //TODO Extra: .dot extension, if none add .dot extension and allow
+    @Test
+    public void dsReturnForestEntities() throws Exception {
+        p.setupGameMap();
+        Map<String, Location> gameMap = p.getGameMap();
+        System.out.println(gameMap.get("forest"));
+        assertEquals("No artefacts found", gameMap.get("forest").getArtefactsToString());
+        System.out.println(gameMap.get("forest").getCharactersToString());
+        System.out.println(gameMap.get("forest").getFurnitureToString());
+    }
 }
