@@ -18,4 +18,8 @@ public class GameEngine {
         GraphvizParser p = new GraphvizParser(this.entitiesFile.toString());
         return p.getGameMap();
     }
+
+    private void setJsonParser(){
+        DocumentParser p = new DocumentParser(this.actionsFile.toString());
+    }
 }
