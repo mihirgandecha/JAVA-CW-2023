@@ -11,11 +11,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class DocumentParser {
-    private final HashMap<String, HashSet<GameAction>> gameActions;
+    public HashMap<String, HashSet<GameAction>> gameActions;
 
     public DocumentParser(String actionsFileString) throws GameError {
-        setup(actionsFileString);
         gameActions = new HashMap<>();
+        setup(actionsFileString);
     }
 
     private void setup(String actionsFileString) throws GameError {

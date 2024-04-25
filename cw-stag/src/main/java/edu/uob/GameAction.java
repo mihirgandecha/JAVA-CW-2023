@@ -8,7 +8,7 @@ public class GameAction
     public ArrayList<String> subjects;
     public ArrayList<String> consumed;
     public ArrayList<String> produced;
-    private ArrayList<String> narration;
+    private String narration;
 
     public ArrayList<String> getTriggers() {
         return triggers;
@@ -42,7 +42,7 @@ public class GameAction
         this.produced = produced;
     }
 
-    public ArrayList<String> getNarration() {
+    public String getNarration() {
         return narration;
     }
 
