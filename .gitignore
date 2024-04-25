@@ -31,3 +31,5 @@ cw-db/BNF.txt
 *.ear
 *.zip
 *.tar.gz
+
+.github
