@@ -12,6 +12,9 @@ import java.util.HashSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/*
+    Medium-Level Tests:
+ */
 class ActionsParserExtendedTest {
     private DocumentParser parser;
     private HashMap<String, HashSet<GameAction>> gameActions;

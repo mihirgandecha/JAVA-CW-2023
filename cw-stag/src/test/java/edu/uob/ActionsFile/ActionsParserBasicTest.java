@@ -21,6 +21,9 @@ import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/*
+    Low-Level Tests:
+ */
 class ActionsParserBasicTest {
     private DocumentParser parser;
     private HashMap<String, HashSet<GameAction>> gameActions;
