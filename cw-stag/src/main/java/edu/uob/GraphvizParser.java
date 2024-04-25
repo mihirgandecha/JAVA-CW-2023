@@ -31,6 +31,7 @@ public class GraphvizParser {
             setWholeDocument();
             setClusterSubGraphs();
             setupGameMap();
+            setPaths();
         }
     }
 
