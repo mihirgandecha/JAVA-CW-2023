@@ -9,9 +9,10 @@ import java.util.List;
  */
 
 public class Location extends GameEntity {
-  private List<Artefact> artefacts;
-  private List<Character> characters;
-  private List<Furniture> furnitures;
+  public List<Artefact> artefacts;
+  public List<Character> characters;
+  public List<Furniture> furnitures;
+  public String pathTo;
 
   public Location(String name, String description) throws Exception {
     //saving locations itself as Game Entity

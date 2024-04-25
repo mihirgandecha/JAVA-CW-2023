@@ -8,10 +8,7 @@ import com.alexmerz.graphviz.objects.Node;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GraphvizParser {
     private final Path entityFilePath;
@@ -26,11 +23,13 @@ public class GraphvizParser {
         this.gameMap = new HashMap<>();
     }
 
-    public void setup() throws FileNotFoundException, ParseException {
+    public void setup() throws Exception {
         if (doesDOTFileExist()) {
             FileReader reader = new FileReader(this.entityFilePath.toFile());
             p.parse(reader);
             setWholeDocument();
+            setClusterSubGraphs();
+            setupGameMap();
         }
     }
 
@@ -109,4 +108,27 @@ public class GraphvizParser {
         return content.toString();
     }
 
+    public Graph getPaths() {
+        return getClusters().get(1);
+    }
+
+    public String[] extractPathInformation(String pathInfo) throws GameError {
+        if (!pathInfo.contains("->") || !pathInfo.endsWith(";")) {
+            throw new GameError("Path information is not in 'from -> to;' format");
+        }
+        String[] splitPath = pathInfo.split(" -> ");
+        splitPath[1] = splitPath[1].substring(0, splitPath[1].length() - 1);
+        return splitPath;
+    }
+
+    public void setPaths() {
+        Graph paths = getPaths();
+
+        for (Location location : gameMap.values()) {
+//            String pathFrom = paths.getEdges().get(0).toString();
+//            String pathTo;
+
+        }
+
+    }
 }
