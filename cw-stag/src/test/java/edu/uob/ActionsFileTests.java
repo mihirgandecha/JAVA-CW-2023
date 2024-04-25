@@ -1,5 +1,6 @@
 package edu.uob;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.io.IOException;
@@ -17,6 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class ActionsFileTests {
 
+    private DocumentParser p;
+
+    @BeforeEach
+    void setup() throws IOException, ParserConfigurationException, SAXException {
+        p = new DocumentParser("basic-actions.xml");
+    }
   // Test to make sure that the basic actions file is readable
   @Test
   void testBasicActionsFileIsReadable() {
@@ -41,4 +48,16 @@ final class ActionsFileTests {
       }
   }
 
+  /*
+  Low-Level Unit Testing: Testing for Coverage
+   */
+
+
+  /*
+  Medium-Level Unit Testing: Testing for State Change
+   */
+
+  /*
+  High-Level Unit Testing: Integration Testing
+   */
 }
