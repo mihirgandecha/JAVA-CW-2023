@@ -1,5 +1,4 @@
 .idea
-cw-stag/qodana.yaml
 
 FEATURES-13-03-24.txt
 FEATURES-14-03-24.txt
@@ -12,4 +11,12 @@ FEATURES-27-03-24.txt
 FEATURES-28-03-24.txt
 FEATURES-29-03-24.txt
 FEATURES-01-04-24.txt
+
+# STAG:
+cw-stag/qodana.yaml
+cw-stag/.classpath
+cw-stag/.project
+cw-stag/.mvn
+cw-stag/.settings
+cw-stag/libs
 
