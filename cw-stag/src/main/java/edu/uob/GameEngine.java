@@ -31,7 +31,8 @@ public class GameEngine {
 
     public String toString(String cleanCommand) {
         Location start = getPlayerStartLocation();
-        return "You are in " + start.description + " You can see:\n" + "A " + map.get("cabin").getCharactersToString() + "\n" + "A " + "A ";
+        return start.toString() + start.getArtefactsToString() + start.getCharactersToString() + start.getFurnitureToString();
+//        return "You are in " + start.description + " You can see:\n" + "A " + map.get("cabin").getCharactersToString() + "\n" + "A " + "A ";
     }
 
 //    public void setPlayerStartLocation() {

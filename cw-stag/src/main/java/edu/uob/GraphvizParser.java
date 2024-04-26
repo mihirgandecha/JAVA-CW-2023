@@ -89,13 +89,8 @@ public class GraphvizParser {
                 throw new GameError("Node " + locationNode.getId() + " has no name and description");
             }
             Location l = createLocationFromNode(locationNode);
-            // Load entities of each location
-            ArrayList<Graph> graphArray = getClusters().get(i).getSubgraphs().get(i).getSubgraphs();
-                for (Graph node : graphArray) {
-                    addArtefactsToLocation(l, graphArray);
-                    addCharactersToLocation(l, graphArray);
-                    addFurnitureToLocation(l, graphArray);
-                }
+            ArrayList<Graph> subgraph = graphs.get(i).getSubgraphs();
+            addArtefactsToLocation(l, subgraph);
             this.gameMap.put(locationNode.getId().getId(), l);
             this.locationNames.add(locationNode.getId().getId());
         }
@@ -146,106 +141,29 @@ public class GraphvizParser {
         }
     }
 
-//    private void setupGameEntities() {
-//        List<Graph> subgraphs = getClusters();
-//        for (Graph subgraph : subgraphs) {
-//            String name = this.locationNames.get(0);
-//            if (gameMap.containsKey(name)) {
-//                Location location = gameMap.get(name);
-//                ArrayList<Node> nodes = subgraph.getNodes(true);
-//                addArtefactsToLocation(location, nodes);
-//                addFurnitureToLocation(location, nodes);
-//                addCharactersToLocation(location, nodes);
-//                this.locationNames.remove(name);
-//            } else {
-//                System.out.println("Warning: Location not found in game map: " + locationNames.get(0));
-//            }
-//        }
-//    }
-
-    private void addArtefactsToLocation(Location location, ArrayList<Graph> nodes) {
-        ArrayList<Node> node1 = nodes.get(0).getNodes(true);
-        if(node1.get(0).getId().toString().contains("artefact")){
-            Artefact artefact = new Artefact(
-                    node1.get(0).getId().getId(),
-                    node1.get(0).getAttribute("description")
-            );
-
-        }
-//        for(Node node: node1){
-//            if (node.getId().toString().contains("artefact")){
-//                Artefact artefact = new Artefact(
-//                        node1.get(0).getId().getId(),
-//                        node1.get(0).getAttribute("description")
-//                );
-//
-//            }
-//        }
-//        int size = node1.size();
-//        for(int i = 0; i < size; i++){
-//            if(node1.get(i).toString().contains("artefact")){
-//                Artefact artefact = new Artefact(
-//                        node1.get(i).getId().getId(),
-//                        node1.get(i).getAttribute("description")
-//                );
-//            }
-//        }
-//        if(node1.getId().toString().equalsIgnoreCase("artefact")){
-//            Artefact artefact = new Artefact(
-//                    node1.getId().getId(),
-//                    node1.getAttribute("description")
-//            );
-//        }
-//        for (Graph node : nodes) {
-//            if ("artefact".equalsIgnoreCase(node.getNodes(true).get(0) .getAttribute("type"))) {
-//                Artefact artefact = new Artefact(
-//                        node.getId().getId(),
-//                        node.getAttribute("description")
-//                );
-//                location.addArtefact(artefact);
-//            }
-//        }
-    }
-
-    // Method to add furniture to a location
-    private void addFurnitureToLocation(Location location, ArrayList<Graph> nodes) {
-        for (Graph node : nodes) {
-            if ("furniture".equalsIgnoreCase(node.getAttribute("type"))) {
-                Furniture furniture = new Furniture(
-                        node.getId().getId(),
-                        node.getAttribute("description")
-                );
-                location.addFurniture(furniture);
+    private Location addArtefactsToLocation(Location location, ArrayList<Graph> nodes) throws GameError {
+        int size = nodes.size();
+        for(Graph graph : nodes) {
+            for(Node node: graph.getNodes(true)){
+                String type = graph.getId().toString();
+//                ArrayList<Node> node1 = nodes.get(0).getNodes(true);
+                String name = node.getId().getId().toString();
+                String description = node.getAttribute("description");
+                if (type.contains("artefact")) {
+                    location.addArtefact(new Artefact(name, description));
+                }
+                else if (type.contains("furniture")) {
+                    location.addFurniture(new Furniture(name,description));
+                }
+                else if (type.contains("character")) {
+                    location.addCharacters(new Character(name,description));
+                } else{
+                    throw new GameError("Error adding entities");
+                }
             }
+            size++;
         }
+        return location;
     }
 
-    // Method to add characters to a location
-    private void addCharactersToLocation(Location location, ArrayList<Graph> nodes) {
-        for (Graph node : nodes) {
-            if ("character".equalsIgnoreCase(node.getAttribute("type"))) {
-                Character character = new Character(
-                        node.getId().getId(),
-                        node.getAttribute("description")
-                );
-                location.addCharacters(character);
-            }
-        }
-    }
-
-    private void createEntity(String entityName, String entityDescription){
-        entityList.put("artefacts", new Artefact(entityName, entityDescription));
-        entityList.put("furniture", new Furniture(entityName, entityDescription));
-        entityList.put("characters", new Character(entityName, entityDescription));
-    }
-
-    private void addLocationEntities(ArrayList<Graph> entitiesSubGraph, Location newLocation){
-        for (Graph entityGraph : entitiesSubGraph) {
-            ArrayList<Node> entityNode = entityGraph.getNodes(false);
-            for (Node entity : entityNode) {
-                createEntity(entity.getId().getId(), entity.getAttribute("description"));
-//                newLocation.addEntity(newEntity);
-            }
-        }
-    }
 }
