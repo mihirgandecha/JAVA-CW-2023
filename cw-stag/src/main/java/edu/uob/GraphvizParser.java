@@ -1,12 +1,10 @@
 package edu.uob;
 
-import com.alexmerz.graphviz.ParseException;
 import com.alexmerz.graphviz.Parser;
 import com.alexmerz.graphviz.objects.Edge;
 import com.alexmerz.graphviz.objects.Graph;
 import com.alexmerz.graphviz.objects.Node;
 
-import javax.swing.text.html.parser.Entity;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,7 +34,7 @@ public class GraphvizParser {
             setWholeDocument();
             setClusterSubGraphs();
             setupGameMap();
-            setupGameEntities();
+//            setupGameEntities();
             setPaths();
         }
     }
@@ -91,6 +89,13 @@ public class GraphvizParser {
                 throw new GameError("Node " + locationNode.getId() + " has no name and description");
             }
             Location l = createLocationFromNode(locationNode);
+            // Load entities of each location
+            ArrayList<Graph> graphArray = getClusters().get(i).getSubgraphs().get(i).getSubgraphs();
+                for (Graph node : graphArray) {
+                    addArtefactsToLocation(l, graphArray);
+                    addCharactersToLocation(l, graphArray);
+                    addFurnitureToLocation(l, graphArray);
+                }
             this.gameMap.put(locationNode.getId().getId(), l);
             this.locationNames.add(locationNode.getId().getId());
         }
@@ -141,38 +146,70 @@ public class GraphvizParser {
         }
     }
 
-    private void setupGameEntities() {
-        List<Graph> subgraphs = getClusters();
-        for (Graph subgraph : subgraphs) {
-            String name = this.locationNames.get(0);
-            if (gameMap.containsKey(name)) {
-                Location location = gameMap.get(name);
-                ArrayList<Node> nodes = subgraph.getNodes(true);
-                addArtefactsToLocation(location, nodes);
-                addFurnitureToLocation(location, nodes);
-                addCharactersToLocation(location, nodes);
-                this.locationNames.remove(name);
-            } else {
-                System.out.println("Warning: Location not found in game map: " + locationNames.get(0));
-            }
-        }
-    }
+//    private void setupGameEntities() {
+//        List<Graph> subgraphs = getClusters();
+//        for (Graph subgraph : subgraphs) {
+//            String name = this.locationNames.get(0);
+//            if (gameMap.containsKey(name)) {
+//                Location location = gameMap.get(name);
+//                ArrayList<Node> nodes = subgraph.getNodes(true);
+//                addArtefactsToLocation(location, nodes);
+//                addFurnitureToLocation(location, nodes);
+//                addCharactersToLocation(location, nodes);
+//                this.locationNames.remove(name);
+//            } else {
+//                System.out.println("Warning: Location not found in game map: " + locationNames.get(0));
+//            }
+//        }
+//    }
 
-    private void addArtefactsToLocation(Location location, ArrayList<Node> nodes) {
-        for (Node node : nodes) {
-            if ("artefact".equalsIgnoreCase(node.getAttribute("type"))) {
-                Artefact artefact = new Artefact(
-                        node.getId().getId(),
-                        node.getAttribute("description")
-                );
-                location.addArtefact(artefact);
-            }
+    private void addArtefactsToLocation(Location location, ArrayList<Graph> nodes) {
+        ArrayList<Node> node1 = nodes.get(0).getNodes(true);
+        if(node1.get(0).getId().toString().contains("artefact")){
+            Artefact artefact = new Artefact(
+                    node1.get(0).getId().getId(),
+                    node1.get(0).getAttribute("description")
+            );
+
         }
+//        for(Node node: node1){
+//            if (node.getId().toString().contains("artefact")){
+//                Artefact artefact = new Artefact(
+//                        node1.get(0).getId().getId(),
+//                        node1.get(0).getAttribute("description")
+//                );
+//
+//            }
+//        }
+//        int size = node1.size();
+//        for(int i = 0; i < size; i++){
+//            if(node1.get(i).toString().contains("artefact")){
+//                Artefact artefact = new Artefact(
+//                        node1.get(i).getId().getId(),
+//                        node1.get(i).getAttribute("description")
+//                );
+//            }
+//        }
+//        if(node1.getId().toString().equalsIgnoreCase("artefact")){
+//            Artefact artefact = new Artefact(
+//                    node1.getId().getId(),
+//                    node1.getAttribute("description")
+//            );
+//        }
+//        for (Graph node : nodes) {
+//            if ("artefact".equalsIgnoreCase(node.getNodes(true).get(0) .getAttribute("type"))) {
+//                Artefact artefact = new Artefact(
+//                        node.getId().getId(),
+//                        node.getAttribute("description")
+//                );
+//                location.addArtefact(artefact);
+//            }
+//        }
     }
 
     // Method to add furniture to a location
-    private void addFurnitureToLocation(Location location, ArrayList<Node> nodes) {
-        for (Node node : nodes) {
+    private void addFurnitureToLocation(Location location, ArrayList<Graph> nodes) {
+        for (Graph node : nodes) {
             if ("furniture".equalsIgnoreCase(node.getAttribute("type"))) {
                 Furniture furniture = new Furniture(
                         node.getId().getId(),
@@ -184,8 +221,8 @@ public class GraphvizParser {
     }
 
     // Method to add characters to a location
-    private void addCharactersToLocation(Location location, ArrayList<Node> nodes) {
-        for (Node node : nodes) {
+    private void addCharactersToLocation(Location location, ArrayList<Graph> nodes) {
+        for (Graph node : nodes) {
             if ("character".equalsIgnoreCase(node.getAttribute("type"))) {
                 Character character = new Character(
                         node.getId().getId(),
