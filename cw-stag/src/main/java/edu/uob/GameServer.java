@@ -16,6 +16,7 @@ public final class GameServer {
 
   private static final char END_OF_TRANSMISSION = 4;
   private final Map<String, Player> GamePlayers;
+  private final GameEngine GameEngine;
 
   public static void main(String[] args) throws Exception {
     File entitiesFile = Paths.get("config" + File.separator + "basic-entities.dot").toAbsolutePath().toFile();
@@ -38,7 +39,7 @@ public final class GameServer {
   public GameServer(File entitiesFile, File actionsFile) throws Exception {
     // TODO implement your server logic here
     GamePlayers = new HashMap<>();
-    GameEngine game = new GameEngine(entitiesFile.toString(), actionsFile.toString(), GamePlayers);
+    GameEngine = new GameEngine(entitiesFile.toString(), actionsFile.toString(), GamePlayers);
   }
 
   /**
