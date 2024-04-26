@@ -1,9 +1,13 @@
 package edu.uob;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+/**
+ * The `Tokeniser` class processes the command from GameServer, extracts the username, and generates tokens
+ * for further processing. Throws `GameError` when the command/player username is invalid or null.
+ */
 
 public class Tokeniser {
     private String serverCommand;
@@ -11,51 +15,68 @@ public class Tokeniser {
     private String cleanCommand;
     private String[] splitCommand;
 
-    public Tokeniser(String command){
-        this.serverCommand = command;
-        // splits command so that: simon: look -> {"simon", "look"}
-        this.splitCommand = command.split(":", 2);
+    public Tokeniser(String command) throws GameError {
+        validateCommand(command);
+        this.serverCommand = command.trim();
+        this.splitCommand = splitCommandAtColon(serverCommand);
         setUsername();
-        this.username = getUsername();
-        this.cleanCommand = removePunctuation(getCleanCommand());
+        setCleanCommand();
     }
 
-    public String getUsername(){
+    public String getUsername() {
         return this.username;
     }
 
-    public String getCleanCommand(){
+    public String getCleanCommand() {
         return this.cleanCommand;
     }
 
-    public String getOriginalCommand(){
+    public String getOriginalCommand() {
         return this.serverCommand;
     }
 
-    private String setUsername(){
-        if(this.splitCommand.length == 2){
-            return this.splitCommand[0].trim();
+    // Ensure the command is not null or empty
+    public void validateCommand(String command) throws GameError {
+        if (command == null || command.trim().isEmpty()) {
+            throw new GameError("Command cannot be null or empty");
         }
-        return null;
     }
 
-    private String getCleanCommandWithoutUsername(){
-        if(this.splitCommand.length == 2){
-            return this.splitCommand[1].trim();
+    // Seperate command: simon: look --> {"simon", "look"}
+    private void setUsername() throws GameError {
+        if (this.splitCommand.length == 2) {
+            this.username = this.splitCommand[0].trim();
+            if (this.username.isEmpty()) {
+                throw new GameError("Username is invalid");
+            }
+        } else {
+            throw new GameError("Invalid command format");
         }
-        return null;
     }
 
-    // Splits the clean command into individual tokens
-    public List<String> setIndividualTokens() {
+    // Set the clean command without the username and punctuation
+    private void setCleanCommand() throws GameError {
+        if (this.splitCommand.length == 2) {
+            this.cleanCommand = removePunctuation(this.splitCommand[1].trim());
+        } else {
+            throw new GameError("Invalid command format");
+        }
+    }
+
+    // Split the clean command into individual tokens
+    public List<String> getIndividualTokens() {
         if (cleanCommand == null) {
             return Collections.emptyList();
         }
-        List<String> tokens = Arrays.asList(cleanCommand.split("\\s+"));
-        return new ArrayList<>(tokens);
+        return new ArrayList<>(Arrays.asList(cleanCommand.split("\\s+")));
     }
 
-    // Removes punctuation and converts to lowercase
+    // Split the command at the first colon, returning at most two parts
+    private String[] splitCommandAtColon(String command) {
+        return command.split(":", 2);
+    }
+
+    // Remove punctuation and convert text to lowercase
     private String removePunctuation(String text) {
         return text.replaceAll("[-,.:!?()]", "").toLowerCase();
     }
