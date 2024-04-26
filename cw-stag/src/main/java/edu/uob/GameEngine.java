@@ -11,7 +11,7 @@ public class GameEngine {
     public HashMap<String, HashSet<GameAction>> gameActions;
     public Map<String, Player> players;
 
-    public GameEngine(String entitiesFile, String actionsFile, Map<String, Player> players) throws Exception {
+    public GameEngine(String entitiesFile, String actionsFile) throws Exception {
         this.players = players;
         this.entitiesFile = entitiesFile;
         this.actionsFile = actionsFile;
@@ -27,5 +27,22 @@ public class GameEngine {
     private HashMap<String, HashSet<GameAction>> processActionsFile() throws GameError {
         DocumentParser p = new DocumentParser(this.actionsFile);
         return p.getGameActions();
+    }
+
+    public String toString(String cleanCommand) {
+        Location start = getPlayerStartLocation();
+        return "You are in " + start.description + " You can see:\n" + "A " + map.get("cabin").getCharactersToString() + "\n" + "A " + "A ";
+    }
+
+//    public void setPlayerStartLocation() {
+//
+//    }
+
+    public Location getPlayerStartLocation() {
+        return map.get("cabin");
+    }
+
+    public void processPlayers(Map<String, Player> gamePlayers) {
+        this.players = gamePlayers;
     }
 }

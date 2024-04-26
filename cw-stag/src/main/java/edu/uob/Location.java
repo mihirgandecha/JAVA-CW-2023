@@ -9,6 +9,8 @@ import java.util.List;
  */
 
 public class Location extends GameEntity {
+  public String location;
+  public String description;
   public List<Artefact> artefacts;
   public List<Character> characters;
   public List<Furniture> furnitures;
@@ -17,6 +19,8 @@ public class Location extends GameEntity {
   public Location(String name, String description) throws Exception {
     //saving locations itself as Game Entity
     super(name, description, GameEntityType.LOCATION);
+    this.location = name;
+    this.description = description;
     this.artefacts = new ArrayList<>();
     this.characters = new ArrayList<>();
     this.furnitures = new ArrayList<>();
@@ -67,4 +71,5 @@ public class Location extends GameEntity {
     }
     return this.furnitures.toString();
   }
+
 }

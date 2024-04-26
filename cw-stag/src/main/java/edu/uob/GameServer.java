@@ -16,7 +16,9 @@ public final class GameServer {
 
   private static final char END_OF_TRANSMISSION = 4;
   private final Map<String, Player> GamePlayers;
-  private final GameEngine GameEngine;
+  private GameEngine GameEngine;
+  private final String entitiesFileString;
+  private final String actionsFileString;
 
   public static void main(String[] args) throws Exception {
     File entitiesFile = Paths.get("config" + File.separator + "basic-entities.dot").toAbsolutePath().toFile();
@@ -38,8 +40,9 @@ public final class GameServer {
    */
   public GameServer(File entitiesFile, File actionsFile) throws Exception {
     // TODO implement your server logic here
+    this.entitiesFileString = entitiesFile.toString();
+    this.actionsFileString = actionsFile.toString();
     GamePlayers = new HashMap<>();
-    GameEngine = new GameEngine(entitiesFile.toString(), actionsFile.toString(), GamePlayers);
   }
 
   /**
@@ -65,7 +68,11 @@ public final class GameServer {
         player = new Player(username);
         GamePlayers.put(username, player);
       }
-      return "Command processed for " + username;
+      //Process Command:
+      GameEngine = new GameEngine("basic-entities.dot", this.actionsFileString);
+      GameEngine.processPlayers(GamePlayers);
+
+      return GameEngine.toString(cleanCommand);
     } catch (Exception e){
       return e.getMessage();
     }

@@ -6,6 +6,7 @@ import com.alexmerz.graphviz.objects.Edge;
 import com.alexmerz.graphviz.objects.Graph;
 import com.alexmerz.graphviz.objects.Node;
 
+import javax.swing.text.html.parser.Entity;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,10 +18,13 @@ public class GraphvizParser {
     public ArrayList<Graph> wholeDocument;
     public ArrayList<Graph> clusters;
     Map<String, Location> gameMap;
+    private ArrayList<String> locationNames;
+    private HashMap<String, GameEntity> entityList;
 
     public GraphvizParser(String entityFileName) throws Exception {
         this.entityFilePath = Paths.get("config" + File.separator + entityFileName).toAbsolutePath();
         this.p = new Parser();
+        this.locationNames = new ArrayList<>();
         this.gameMap = new HashMap<>();
         setup();
     }
@@ -32,6 +36,7 @@ public class GraphvizParser {
             setWholeDocument();
             setClusterSubGraphs();
             setupGameMap();
+            setupGameEntities();
             setPaths();
         }
     }
@@ -87,6 +92,7 @@ public class GraphvizParser {
             }
             Location l = createLocationFromNode(locationNode);
             this.gameMap.put(locationNode.getId().getId(), l);
+            this.locationNames.add(locationNode.getId().getId());
         }
     }
 
@@ -131,6 +137,77 @@ public class GraphvizParser {
             String[] path = extractPathInformation(edges.get(i).toString().replace("\n", ""));
             if(gameMap.containsKey(path[0])) {
                 gameMap.get(path[0]).pathTo.add(path[1]);
+            }
+        }
+    }
+
+    private void setupGameEntities() {
+        List<Graph> subgraphs = getClusters();
+        for (Graph subgraph : subgraphs) {
+            String name = this.locationNames.get(0);
+            if (gameMap.containsKey(name)) {
+                Location location = gameMap.get(name);
+                ArrayList<Node> nodes = subgraph.getNodes(true);
+                addArtefactsToLocation(location, nodes);
+                addFurnitureToLocation(location, nodes);
+                addCharactersToLocation(location, nodes);
+                this.locationNames.remove(name);
+            } else {
+                System.out.println("Warning: Location not found in game map: " + locationNames.get(0));
+            }
+        }
+    }
+
+    private void addArtefactsToLocation(Location location, ArrayList<Node> nodes) {
+        for (Node node : nodes) {
+            if ("artefact".equalsIgnoreCase(node.getAttribute("type"))) {
+                Artefact artefact = new Artefact(
+                        node.getId().getId(),
+                        node.getAttribute("description")
+                );
+                location.addArtefact(artefact);
+            }
+        }
+    }
+
+    // Method to add furniture to a location
+    private void addFurnitureToLocation(Location location, ArrayList<Node> nodes) {
+        for (Node node : nodes) {
+            if ("furniture".equalsIgnoreCase(node.getAttribute("type"))) {
+                Furniture furniture = new Furniture(
+                        node.getId().getId(),
+                        node.getAttribute("description")
+                );
+                location.addFurniture(furniture);
+            }
+        }
+    }
+
+    // Method to add characters to a location
+    private void addCharactersToLocation(Location location, ArrayList<Node> nodes) {
+        for (Node node : nodes) {
+            if ("character".equalsIgnoreCase(node.getAttribute("type"))) {
+                Character character = new Character(
+                        node.getId().getId(),
+                        node.getAttribute("description")
+                );
+                location.addCharacters(character);
+            }
+        }
+    }
+
+    private void createEntity(String entityName, String entityDescription){
+        entityList.put("artefacts", new Artefact(entityName, entityDescription));
+        entityList.put("furniture", new Furniture(entityName, entityDescription));
+        entityList.put("characters", new Character(entityName, entityDescription));
+    }
+
+    private void addLocationEntities(ArrayList<Graph> entitiesSubGraph, Location newLocation){
+        for (Graph entityGraph : entitiesSubGraph) {
+            ArrayList<Node> entityNode = entityGraph.getNodes(false);
+            for (Node entity : entityNode) {
+                createEntity(entity.getId().getId(), entity.getAttribute("description"));
+//                newLocation.addEntity(newEntity);
             }
         }
     }
