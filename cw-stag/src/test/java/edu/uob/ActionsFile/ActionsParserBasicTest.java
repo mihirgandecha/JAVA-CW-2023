@@ -25,12 +25,11 @@ import static org.junit.jupiter.api.Assertions.*;
     Low-Level Tests:
  */
 class ActionsParserBasicTest {
-    private DocumentParser parser;
     private HashMap<String, HashSet<GameAction>> gameActions;
 
     @BeforeEach
     void setUp() throws GameError {
-        parser = new DocumentParser("config/basic-actions.xml");
+        DocumentParser parser = new DocumentParser("config/basic-actions.xml");
         gameActions = parser.getGameActions();
     }
 

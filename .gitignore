@@ -18,7 +18,6 @@ cw-stag/.classpath
 cw-stag/.project
 cw-stag/.mvn
 cw-stag/.settings
-cw-stag/libs
 
 ### Maven template
 target/
