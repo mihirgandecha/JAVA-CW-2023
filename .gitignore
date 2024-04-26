@@ -16,8 +16,6 @@ FEATURES-01-04-24.txt
 cw-stag/qodana.yaml
 cw-stag/.classpath
 cw-stag/.project
-cw-stag/.mvn
-cw-stag/.settings
 
 ### Maven template
 target/
