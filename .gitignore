@@ -1,6 +1,6 @@
 .idea
 cw-db
-# Test files for cw-db:
+
 FEATURES-13-03-24.txt
 FEATURES-14-03-24.txt
 FEATURES-16-03-24.txt
@@ -12,3 +12,4 @@ FEATURES-20-03-24.txt
 !FEATURES-28-03-24.txt
 !FEATURES-29-03-24.txt
 !/FEATURES-01-04-24.txt
+
