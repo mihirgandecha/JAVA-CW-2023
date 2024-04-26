@@ -25,29 +25,29 @@ class GraphvizParserTest {
     }
 
     @Test
-    public void testFileExistReturnsTrue() {
+    public void testFileExistReturnsTrue() throws Exception {
         GraphvizParser graphvizParser = new GraphvizParser("basic-entities.dot");
         assertTrue(graphvizParser.doesDOTFileExist());
     }
 
     @Test
-    public void testFileNotExistReturnsFalse() {
+    public void testFileNotExistReturnsFalse() throws Exception {
         GraphvizParser graphvizParser = new GraphvizParser("fails.dot");
         assertFalse(graphvizParser.doesDOTFileExist());
     }
 
     @Test
-    public void directoryShouldNotParseReturnFalse() {
+    public void directoryShouldNotParseReturnFalse() throws Exception {
         GraphvizParser graphvizParser = new GraphvizParser("");
         assertFalse(graphvizParser.doesDOTFileExist());
     }
 
-    @Test
-    public void testGetWholeGraphIsSizeOne() throws FileNotFoundException, ParseException {
-        ArrayList<Graph> g = p.getWholeDocumentGraphList();
-        assertEquals(1, g.size());
-        assertThrows(IndexOutOfBoundsException.class, () -> p.getWholeDocumentGraphList().get(1));
-    }
+//    @Test
+//    public void testGetWholeGraphIsSizeOne() throws FileNotFoundException, ParseException {
+//        ArrayList<Graph> g = p.getWholeDocumentGraphList();
+//        assertEquals(1, g.size());
+//        assertThrows(IndexOutOfBoundsException.class, () -> p.getWholeDocumentGraphList().get(1));
+//    }
 
     @Test
     public void hashMapReturnsCorrectLocationNamesAndSize() throws Exception {

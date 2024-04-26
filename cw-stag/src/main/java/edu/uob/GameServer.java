@@ -10,13 +10,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class GameServer {
 
   private static final char END_OF_TRANSMISSION = 4;
+  private final Map<String, Player> players;
 
   public static void main(String[] args) throws Exception {
-    if(args.length != 2) throw new GameError("Invalid Arguement, format: java [.DOT FILE] [.XML FILE]");
     File entitiesFile = Paths.get("config" + File.separator + "basic-entities.dot").toAbsolutePath().toFile();
     File actionsFile = Paths.get("config" + File.separator + "basic-actions.xml").toAbsolutePath().toFile();
     GameServer server = new GameServer(entitiesFile, actionsFile);
@@ -36,7 +38,8 @@ public final class GameServer {
    */
   public GameServer(File entitiesFile, File actionsFile) throws Exception {
     // TODO implement your server logic here
-    GameEngine game = new GameEngine(entitiesFile, actionsFile);
+    players = new HashMap<>();
+    GameEngine game = new GameEngine(entitiesFile.toString(), actionsFile.toString(), players);
   }
 
   /**
@@ -48,19 +51,27 @@ public final class GameServer {
    *
    * @param command The incoming command to be processed
    */
-  public String handleCommand(String command) { //extends Exception
+  public String handleCommand(String command) { //extends GameError TODO ?
     // TODO implement your server logic here
-//    try {
-//      if (command.equals("end")) {
-//        throw new GameError("Cannot end game");
-//      }
-//      else{
-//        return "";
-//      }
-//    } catch (Exception e){
-//      return "" + e.getMessage();
-//    }
-    return "";
+    // Extract username and command from the incoming message
+    int colonIndex = command.indexOf(':');
+    if (colonIndex >= 0) {
+      String username = command.substring(0, colonIndex).trim();
+      command = command.substring(colonIndex + 1).trim();
+      // Check if the player already exists, otherwise create a new one
+      Player player;
+      if (players.containsKey(username)) {
+        player = players.get(username);
+      } else {
+        player = new Player(username);
+        players.put(username, player);
+      }
+      System.out.println("Received command from " + username + ": " + command);
+      return "Command processed for " + username;
+    } else {
+      System.err.println("Invalid command format. No username found.");
+      return "Invalid command format.";
+    }
   }
 
 

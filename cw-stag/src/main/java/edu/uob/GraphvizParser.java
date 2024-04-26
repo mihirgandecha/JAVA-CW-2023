@@ -18,10 +18,11 @@ public class GraphvizParser {
     public ArrayList<Graph> clusters;
     Map<String, Location> gameMap;
 
-    public GraphvizParser(String entityFileName) {
+    public GraphvizParser(String entityFileName) throws Exception {
         this.entityFilePath = Paths.get("config" + File.separator + entityFileName).toAbsolutePath();
         this.p = new Parser();
         this.gameMap = new HashMap<>();
+        setup();
     }
 
     public void setup() throws Exception {
