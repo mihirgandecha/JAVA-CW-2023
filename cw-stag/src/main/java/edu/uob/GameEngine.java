@@ -1,9 +1,6 @@
 package edu.uob;
 
-import edu.uob.BasicCommands.Get;
-import edu.uob.BasicCommands.Goto;
-import edu.uob.BasicCommands.Inventory;
-import edu.uob.BasicCommands.Look;
+import edu.uob.BasicCommands.*;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -54,6 +51,10 @@ public class GameEngine {
             Goto goToCmnd = new Goto(this, player, cleanCommand);
             Look look = new Look(this, player, cleanCommand);
             return look.toString();
+        }
+        if (cleanCommand != null && cleanCommand.contains("drop")) {
+            Drop drop = new Drop(this, player, cleanCommand);
+            return drop.toString();
         }
         return cleanCommand;
     }

@@ -48,7 +48,6 @@ class ExampleSTAGTests {
       sendCommandToServer("simon: get potion");
       response = sendCommandToServer("simon: inv");
       response = response.toLowerCase();
-      System.out.println(response);
       assertTrue(response.contains("potion"), "Did not see the potion in the inventory after an attempt was made to get it");
       response = sendCommandToServer("simon: look");
       response = response.toLowerCase();
@@ -68,7 +67,7 @@ class ExampleSTAGTests {
   // Add more unit tests or integration tests here.
 //    @Test
 //    void testAddingBasicEntitiesToGameMap() throws Exception {
-//        ArrayList<Location>gameMap = server.map;
+//        ArrayList<Location>gameMap = server.GameEngine.map;
 //        assertTrue(gameMap.isEmpty());
 //        gameMap.add(new Location("forest", "dark scary woodlands area"));
 //        assertTrue(gameMap.size() == 1);

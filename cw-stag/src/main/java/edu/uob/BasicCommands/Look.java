@@ -20,14 +20,9 @@ public class Look extends GameCommand {
     }
 
     private void setup() throws GameError {
-        if(!confirmLookCommand()) throw new GameError("Invalid basic command, expected look token.");
         setLocationToString();
         setEntitiesDescriptionToString();
         setPathToString();
-    }
-
-    private boolean confirmLookCommand(){
-        return getBasicCommand().equals("look");
     }
 
     private void setLocationToString() throws GameError {

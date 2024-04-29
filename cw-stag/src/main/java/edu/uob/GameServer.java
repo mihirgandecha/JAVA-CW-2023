@@ -16,7 +16,7 @@ public final class GameServer {
 
   private static final char END_OF_TRANSMISSION = 4;
   private Map<String, Player> GamePlayers;
-  private GameEngine GameEngine;
+  public GameEngine GameEngine;
   private final String entitiesFileString;
   private final String actionsFileString;
 

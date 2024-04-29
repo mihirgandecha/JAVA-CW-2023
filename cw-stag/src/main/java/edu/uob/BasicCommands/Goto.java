@@ -19,9 +19,10 @@ public class Goto extends GameCommand {
     private void parseCommand(String command) throws GameError {
         if (command.startsWith("goto ")) {
             this.goLocation = command.substring(5).trim();
-        } else {
-            throw new GameError("Invalid command format.");
         }
+//        else {
+//            throw new GameError("Invalid command format.");
+//        }
     }
 
     private void executeMove() throws GameError {

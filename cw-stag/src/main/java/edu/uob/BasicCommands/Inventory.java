@@ -22,6 +22,11 @@ public class Inventory extends GameCommand{
         if(inventoryList.isEmpty()){
             return "";
         }
-        return "You have: " + "\n" + inventoryList.toString();
+        StringBuilder str = new StringBuilder();
+        str.append("You have: " + "\n");
+        for(Artefact artefact : inventoryList.values()){
+            str.append(artefact.getDescription() + "\n");
+        }
+        return str.toString();
     }
 }
