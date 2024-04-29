@@ -15,6 +15,7 @@ public class Location extends GameEntity {
   public List<Character> characters;
   public List<Furniture> furnitures;
   public ArrayList<String> pathTo;
+  public List<GameEntity> entityList;
 
   public Location(String name, String description) throws Exception {
     //saving locations itself as Game Entity
@@ -37,9 +38,14 @@ public class Location extends GameEntity {
 
   public String getArtefactsToString() {
     if(this.artefacts.isEmpty()) {
-      return "No artefacts found";
+      return "";
     }
-    return this.artefacts.toString();
+    StringBuilder s = new StringBuilder();
+    for(Artefact artefact: this.artefacts) {
+      String modifiedDescription = addPrefixIfNeeded(artefact.getDescription());
+      s.append(modifiedDescription + "\n");
+    }
+    return s.toString();
   }
 
   public void addCharacters(Character character) {
@@ -52,9 +58,14 @@ public class Location extends GameEntity {
 
   public String getCharactersToString() {
     if(this.characters.isEmpty()) {
-      return "No characters found";
+      return "";
     }
-    return this.furnitures.toString();
+    StringBuilder s = new StringBuilder();
+    for(Character character: this.characters) {
+      String modifiedDescription = addPrefixIfNeeded(character.getDescription());
+      s.append(modifiedDescription + "\n");
+    }
+    return s.toString();
   }
 
   public void addFurniture(Furniture furniture) {
@@ -67,9 +78,32 @@ public class Location extends GameEntity {
 
   public String getFurnitureToString() {
     if(this.furnitures.isEmpty()) {
-      return "No furnitures found";
+      return "";
     }
-    return this.furnitures.toString();
+    StringBuilder s = new StringBuilder();
+    for(Furniture furniture : this.furnitures) {
+      String modifiedDescription = addPrefixIfNeeded(furniture.getDescription());
+      s.append(modifiedDescription + "\n");
+    }
+    return s.toString();
   }
 
+  public void setAllEntities() {
+    List<GameEntity> allEntities = new ArrayList<>();
+    allEntities.addAll(this.artefacts);
+    allEntities.addAll(this.characters);
+    allEntities.addAll(this.furnitures);
+    this.entityList = allEntities;
+  }
+
+  private String addPrefixIfNeeded(String description) {
+    if(!description.startsWith("A ")){
+      return "A " + description;
+    }
+    return description;
+  }
+
+  public String getAllEntitiesToString(){
+    return getArtefactsToString() + getCharactersToString() + getFurnitureToString();
+  }
 }
