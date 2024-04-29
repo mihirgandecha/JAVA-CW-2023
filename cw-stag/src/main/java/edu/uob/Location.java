@@ -17,7 +17,7 @@ public class Location extends GameEntity {
   public ArrayList<String> pathTo;
   public List<GameEntity> entityList;
 
-  public Location(String name, String description) throws Exception {
+  public Location(String name, String description) {
     //saving locations itself as Game Entity
     super(name, description, GameEntityType.LOCATION);
     this.location = name;
@@ -43,7 +43,7 @@ public class Location extends GameEntity {
     StringBuilder s = new StringBuilder();
     for(Artefact artefact: this.artefacts) {
       String modifiedDescription = addPrefixIfNeeded(artefact.getDescription());
-      s.append(modifiedDescription + "\n");
+      s.append(modifiedDescription).append("\n");
     }
     return s.toString();
   }
@@ -106,4 +106,38 @@ public class Location extends GameEntity {
   public String getAllEntitiesToString(){
     return getArtefactsToString() + getCharactersToString() + getFurnitureToString();
   }
+
+  public void removeEntity(String entityName){
+    for(int i=0; i<entityList.size(); i++){
+      if(entityList.get(i).getName().equalsIgnoreCase(entityName)){
+        entityList.remove(i);
+      }
+    }
+  }
+
+//  public int getEntityIndexByType(GameEntityType entityType, String entityName) throws Exception {
+//    List<? extends GameEntity> targetList;
+//    switch (entityType) {
+//      case ARTEFACT:
+//        targetList = this.artefacts;
+//        break;
+//      case CHARACTER:
+//        targetList = this.characters;
+//        break;
+//      case FURNITURE:
+//        targetList = this.furnitures;
+//        break;
+//      default:
+//        throw new Exception("Unsupported entity type: " + entityType);
+//    }
+//    for (int i = 0; i < targetList.size(); i++) {
+//      if (targetList.get(i).getName().equalsIgnoreCase(entityName)) {
+//        return i;
+//      }
+//    }
+//    throw new GameError("Entity not found: " + entityName + " of type " + entityType);
+//  }
+
+
+
 }

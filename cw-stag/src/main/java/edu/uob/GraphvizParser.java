@@ -18,6 +18,7 @@ public class GraphvizParser {
     Map<String, Location> gameMap;
     private ArrayList<String> locationNames;
     private HashMap<String, GameEntity> entityList;
+    public Node firstNode;
 
     public GraphvizParser(String entityFileName) throws Exception {
         this.entityFilePath = Paths.get("config" + File.separator + entityFileName).toAbsolutePath();
@@ -68,11 +69,14 @@ public class GraphvizParser {
         return node != null && node.getId() != null && !node.getId().getId().isEmpty();
     }
 
-    private List<List<Node>> storeLocationClusters(List<Graph> graphs) {
+    public List<List<Node>> storeLocationClusters(List<Graph> graphs) {
         List<List<Node>> nodeLists = new ArrayList<>();
         for (Graph graph : graphs) {
-            ArrayList<Node> Node = graph.getNodes(true);
-            nodeLists.add(Node);
+            ArrayList<Node> nodes = graph.getNodes(true);
+            nodeLists.add(nodes);
+            if (firstNode == null && !nodes.isEmpty()) {
+                firstNode = nodes.get(0);
+            }
         }
         return nodeLists;
     }

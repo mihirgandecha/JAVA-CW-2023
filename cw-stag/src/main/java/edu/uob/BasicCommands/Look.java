@@ -11,9 +11,11 @@ import java.util.List;
 
 public class Look extends GameCommand {
     StringBuilder builder = new StringBuilder();
+    private String name;
 
     public Look(GameEngine gameEngine, Player player, String args) throws GameError {
         super(gameEngine, player, args);
+        this.name = player.getCurrentLocation();
         setup();
     }
 
@@ -29,21 +31,18 @@ public class Look extends GameCommand {
     }
 
     private void setLocationToString() throws GameError {
-        String name = getEngine().getPlayerStartLocation().location;
-        String description = getEngine().map.get(name).description;
+        String description = getEngine().map.get(this.name).description;
         this.builder.append("You are in " + description + ". You can see: " + "\n");
     }
 
     private void setEntitiesDescriptionToString(){
-        String name = getEngine().getPlayerStartLocation().location;
-        Location l = getEngine().map.get(name);
+        Location l = getEngine().map.get(this.name);
         this.builder.append(l.getAllEntitiesToString());
     }
 
     private void setPathToString(){
         String intro = "You can access from here: " + "\n";
-        String name = getEngine().getPlayerStartLocation().location;
-        Location l = getEngine().map.get(name);
+        Location l = getEngine().map.get(this.name);
         this.builder.append(intro + l.pathTo + "\n");
     }
 

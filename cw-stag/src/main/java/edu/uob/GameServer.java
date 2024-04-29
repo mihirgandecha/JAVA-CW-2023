@@ -15,7 +15,7 @@ import java.util.Map;
 public final class GameServer {
 
   private static final char END_OF_TRANSMISSION = 4;
-  private final Map<String, Player> GamePlayers;
+  private Map<String, Player> GamePlayers;
   private GameEngine GameEngine;
   private final String entitiesFileString;
   private final String actionsFileString;
@@ -42,7 +42,6 @@ public final class GameServer {
     // TODO implement your server logic here
     this.entitiesFileString = entitiesFile.toString();
     this.actionsFileString = actionsFile.toString();
-    GamePlayers = new HashMap<>();
   }
 
   /**
@@ -57,27 +56,39 @@ public final class GameServer {
   public String handleCommand(String command) {
     // TODO implement your server logic here
     try{
+      initializeGamePlayers();
       Tokeniser tokeniser = new Tokeniser(command);
       String username = tokeniser.getUsername();
       String cleanCommand = tokeniser.getCleanCommand();
       //Check if player already exists:
-      Player player;
-      if(GamePlayers.containsKey(username)) {
-        player = GamePlayers.get(username);
-      } else{
-        player = new Player(username);
-        GamePlayers.put(username, player);
-      }
+      Player player = addOrRetrievePlayer(username);
       //Process Command:
-      GameEngine = new GameEngine("basic-entities.dot", this.actionsFileString);
-      GameEngine.processPlayers(GamePlayers);
-
+      if(GameEngine == null){
+        GameEngine = new GameEngine("basic-entities.dot", this.actionsFileString, player);
+        GameEngine.setFirstLocation();
+      }
       return GameEngine.toString(cleanCommand);
     } catch (Exception e){
       return e.getMessage();
     }
   }
 
+  private void initializeGamePlayers() {
+    if (GamePlayers == null) {
+      GamePlayers = new HashMap<>();
+    }
+  }
+
+  private Player addOrRetrievePlayer(String username) {
+    Player player;
+    if(GamePlayers.containsKey(username)) {
+      player = GamePlayers.get(username);
+    } else {
+      player = new Player(username);
+      GamePlayers.put(username, player);
+    }
+    return player;
+  }
 
   /**
    * Do not change the following method signature or we won't be able to mark your
