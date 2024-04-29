@@ -1,6 +1,7 @@
 package edu.uob;
 
 import edu.uob.BasicCommands.Get;
+import edu.uob.BasicCommands.Goto;
 import edu.uob.BasicCommands.Inventory;
 import edu.uob.BasicCommands.Look;
 
@@ -48,6 +49,11 @@ public class GameEngine {
         if (cleanCommand != null && cleanCommand.contains("inv")) {
             Inventory inventory = new Inventory(this, player, cleanCommand);
             return inventory.toString();
+        }
+        if (cleanCommand != null && cleanCommand.contains("goto")) {
+            Goto goToCmnd = new Goto(this, player, cleanCommand);
+            Look look = new Look(this, player, cleanCommand);
+            return look.toString();
         }
         return cleanCommand;
     }
