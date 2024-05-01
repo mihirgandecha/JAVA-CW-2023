@@ -60,16 +60,6 @@ class GraphvizParserTest {
         assertEquals("storeroom", gameMap.get("storeroom").getName());
     }
     //TODO Extra: .dot extension, if none add .dot extension and allow
-    @Test
-    public void dsReturnForestEntities() throws Exception {
-        p.setupGameMap();
-        Map<String, Location> gameMap = p.getGameMap();
-//        System.out.println(gameMap.get("forest"));
-//        assertEquals("No artefacts found", gameMap.get("forest").getArtefactsToString());
-//        System.out.println(gameMap.get("forest").getCharactersToString());
-//        System.out.println(gameMap.get("forest").getFurnitureToString());
-        System.out.println(p.getClusters().get(1));
-    }
 
     @Test
     void getPathsReturnsCorrectPaths(){
@@ -88,17 +78,6 @@ class GraphvizParserTest {
 //        Graph p = graphvizParser.getPaths();
 //        return (p.getEdges().toString());
 //    }
-
-    @Test
-    void pathStringSplitSetup() throws Exception {
-        Graph paths = p.getPaths();
-//        String[] expectedFirstPath = {"cabin", "forest"};
-        for (String pathNape: p.extractPathInformation("cabin -> forest;")) {
-            System.out.println(pathNape);
-        }
-//        System.out.println(p.extractPathInformation("cabin -> forest;"));
-//        assertTrue(p.extractPathInformation("cabin -> forest;").equals(expectedFirstPath));
-    }
 
     @Test
     void pathToSetReturnsCorrectPathsForBasic() throws Exception {
