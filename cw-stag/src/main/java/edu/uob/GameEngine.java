@@ -6,22 +6,43 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class GameEngine {
     private final Player player;
     private String entitiesFile;
     private String actionsFile;
     private Map<String, Location> map;
-    private Map<String, HashSet<GameAction>> gameActions;
+    private HashMap<String, HashSet<GameAction>> actions;
     private String firstLocation;
+    private Set<String> basicActions;
+    private Set<String> advancedActions;
 
     public GameEngine(String entitiesFile, String actionsFile, Player player) throws Exception {
         this.player = player;
         this.entitiesFile = entitiesFile;
         this.actionsFile = actionsFile;
-        this.setMap(processEntitiesFile());
-        this.setGameActions(processActionsFile());
+        this.map = processEntitiesFile();
+        this.actions = processActionsFile();
+        setBasicActions();
+        setAdvancedActions();
    }
+
+    // Add Basic Actions to Set
+   private void setBasicActions(){
+        this.basicActions = new HashSet<>();
+        this.basicActions.add("inv");
+        this.basicActions.add("get");
+        this.basicActions.add("goto");
+        this.basicActions.add("look");
+        this.basicActions.add("drop");
+   }
+
+    // Add action commands from the XML file to Set
+    private void setAdvancedActions() {
+        this.advancedActions = new HashSet<>();
+        this.advancedActions.addAll(actions.keySet());
+    }
 
     private Map<String, Location> processEntitiesFile() throws Exception {
         GraphvizParser p = new GraphvizParser(this.entitiesFile);
@@ -35,36 +56,58 @@ public class GameEngine {
     }
 
     public String toString(String cleanCommand) throws Exception {
-        if (cleanCommand != null && cleanCommand.contains("look")) {
-            Look look = new Look(this, player, cleanCommand);
+//        Sentence sentence = new Sentence(cleanCommand);
+        //inventory -> inv
+//        List<String> lemmas = sentence.lemmas();
+//        List<String> posTags = sentence.posTags();
+//        List<String> filteredWords = lemmas.stream()
+//                .filter(lemma -> actionKeywords.contains(lemma))
+//                .collect(Collectors.toList());
+        return executeCommand(cleanCommand);
+    }
+
+    private String executeCommand(String command) throws Exception {
+        if (command.contains("look")) {
+            Look look = new Look(this, player, command);
             return look.toString();
-        }
-        if (cleanCommand != null && cleanCommand.contains("get")) {
-            Get get = new Get(this, player, cleanCommand);
+        } else if (command.contains("get")) {
+            Get get = new Get(this, player, command);
             return get.toString();
-        }
-        if (cleanCommand != null && cleanCommand.contains("inv")) {
-            Inventory inventory = new Inventory(this, player, cleanCommand);
-            return inventory.toString();
-        }
-        if (cleanCommand != null && cleanCommand.contains("goto")) {
-            new Goto(this, player, cleanCommand);
-            Look look = new Look(this, player, cleanCommand);
+        } else if (command.contains("inv")) {
+            Inventory inv = new Inventory(this, player, command);
+            return inv.toString();
+        } else if (command.contains("goto")) {
+            Goto aGoto = new Goto(this, player, command);
+            return aGoto.toString();
+        } else if (command.contains("drop")) {
+            new Drop(this, player, command);
+            Look look = new Look(this, player, command);
             return look.toString();
+        } else if(command.contains("health")){
+            String health = String.valueOf(player.getHealth() - 1);
+            return "Player health " + health;
+        } else if (this.advancedActions.contains(command)){
+            return handleGameAction(command);
+        } else{
+            throw new GameError("Unknown command: " + command);
         }
-        if (cleanCommand != null && cleanCommand.contains("drop")) {
-            Drop drop = new Drop(this, player, cleanCommand);
-            return drop.toString();
+    }
+
+    private String handleGameAction(String command) throws GameError {
+        HashSet<GameAction> possibleActions = actions.get(command);
+        if (possibleActions == null) {
+            throw new GameError("Unknown command: " + command);
         }
-        return cleanCommand;
+        for (GameAction action : possibleActions) {
+            if (action.canExecute(player, map)) {
+                return action.execute(player, map);
+            }
+        }
+        throw new GameError("Unknown Command: " + command);
     }
 
     public void setFirstLocation() {
         player.setLocation(this.firstLocation);
-    }
-
-    public String getPlayerStartLocation() {
-        return this.firstLocation;
     }
 
     public Artefact pickupArtefact(String locationId, String artefactName) throws GameError{
@@ -88,20 +131,7 @@ public class GameEngine {
         return foundArtefact;
     }
 
-
     public Map<String, Location> getMap() {
         return map;
-    }
-
-    public void setMap(Map<String, Location> map) {
-        this.map = map;
-    }
-
-    public Map<String, HashSet<GameAction>> getGameActions() {
-        return gameActions;
-    }
-
-    public void setGameActions(Map<String, HashSet<GameAction>> gameActions) {
-        this.gameActions = gameActions;
     }
 }

@@ -24,7 +24,6 @@ final class EntitiesFileTests {
           FileReader reader = new FileReader("config" + File.separator + "basic-entities.dot");
           parser.parse(reader);
           Graph wholeDocument = parser.getGraphs().get(0);
-          System.out.println(wholeDocument);
           ArrayList<Graph> sections = wholeDocument.getSubgraphs();
 
           // The locations will always be in the first subgraph

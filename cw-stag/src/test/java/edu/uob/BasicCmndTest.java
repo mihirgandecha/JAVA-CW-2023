@@ -88,6 +88,48 @@ class BasicCmndTest {
         response = response.toLowerCase();
         assertTrue(response.contains("cabin"));
     }
+
+    @Test
+    void testCommandWithDecorativeWords() {
+        String response = sendCommandToServer("simon: please, could you kindly look around?");
+        assertTrue(response.toLowerCase().contains("cabin"));
+    }
+
+    @Test
+    void testCommandWithPunctuation() {
+        String response = sendCommandToServer("simon: look!!!");
+        assertTrue(response.toLowerCase().contains("cabin"));
+    }
+
+//    @Test
+//    void testIncorrectCommand() {
+//        String response = sendCommandToServer("simon: leap over");
+//        assertTrue(response.toLowerCase().contains("unrecognized"));
+//    }
+
+    @Test
+    void testMultipleSpacesAndTabs() {
+        String response = sendCommandToServer("simon:\t  look  ");
+        assertTrue(response.toLowerCase().contains("cabin"));
+    }
+
+    @Test
+    void testCommandWithExtraArguments() {
+        String response = sendCommandToServer("simon: look quietly with binoculars");
+        assertTrue(response.toLowerCase().contains("cabin"), "Commands with irrelevant extra arguments should focus on relevant parts.");
+    }
+
+//    @Test
+//    void testAmbiguousCommands() {
+//        String response = sendCommandToServer("simon: open");
+//        assertTrue(response.toLowerCase().contains("more than one"), "Ambiguous commands should prompt for clarification.");
+//    }
+
+//    @Test
+//    void testCompositeCommands() {
+//        String response = sendCommandToServer("simon: get key and open door");
+//        assertTrue(response.toLowerCase().contains("unrecognized"), "Composite commands should not be supported and handled appropriately.");
+//    }
 }
 
 
