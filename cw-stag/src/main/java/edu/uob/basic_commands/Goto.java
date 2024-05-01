@@ -1,4 +1,4 @@
-package edu.uob.BasicCommands;
+package edu.uob.basic_commands;
 
 import edu.uob.GameEngine;
 import edu.uob.Location;
@@ -16,17 +16,14 @@ public class Goto extends GameCommand {
         executeMove();
     }
 
-    private void parseCommand(String command) throws GameError {
+    private void parseCommand(String command) {
         if (command.startsWith("goto ")) {
             this.goLocation = command.substring(5).trim();
         }
-//        else {
-//            throw new GameError("Invalid command format.");
-//        }
     }
 
     private void executeMove() throws GameError {
-        Location currentLoc = getEngine().map.get(currentLocation);
+        Location currentLoc = getEngine().getMap().get(currentLocation);
         if (currentLoc == null) {
             throw new GameError("Current location is not found in the game map.");
         }

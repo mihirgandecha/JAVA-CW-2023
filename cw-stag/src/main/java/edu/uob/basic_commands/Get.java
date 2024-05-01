@@ -1,4 +1,4 @@
-package edu.uob.BasicCommands;
+package edu.uob.basic_commands;
 
 import edu.uob.*;
 
@@ -10,7 +10,7 @@ public class Get extends GameCommand {
 
     public Get(GameEngine gameEngine, Player player, String basicCommand) throws Exception {
         super(gameEngine, player, basicCommand);
-        this.currentLocation = gameEngine.map.get(player.getCurrentLocation());
+        this.currentLocation = gameEngine.getMap().get(player.getCurrentLocation());
         setArtefactName();
         setup();
     }
@@ -29,11 +29,11 @@ public class Get extends GameCommand {
     public void setup() throws Exception {
         Artefact artefact = getEngine().pickupArtefact(player.getCurrentLocation(), requestedArtefact);
         if(artefact == null) {
-            throw new Exception("Artefact fetched is null");
+            throw new GameError("Artefact fetched is null");
         }
         HashMap<String, Artefact> inventory = player.getInventory();
         if(inventory == null) {
-            inventory = new HashMap<String, Artefact>();
+            inventory = new HashMap<>();
         }
         inventory.put(requestedArtefact, artefact);
         player.setInventory(inventory);

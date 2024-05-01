@@ -1,8 +1,7 @@
-package edu.uob.BasicCommands;
+package edu.uob.basic_commands;
 
 import edu.uob.Artefact;
 import edu.uob.GameEngine;
-import edu.uob.GameError;
 import edu.uob.Player;
 
 import java.util.HashMap;

@@ -42,7 +42,6 @@ public class Tokeniser {
         }
     }
 
-    // Seperate command: simon: look --> {"simon", "look"}
     private void setUsername() throws GameError {
         if (this.splitCommand.length == 2) {
             this.username = this.splitCommand[0].trim();

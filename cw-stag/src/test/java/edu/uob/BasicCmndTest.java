@@ -41,10 +41,15 @@ class BasicCmndTest {
     void testNoInput() {
         String response = sendCommandToServer("");
         response = response.toLowerCase();
-        System.out.println(response);
-        assertTrue(response.contains("Error"));
+        assertTrue(response.contains("error"));
     }
 
+    @Test
+    void testNoUsername() {
+        String response = sendCommandToServer(": look");
+        response = response.toLowerCase();
+        assertTrue(response.contains("username is invalid"));
+    }
 }
 
 

@@ -1,4 +1,4 @@
-package edu.uob.BasicCommands;
+package edu.uob.basic_commands;
 
 import edu.uob.*;
 
@@ -10,7 +10,7 @@ public class Drop extends GameCommand {
 
     public Drop(GameEngine gameEngine, Player player, String basicCommand) throws GameError {
         super(gameEngine, player, basicCommand);
-        this.currentLocation = getEngine().map.get(player.getCurrentLocation());
+        this.currentLocation = getEngine().getMap().get(player.getCurrentLocation());
         parseArtefactName();
         executeDrop();
     }

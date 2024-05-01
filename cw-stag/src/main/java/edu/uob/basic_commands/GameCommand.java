@@ -1,16 +1,14 @@
-package edu.uob.BasicCommands;
+package edu.uob.basic_commands;
 
 import edu.uob.GameEngine;
 import edu.uob.Player;
-
-import java.util.ArrayList;
 
 public abstract class GameCommand {
     GameEngine engine;
     Player player;
     String basicCommand;
 
-    public GameCommand(GameEngine gameEngine, Player player, String basicCommand) {
+    protected GameCommand(GameEngine gameEngine, Player player, String basicCommand) {
         this.engine = gameEngine;
         this.player = player;
         this.basicCommand = basicCommand;

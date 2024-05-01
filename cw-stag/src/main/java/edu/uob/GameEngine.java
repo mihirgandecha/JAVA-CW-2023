@@ -1,6 +1,6 @@
 package edu.uob;
 
-import edu.uob.BasicCommands.*;
+import edu.uob.basic_commands.*;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,16 +11,16 @@ public class GameEngine {
     private final Player player;
     private String entitiesFile;
     private String actionsFile;
-    public Map<String, Location> map;
-    public HashMap<String, HashSet<GameAction>> gameActions;
-    public String firstLocation;
+    private Map<String, Location> map;
+    private Map<String, HashSet<GameAction>> gameActions;
+    private String firstLocation;
 
     public GameEngine(String entitiesFile, String actionsFile, Player player) throws Exception {
         this.player = player;
         this.entitiesFile = entitiesFile;
         this.actionsFile = actionsFile;
-        this.map = processEntitiesFile();
-        this.gameActions = processActionsFile();
+        this.setMap(processEntitiesFile());
+        this.setGameActions(processActionsFile());
    }
 
     private Map<String, Location> processEntitiesFile() throws Exception {
@@ -34,7 +34,7 @@ public class GameEngine {
         return p.getGameActions();
     }
 
-    public String toString(String cleanCommand) throws GameError, Exception {
+    public String toString(String cleanCommand) throws Exception {
         if (cleanCommand != null && cleanCommand.contains("look")) {
             Look look = new Look(this, player, cleanCommand);
             return look.toString();
@@ -48,7 +48,7 @@ public class GameEngine {
             return inventory.toString();
         }
         if (cleanCommand != null && cleanCommand.contains("goto")) {
-            Goto goToCmnd = new Goto(this, player, cleanCommand);
+            new Goto(this, player, cleanCommand);
             Look look = new Look(this, player, cleanCommand);
             return look.toString();
         }
@@ -67,18 +67,10 @@ public class GameEngine {
         return this.firstLocation;
     }
 
-    // Helper method to get location by ID
-    private Location getLocation(String locationId) throws GameError {
-        if (!map.containsKey(locationId)) {
-            throw new GameError("Location not found.");
-        }
-        return map.get(locationId);
-    }
-
-    public Artefact pickupArtefact(String locationId, String artefactName) throws Exception {
-        Location location = map.get(locationId);
+    public Artefact pickupArtefact(String locationId, String artefactName) throws GameError{
+        Location location = getMap().get(locationId);
         if (location == null) {
-            throw new Exception("Location not found.");
+            throw new GameError("Location not found.");
         }
         List<Artefact> artefacts = location.artefacts;
         Artefact foundArtefact = null;
@@ -97,4 +89,19 @@ public class GameEngine {
     }
 
 
+    public Map<String, Location> getMap() {
+        return map;
+    }
+
+    public void setMap(Map<String, Location> map) {
+        this.map = map;
+    }
+
+    public Map<String, HashSet<GameAction>> getGameActions() {
+        return gameActions;
+    }
+
+    public void setGameActions(Map<String, HashSet<GameAction>> gameActions) {
+        this.gameActions = gameActions;
+    }
 }
