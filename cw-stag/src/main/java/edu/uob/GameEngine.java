@@ -15,11 +15,13 @@ public class GameEngine {
     private String entitiesFile;
     private String actionsFile;
     private Map<String, Location> map;
-    private Map<String, HashSet<GameAction>> gameActions;
+    private HashMap<String, HashSet<GameAction>> actions;
     private String firstLocation;
+    private Set<String> basicKeyword;
     private Set<String> actionKeywords; 
 
     public GameEngine(String entitiesFile, String actionsFile, Player player) throws Exception {
+        setBasicKeyword();
         this.player = player;
         this.entitiesFile = entitiesFile;
         this.actionsFile = actionsFile;
@@ -28,9 +30,19 @@ public class GameEngine {
         this.actionKeywords = setKeywords();
    }
 
+   private void setBasicKeyword(){
+        this.actionKeywords = new HashSet<>();
+        this.actionKeywords.add("inv");
+        this.actionKeywords.add("get");
+        this.actionKeywords.add("goto");
+        this.actionKeywords.add("look");
+        this.actionKeywords.add("drop");
+   }
+
     private Set<String> setKeywords() {
+        // Add action commands from the XML file
         Set<String> keywords = new HashSet<>();
-        keywords.addAll(Set.of("look", "get", "inv", "drop", "goto"));
+        actions.keySet().forEach(keywords::add);
         return keywords;
     }
 
@@ -53,7 +65,6 @@ public class GameEngine {
 //        List<String> filteredWords = lemmas.stream()
 //                .filter(lemma -> actionKeywords.contains(lemma))
 //                .collect(Collectors.toList());
-
         if (cleanCommand != null && cleanCommand.contains("look")) {
             Look look = new Look(this, player, cleanCommand);
             return look.toString();
@@ -75,7 +86,12 @@ public class GameEngine {
             Drop drop = new Drop(this, player, cleanCommand);
             return drop.toString();
         }
-        return cleanCommand;
+        else if (this.actionKeywords.contains(cleanCommand)) {
+            Look look = new Look(this, player, cleanCommand);
+            return look.toString();
+        } else {
+            throw new GameError(cleanCommand + " is not a valid command");
+        }
     }
 
     public void setFirstLocation() {
@@ -116,11 +132,11 @@ public class GameEngine {
         this.map = map;
     }
 
-    public Map<String, HashSet<GameAction>> getGameActions() {
-        return gameActions;
+    public HashMap<String, HashSet<GameAction>> getGameActions() {
+        return this.actions;
     }
 
-    public void setGameActions(Map<String, HashSet<GameAction>> gameActions) {
-        this.gameActions = gameActions;
+    public void setGameActions(HashMap<String, HashSet<GameAction>> gameActions) {
+        this.actions = gameActions;
     }
 }
