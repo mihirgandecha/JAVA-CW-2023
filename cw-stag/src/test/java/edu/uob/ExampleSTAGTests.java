@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,13 +23,28 @@ class ExampleSTAGTests {
       server = new GameServer(entitiesFile, actionsFile);
   }
 
-  String sendCommandToServer(String command) {
-      // Try to send a command to the server - this call will timeout if it takes too long (in case the server enters an infinite loop)
-      return assertTimeoutPreemptively(Duration.ofMillis(10000000), () -> { return server.handleCommand(command);},
-      "Server took too long to respond (probably stuck in an infinite loop)");
-  }
+    String sendCommandToServer(String command) {
+        // Try to send a command to the server - this call will timeout if it takes too long (in case the server enters an infinite loop)
+        return assertTimeoutPreemptively(Duration.ofMillis(10000000), () -> {
+                    return server.handleCommand(command);
+                },
+                "Server took too long to respond (probably stuck in an infinite loop)");
+    }
 
-  // A lot of tests will probably check the game state using 'look' - so we better make sure 'look' works well !
+    String randomiseCasing(String inFromGenerateRandomName) {
+        StringBuilder randomiseCaseForName = new StringBuilder();
+        Random random = new Random();
+        for (char c : inFromGenerateRandomName.toCharArray()) {
+            if (random.nextBoolean()) {
+                randomiseCaseForName.append(java.lang.Character.toUpperCase(c));
+            } else {
+                randomiseCaseForName.append(java.lang.Character.toLowerCase(c));
+            }
+        }
+        return randomiseCaseForName.toString();
+    }
+
+    // A lot of tests will probably check the game state using 'look' - so we better make sure 'look' works well !
   @Test
   void testLook() {
     String response = sendCommandToServer("simon: look");
@@ -96,4 +112,21 @@ class ExampleSTAGTests {
 //        playerOne = new Player("simon", gameMap.get(0));
 //        assertEquals("forest",playerOne.getPlayerCurrentLocation().getName());
 //    }
+
+    @Test
+    void testMultipleUsers() {
+        String responseSimon = sendCommandToServer(randomiseCasing("simon: look"));
+        String responseMihir = sendCommandToServer(randomiseCasing("Mihir: look"));
+        assertTrue(responseSimon.toLowerCase().contains("cabin"), "Simon should be able to see his location.");
+        assertTrue(responseMihir.toLowerCase().contains("forest"), "Mihir should be able to see his location.");
+    }
+
+    @Test
+    void testMultiPlayerGameStateChange() {
+        sendCommandToServer("Simon: pick up key");
+        String response = sendCommandToServer("Mihir: inventory");
+        assertFalse(response.toLowerCase().contains("key"), "Mihir should not have the key picked up by Simon.");
+    }
+
+
 }

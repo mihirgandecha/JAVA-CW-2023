@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import edu.stanford.nlp.simple.Sentence;
+import java.util.stream.Collectors;
 
 public class GameEngine {
     private final Player player;
@@ -14,6 +17,7 @@ public class GameEngine {
     private Map<String, Location> map;
     private Map<String, HashSet<GameAction>> gameActions;
     private String firstLocation;
+    private Set<String> actionKeywords; 
 
     public GameEngine(String entitiesFile, String actionsFile, Player player) throws Exception {
         this.player = player;
@@ -21,7 +25,14 @@ public class GameEngine {
         this.actionsFile = actionsFile;
         this.setMap(processEntitiesFile());
         this.setGameActions(processActionsFile());
+        this.actionKeywords = setKeywords();
    }
+
+    private Set<String> setKeywords() {
+        Set<String> keywords = new HashSet<>();
+        keywords.addAll(Set.of("look", "get", "inv", "drop", "goto"));
+        return keywords;
+    }
 
     private Map<String, Location> processEntitiesFile() throws Exception {
         GraphvizParser p = new GraphvizParser(this.entitiesFile);
@@ -35,6 +46,14 @@ public class GameEngine {
     }
 
     public String toString(String cleanCommand) throws Exception {
+//        Sentence sentence = new Sentence(cleanCommand);
+        //inventory -> inv
+//        List<String> lemmas = sentence.lemmas();
+//        List<String> posTags = sentence.posTags();
+//        List<String> filteredWords = lemmas.stream()
+//                .filter(lemma -> actionKeywords.contains(lemma))
+//                .collect(Collectors.toList());
+
         if (cleanCommand != null && cleanCommand.contains("look")) {
             Look look = new Look(this, player, cleanCommand);
             return look.toString();
