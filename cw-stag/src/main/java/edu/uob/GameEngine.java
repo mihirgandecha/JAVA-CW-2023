@@ -79,10 +79,23 @@ public class GameEngine {
             new Drop(this, player, command);
             return new Look(this, player, command).toString();
         } else if (this.advancedActions.contains(command)){
-            return new Look(this, player, command).toString();
+            return handleGameAction(command);
         } else{
             throw new GameError("Unknown command: " + command);
         }
+    }
+
+    private String handleGameAction(String command) throws GameError {
+        HashSet<GameAction> possibleActions = actions.get(command);
+        if (possibleActions == null) {
+            throw new GameError("Unknown command: " + command);
+        }
+        for (GameAction action : possibleActions) {
+            if (action.canExecute(player, map)) {
+                return action.execute(player, map);
+            }
+        }
+        throw new GameError("Unknown Command: " + command);
     }
 
     public void setFirstLocation() {
