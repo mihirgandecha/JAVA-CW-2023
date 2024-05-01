@@ -93,7 +93,7 @@ class ExampleSTAGTests {
         assertTrue(response1.contains("cabin"));
         String response = sendCommandToServer("simon: quiet");
         response = response.toLowerCase();
-        assertTrue(response.contains("is not a valid command"));
+        assertTrue(response.contains("unknown command"));
     }
 
   // Add more unit tests or integration tests here.
