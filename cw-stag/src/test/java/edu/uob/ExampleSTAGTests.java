@@ -70,6 +70,7 @@ class ExampleSTAGTests {
       assertTrue(response.contains("key"), "Failed attempt to use 'goto' command to move to the forest - there is no key in the current location");
   }
 
+
   // Add more unit tests or integration tests here.
 //    @Test
 //    void testAddingBasicEntitiesToGameMap() throws Exception {
