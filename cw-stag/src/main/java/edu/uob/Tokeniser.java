@@ -17,7 +17,7 @@ public class Tokeniser {
 
     public Tokeniser(String command) throws GameError {
         validateCommand(command);
-        this.serverCommand = command.trim();
+        this.serverCommand = command.toLowerCase().trim();
         this.splitCommand = splitCommandAtColon(serverCommand);
         setUsername();
         setCleanCommand();

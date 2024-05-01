@@ -40,6 +40,12 @@ class ExampleSTAGTests {
     assertTrue(response.contains("forest"), "Did not see available paths in response to look");
   }
 
+    @Test
+    void testLookRandomiseCasing() {
+        String response = sendCommandToServer("SimOn: lOok");
+        response = response.toLowerCase();
+        assertTrue(response.contains("cabin"), "Did not see the name of the current room in response to look");
+    }
   // Test that we can pick something up and that it appears in our inventory
   @Test
   void testGet()
