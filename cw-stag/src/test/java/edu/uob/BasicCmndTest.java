@@ -37,6 +37,13 @@ class BasicCmndTest {
                 "Server took too long to respond (probably stuck in an infinite loop)");
     }
 
+    // Random name generator - useful for testing "bare earth" queries (i.e. where tables don't previously exist)
+    public static String generateRandomName() {
+        String randomName = "";
+        for(int i=0; i<10 ;i++) randomName += (char)( 97 + (Math.random() * 25.0));
+        return randomName;
+    }
+
     @Test
     void testNoInput() {
         String response = sendCommandToServer("");
@@ -49,6 +56,20 @@ class BasicCmndTest {
         String response = sendCommandToServer(": look");
         response = response.toLowerCase();
         assertTrue(response.contains("username is invalid"));
+    }
+
+    @Test
+    void testSpacing() {
+        String response = sendCommandToServer("  simon  :    look     ");
+        response = response.toLowerCase();
+        assertTrue(response.contains("cabin"));
+    }
+
+    @Test
+    void testAdditionalCharacters() {
+        String response = sendCommandToServer("  simon  :    look     ");
+        response = response.toLowerCase();
+        assertTrue(response.contains("cabin"));
     }
 }
 
