@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.File;
+import java.util.Random;
+
 import com.alexmerz.graphviz.Parser;
 import com.alexmerz.graphviz.ParseException;
 import com.alexmerz.graphviz.objects.Graph;
@@ -37,11 +39,17 @@ class BasicCmndTest {
                 "Server took too long to respond (probably stuck in an infinite loop)");
     }
 
-    // Random name generator - useful for testing "bare earth" queries (i.e. where tables don't previously exist)
-    public static String generateRandomName() {
-        String randomName = "";
-        for(int i=0; i<10 ;i++) randomName += (char)( 97 + (Math.random() * 25.0));
-        return randomName;
+    String randomiseCasing(String inFromGenerateRandomName) {
+        StringBuilder randomiseCaseForName = new StringBuilder();
+        Random random = new Random();
+        for (char c : inFromGenerateRandomName.toCharArray()) {
+            if (random.nextBoolean()) {
+                randomiseCaseForName.append(java.lang.Character.toUpperCase(c));
+            } else {
+                randomiseCaseForName.append(java.lang.Character.toLowerCase(c));
+            }
+        }
+        return randomiseCaseForName.toString();
     }
 
     @Test
@@ -67,7 +75,16 @@ class BasicCmndTest {
 
     @Test
     void testAdditionalCharacters() {
-        String response = sendCommandToServer("  simon  :    look     ");
+        String response = "  simon  :    :look:     ";
+        response = sendCommandToServer(randomiseCasing(response));
+        response = response.toLowerCase();
+        assertTrue(response.contains("cabin"));
+    }
+
+    @Test
+    void testAdditionalWeirdCharacters() {
+        String response = "  simon  :    #look#     ";
+        response = sendCommandToServer(randomiseCasing(response));
         response = response.toLowerCase();
         assertTrue(response.contains("cabin"));
     }
