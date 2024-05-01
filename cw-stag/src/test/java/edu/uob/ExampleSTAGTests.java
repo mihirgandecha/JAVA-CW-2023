@@ -136,8 +136,4 @@ class ExampleSTAGTests {
         String response = sendCommandToServer("Mihir: inventory");
         assertFalse(response.toLowerCase().contains("key"), "Mihir should not have the key picked up by Simon.");
     }
-
-
-
-
 }

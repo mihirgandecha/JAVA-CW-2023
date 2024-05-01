@@ -68,16 +68,24 @@ public class GameEngine {
 
     private String executeCommand(String command) throws Exception {
         if (command.contains("look")) {
-            return new Look(this, player, command).toString();
+            Look look = new Look(this, player, command);
+            return look.toString();
         } else if (command.contains("get")) {
-            return new Get(this, player, command).toString();
+            Get get = new Get(this, player, command);
+            return get.toString();
         } else if (command.contains("inv")) {
-            return new Inventory(this, player, command).toString();
+            Inventory inv = new Inventory(this, player, command);
+            return inv.toString();
         } else if (command.contains("goto")) {
-            return new Goto(this, player, command).toString();
+            Goto aGoto = new Goto(this, player, command);
+            return aGoto.toString();
         } else if (command.contains("drop")) {
             new Drop(this, player, command);
-            return new Look(this, player, command).toString();
+            Look look = new Look(this, player, command);
+            return look.toString();
+        } else if(command.contains("health")){
+            String health = String.valueOf(player.getHealth() - 1);
+            return "Player health " + health;
         } else if (this.advancedActions.contains(command)){
             return handleGameAction(command);
         } else{
