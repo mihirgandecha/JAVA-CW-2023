@@ -5,13 +5,12 @@ import edu.uob.GameError;
 import edu.uob.Location;
 import edu.uob.Player;
 
-//GOTO - update player location
-//GET
-//DROP
+import java.util.ArrayList;
 
 public class Look extends GameCommand {
     StringBuilder builder = new StringBuilder();
     private String name;
+    private Location location;
 
     public Look(GameEngine gameEngine, Player player, String args) throws GameError {
         super(gameEngine, player, args);
@@ -20,25 +19,29 @@ public class Look extends GameCommand {
     }
 
     private void setup() throws GameError {
+        if(getEngine().getMap().get(this.name) == null) {
+            throw new GameError("Player location does not exist");
+        }
+        this.location = getEngine().getMap().get(this.name);
         setLocationToString();
         setEntitiesDescriptionToString();
         setPathToString();
     }
 
-    private void setLocationToString() throws GameError {
-        String description = getEngine().getMap().get(this.name).description;
-        this.builder.append("You are in " + description + ". You can see: " + "\n");
+    private void setLocationToString() {
+        this.builder.append("You are in " + this.location.getDescription() + ". You can see: " + "\n");
     }
 
     private void setEntitiesDescriptionToString(){
-        Location l = getEngine().getMap().get(this.name);
-        this.builder.append(l.getAllEntitiesToString());
+        this.builder.append(this.location.getAllEntitiesToString());
     }
 
     private void setPathToString(){
-        String intro = "You can access from here: " + "\n";
-        Location l = getEngine().getMap().get(this.name);
-        this.builder.append(intro + l.pathTo + "\n");
+        this.builder.append("You can access from here: " + "\n");
+        ArrayList<String> paths = this.location.pathTo;
+        for (String path : paths) {
+            this.builder.append(path + "\n");
+        }
     }
 
     @Override

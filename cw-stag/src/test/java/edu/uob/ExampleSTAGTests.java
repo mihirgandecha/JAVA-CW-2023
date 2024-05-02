@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -84,6 +85,26 @@ class ExampleSTAGTests {
       String response = sendCommandToServer("simon: look");
       response = response.toLowerCase();
       assertTrue(response.contains("key"), "Failed attempt to use 'goto' command to move to the forest - there is no key in the current location");
+  }
+
+  @Test
+  void testExampleScript(){
+      String response = sendCommandToServer("simon: look");
+      response = response.toLowerCase();
+      assertTrue(Arrays.asList("cabin", "potion", "axe", "trapdoor", "forest").stream().allMatch(response::contains));
+      response = sendCommandToServer("simon: get axe");
+      assertEquals("you picked up a axe\n", response.toLowerCase());
+      response = sendCommandToServer("simon: look");
+      response = response.toLowerCase();
+      assertTrue(Arrays.asList("cabin", "potion", "trapdoor", "forest").stream().allMatch(response::contains));
+      response = sendCommandToServer("simon: get potion");
+      assertEquals("you picked up a potion\n", response.toLowerCase());
+      response = sendCommandToServer("simon: look");
+      response = response.toLowerCase();
+      assertTrue(Arrays.asList("cabin", "trapdoor", "forest").stream().allMatch(response::contains));
+      response = sendCommandToServer("simon: goto forest");
+      response = response.toLowerCase();
+      assertTrue(Arrays.asList("forest", "key", "cabin").stream().allMatch(response::contains));
   }
 
     @Test
