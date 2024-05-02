@@ -87,7 +87,7 @@ public class GameEngine {
             Look look = new Look(this, player, command);
             return look.toString();
         } else if(command.contains("health")){
-            String health = String.valueOf(player.getHealth() - 1);
+            String health = String.valueOf(player.getHealth());
             return "Player health " + health;
         } else if (this.advancedActions.contains(actionWord)){
             return handleGameAction(command);
