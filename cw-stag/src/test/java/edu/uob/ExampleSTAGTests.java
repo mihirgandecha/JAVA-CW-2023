@@ -153,6 +153,47 @@ class ExampleSTAGTests {
   }
 
     @Test
+    void testBasicGameCommands() {
+        String response;
+        // Initial Look in the starting location
+        response = sendCommandToServer("simon: look");
+        assertTrue(response.toLowerCase().contains("cabin"), "Look should reveal the cabin description.");
+        assertTrue(response.toLowerCase().contains("axe"), "Axe should be visible in cabin.");
+        assertTrue(response.toLowerCase().contains("potion"), "Potion should be visible in cabin.");
+
+        // Pickup Axe
+        response = sendCommandToServer("simon: get axe");
+        assertTrue(response.toLowerCase().contains("you picked up a axe"));
+
+        // Verify inventory contains the Axe
+        response = sendCommandToServer("simon: inventory");
+        assertTrue(response.toLowerCase().contains("axe"));
+
+        // Drop the Axe
+        response = sendCommandToServer("simon: drop axe");
+        assertTrue(response.toLowerCase().contains("you dropped a axe"));
+
+        // Verify the Axe is no longer in inventory but is in the location
+        response = sendCommandToServer("simon: inventory");
+        assertFalse(response.toLowerCase().contains("axe"));
+        response = sendCommandToServer("simon: look");
+        assertTrue(response.toLowerCase().contains("axe"));
+
+        // Goto another location and verify transition
+        response = sendCommandToServer("simon: goto forest");
+        assertTrue(response.toLowerCase().contains("forest"));
+        response = sendCommandToServer("simon: look");
+        assertTrue(response.toLowerCase().contains("tree"));
+        assertTrue(response.toLowerCase().contains("key"));
+
+        // Return to the cabin
+        response = sendCommandToServer("simon: goto cabin");
+        assertTrue(response.toLowerCase().contains("cabin"));
+        response = sendCommandToServer("simon: look");
+        assertTrue(response.toLowerCase().contains("cabin"));
+    }
+
+    @Test
     void testInvalidCommand()
     {
 //        String response1 = sendCommandToServer("simon: unlock");

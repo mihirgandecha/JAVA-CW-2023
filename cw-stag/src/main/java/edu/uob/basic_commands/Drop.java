@@ -32,8 +32,10 @@ public class Drop extends GameCommand {
         if (artefact == null) {
             throw new GameError("No artefact named '" + requestedArtefact + "' found in your inventory.");
         }
+        player.getInventory().remove(requestedArtefact);
         currentLocation.addArtefact(artefact);
-        player.setInventory(inventory);
+        getEngine().getMap().remove(currentLocation.location);
+        getEngine().getMap().put(currentLocation.location, currentLocation);
     }
 
     @Override
