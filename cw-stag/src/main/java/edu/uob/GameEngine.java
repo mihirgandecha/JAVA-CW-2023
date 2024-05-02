@@ -67,6 +67,9 @@ public class GameEngine {
     }
 
     private String executeCommand(String command) throws Exception {
+        String[] words = command.split("\\s+");
+        String actionWord = words[0];
+
         if (command.contains("look")) {
             Look look = new Look(this, player, command);
             return look.toString();
@@ -86,7 +89,7 @@ public class GameEngine {
         } else if(command.contains("health")){
             String health = String.valueOf(player.getHealth() - 1);
             return "Player health " + health;
-        } else if (this.advancedActions.contains(command)){
+        } else if (this.advancedActions.contains(actionWord)){
             return handleGameAction(command);
         } else{
             throw new GameError("Unknown command: " + command);
@@ -94,7 +97,9 @@ public class GameEngine {
     }
 
     private String handleGameAction(String command) throws GameError {
-        HashSet<GameAction> possibleActions = actions.get(command);
+        String[] words = command.split("\\s+");
+        String actionWord = words[0];
+        HashSet<GameAction> possibleActions = actions.get(actionWord);
         if (possibleActions == null) {
             throw new GameError("Unknown command: " + command);
         }
