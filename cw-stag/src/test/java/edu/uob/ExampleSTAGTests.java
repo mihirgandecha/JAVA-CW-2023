@@ -116,10 +116,20 @@ class ExampleSTAGTests {
       response = response.toLowerCase();
       assertTrue(Arrays.asList("cabin", "trapdoor", "forest").stream().allMatch(response::contains));
 
+      // Check inventory after picking potion with 'inventory'
+      response = sendCommandToServer("simon: inv");
+      assertTrue(response.toLowerCase().contains("potion"));
+
       //Goto - check player is moved
       response = sendCommandToServer("simon: goto forest");
       response = response.toLowerCase();
       assertTrue(Arrays.asList("forest", "key", "cabin").stream().allMatch(response::contains));
+
+      //TODO Checking subjects logic incorrect!
+//      response = sendCommandToServer("simon: chop tree");
+//      System.out.println(response);
+//      assertEquals("you cut down the tree with the axe\n", response.toLowerCase());
+
 
       //Pickup Key - check key not in forest location
       response = sendCommandToServer("simon: get key");
