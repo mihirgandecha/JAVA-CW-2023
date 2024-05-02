@@ -89,33 +89,57 @@ class ExampleSTAGTests {
 
   @Test
   void testExampleScript(){
+      //Initial look
       String response = sendCommandToServer("simon: look");
       response = response.toLowerCase();
       assertTrue(Arrays.asList("cabin", "potion", "axe", "trapdoor", "forest").stream().allMatch(response::contains));
+
+      //Pickup Axe
       response = sendCommandToServer("simon: get axe");
       assertEquals("you picked up a axe\n", response.toLowerCase());
+
+      // Check inventory after picking axe
+      response = sendCommandToServer("simon: inv");
+      assertTrue(response.toLowerCase().contains("axe"));
+
+      //Look - check axe not in cabin location
       response = sendCommandToServer("simon: look");
       response = response.toLowerCase();
       assertTrue(Arrays.asList("cabin", "potion", "trapdoor", "forest").stream().allMatch(response::contains));
+
+      //Pickup Potion
       response = sendCommandToServer("simon: get potion");
       assertEquals("you picked up a potion\n", response.toLowerCase());
+
+      //Look - check potion not in cabin location
       response = sendCommandToServer("simon: look");
       response = response.toLowerCase();
       assertTrue(Arrays.asList("cabin", "trapdoor", "forest").stream().allMatch(response::contains));
+
+      //Goto - check player is moved
       response = sendCommandToServer("simon: goto forest");
       response = response.toLowerCase();
       assertTrue(Arrays.asList("forest", "key", "cabin").stream().allMatch(response::contains));
+
+      //Pickup Key - check key not in forest location
       response = sendCommandToServer("simon: get key");
       assertEquals("you picked up a key\n", response.toLowerCase());
+
+      //Goto cabin now having key
       response = sendCommandToServer("simon: goto cabin");
       response = response.toLowerCase();
       assertTrue(Arrays.asList("cabin", "trapdoor", "forest").stream().allMatch(response::contains));
+
+      //Check advanced Action: trapdoor can be opened as player holds key
       response = sendCommandToServer("simon: open trapdoor");
       response = response.toLowerCase();
+
+      //Check for exact narration as xml file
       assertEquals("you unlock the trapdoor and see steps leading down into a cellar\n", response.toLowerCase());
+
+      //Goto - TODO not working yet
       response = sendCommandToServer("simon: goto cellar");
       response = response.toLowerCase();
-      System.out.println(response);
   }
 
     @Test
