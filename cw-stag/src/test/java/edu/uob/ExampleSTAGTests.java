@@ -115,7 +115,6 @@ class ExampleSTAGTests {
       assertEquals("you unlock the trapdoor and see steps leading down into a cellar\n", response.toLowerCase());
       response = sendCommandToServer("simon: goto cellar");
       response = response.toLowerCase();
-      System.out.println(response);
   }
 
     @Test
