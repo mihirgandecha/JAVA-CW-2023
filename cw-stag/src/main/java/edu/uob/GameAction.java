@@ -54,6 +54,7 @@ public class GameAction
     // Method to check if the action can be executed based on current game state
     public boolean canExecute(Player player, Map<String, Location> map) {
         // Check if all required subjects are present in the player's location or inventory
+        //TODO incorrect logic for axe + chop tree!
         Location currentLocation = map.get(player.getCurrentLocation());
         if (currentLocation == null) return false;
         for (String subject : subjects) {

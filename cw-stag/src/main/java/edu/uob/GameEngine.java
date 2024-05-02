@@ -83,11 +83,10 @@ public class GameEngine {
             Goto aGoto = new Goto(this, player, command);
             return aGoto.toString();
         } else if (command.contains("drop")) {
-            new Drop(this, player, command);
-            Look look = new Look(this, player, command);
-            return look.toString();
+            Drop drop = new Drop(this, player, command);
+            return drop.toString();
         } else if(command.contains("health")){
-            String health = String.valueOf(player.getHealth() - 1);
+            String health = String.valueOf(player.getHealth());
             return "Player health " + health;
         } else if (this.advancedActions.contains(actionWord)){
             return handleGameAction(command);

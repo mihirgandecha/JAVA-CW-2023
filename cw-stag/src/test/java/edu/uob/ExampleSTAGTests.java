@@ -89,33 +89,109 @@ class ExampleSTAGTests {
 
   @Test
   void testExampleScript(){
+      //Initial look
       String response = sendCommandToServer("simon: look");
       response = response.toLowerCase();
       assertTrue(Arrays.asList("cabin", "potion", "axe", "trapdoor", "forest").stream().allMatch(response::contains));
+
+      //Pickup Axe
       response = sendCommandToServer("simon: get axe");
       assertEquals("you picked up a axe\n", response.toLowerCase());
+
+      // Check inventory after picking axe
+      response = sendCommandToServer("simon: inv");
+      assertTrue(response.toLowerCase().contains("axe"));
+
+      //Look - check axe not in cabin location
       response = sendCommandToServer("simon: look");
       response = response.toLowerCase();
       assertTrue(Arrays.asList("cabin", "potion", "trapdoor", "forest").stream().allMatch(response::contains));
+
+      //Pickup Potion
       response = sendCommandToServer("simon: get potion");
       assertEquals("you picked up a potion\n", response.toLowerCase());
+
+      //Look - check potion not in cabin location
       response = sendCommandToServer("simon: look");
       response = response.toLowerCase();
       assertTrue(Arrays.asList("cabin", "trapdoor", "forest").stream().allMatch(response::contains));
+
+      // Check inventory after picking potion with 'inventory'
+      response = sendCommandToServer("simon: inv");
+      assertTrue(response.toLowerCase().contains("potion"));
+
+      //Goto - check player is moved
       response = sendCommandToServer("simon: goto forest");
       response = response.toLowerCase();
       assertTrue(Arrays.asList("forest", "key", "cabin").stream().allMatch(response::contains));
+
+      //TODO Checking subjects logic incorrect!
+//      response = sendCommandToServer("simon: chop tree");
+//      System.out.println(response);
+//      assertEquals("you cut down the tree with the axe\n", response.toLowerCase());
+
+
+      //Pickup Key - check key not in forest location
       response = sendCommandToServer("simon: get key");
       assertEquals("you picked up a key\n", response.toLowerCase());
+
+      //Goto cabin now having key
       response = sendCommandToServer("simon: goto cabin");
       response = response.toLowerCase();
       assertTrue(Arrays.asList("cabin", "trapdoor", "forest").stream().allMatch(response::contains));
+
+      //Check advanced Action: trapdoor can be opened as player holds key
       response = sendCommandToServer("simon: open trapdoor");
       response = response.toLowerCase();
+
+      //Check for exact narration as xml file
       assertEquals("you unlock the trapdoor and see steps leading down into a cellar\n", response.toLowerCase());
+
+      //Goto - TODO not working yet
       response = sendCommandToServer("simon: goto cellar");
       response = response.toLowerCase();
   }
+
+    @Test
+    void testBasicGameCommands() {
+        String response;
+        // Initial Look in the starting location
+        response = sendCommandToServer("simon: look");
+        assertTrue(response.toLowerCase().contains("cabin"), "Look should reveal the cabin description.");
+        assertTrue(response.toLowerCase().contains("axe"), "Axe should be visible in cabin.");
+        assertTrue(response.toLowerCase().contains("potion"), "Potion should be visible in cabin.");
+
+        // Pickup Axe
+        response = sendCommandToServer("simon: get axe");
+        assertTrue(response.toLowerCase().contains("you picked up a axe"));
+
+        // Verify inventory contains the Axe
+        response = sendCommandToServer("simon: inventory");
+        assertTrue(response.toLowerCase().contains("axe"));
+
+        // Drop the Axe
+        response = sendCommandToServer("simon: drop axe");
+        assertTrue(response.toLowerCase().contains("you dropped a axe"));
+
+        // Verify the Axe is no longer in inventory but is in the location
+        response = sendCommandToServer("simon: inventory");
+        assertFalse(response.toLowerCase().contains("axe"));
+        response = sendCommandToServer("simon: look");
+        assertTrue(response.toLowerCase().contains("axe"));
+
+        // Goto another location and verify transition
+        response = sendCommandToServer("simon: goto forest");
+        assertTrue(response.toLowerCase().contains("forest"));
+        response = sendCommandToServer("simon: look");
+        assertTrue(response.toLowerCase().contains("tree"));
+        assertTrue(response.toLowerCase().contains("key"));
+
+        // Return to the cabin
+        response = sendCommandToServer("simon: goto cabin");
+        assertTrue(response.toLowerCase().contains("cabin"));
+        response = sendCommandToServer("simon: look");
+        assertTrue(response.toLowerCase().contains("cabin"));
+    }
 
     @Test
     void testInvalidCommand()
