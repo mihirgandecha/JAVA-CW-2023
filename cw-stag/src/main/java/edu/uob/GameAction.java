@@ -85,6 +85,6 @@ public class GameAction
         for (String item : produced) {
             currentLocation.addArtefact(new Artefact(item, item));
         }
-        return narration;
+        return narration + "\n";
     }
 }

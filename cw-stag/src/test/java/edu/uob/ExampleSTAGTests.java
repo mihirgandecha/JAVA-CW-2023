@@ -105,6 +105,17 @@ class ExampleSTAGTests {
       response = sendCommandToServer("simon: goto forest");
       response = response.toLowerCase();
       assertTrue(Arrays.asList("forest", "key", "cabin").stream().allMatch(response::contains));
+      response = sendCommandToServer("simon: get key");
+      assertEquals("you picked up a key\n", response.toLowerCase());
+      response = sendCommandToServer("simon: goto cabin");
+      response = response.toLowerCase();
+      assertTrue(Arrays.asList("cabin", "trapdoor", "forest").stream().allMatch(response::contains));
+      response = sendCommandToServer("simon: open trapdoor");
+      response = response.toLowerCase();
+      assertEquals("you unlock the trapdoor and see steps leading down into a cellar\n", response.toLowerCase());
+      response = sendCommandToServer("simon: goto cellar");
+      response = response.toLowerCase();
+      System.out.println(response);
   }
 
     @Test
