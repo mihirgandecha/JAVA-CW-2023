@@ -13,7 +13,7 @@ public class GameEngine {
     private String entitiesFile;
     private String actionsFile;
     private Map<String, Location> map;
-    private HashMap<String, HashSet<GameAction>> actions;
+    private HashMap<String, HashSet<AdvancedAction>> actions;
     private String firstLocation;
     private Set<String> basicActions;
     private Set<String> advancedActions;
@@ -50,7 +50,7 @@ public class GameEngine {
         return p.getGameMap();
     }
 
-    private HashMap<String, HashSet<GameAction>> processActionsFile() throws GameError {
+    private HashMap<String, HashSet<AdvancedAction>> processActionsFile() throws GameError {
         DocumentParser p = new DocumentParser(this.actionsFile);
         return p.getGameActions();
     }
@@ -98,11 +98,11 @@ public class GameEngine {
     private String handleGameAction(String command) throws GameError {
         String[] words = command.split("\\s+");
         String actionWord = words[0];
-        HashSet<GameAction> possibleActions = actions.get(actionWord);
+        HashSet<AdvancedAction> possibleActions = actions.get(actionWord);
         if (possibleActions == null) {
             throw new GameError("Unknown command: " + command);
         }
-        for (GameAction action : possibleActions) {
+        for (AdvancedAction action : possibleActions) {
             if (action.canExecute(player, map)) {
                 return action.execute(player, map);
             }

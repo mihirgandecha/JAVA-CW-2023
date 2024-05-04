@@ -1,7 +1,7 @@
 package edu.uob.ActionsFile;
 
 import edu.uob.DocumentParser;
-import edu.uob.Command.GameAction;
+import edu.uob.Command.AdvancedAction;
 import edu.uob.GameError;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
     Low-Level Tests:
  */
 class ActionsParserBasicTest {
-    private HashMap<String, HashSet<GameAction>> gameActions;
+    private HashMap<String, HashSet<AdvancedAction>> gameActions;
 
     @BeforeEach
     void setUp() throws GameError {
@@ -35,7 +35,7 @@ class ActionsParserBasicTest {
 
     @Test
     void testAttributesOfOpenAction() {
-        GameAction openAction = gameActions.get("open").iterator().next();
+        AdvancedAction openAction = gameActions.get("open").iterator().next();
         assertTrue(openAction.getSubjects().contains("trapdoor"), "The 'trapdoor' subject is missing for 'open'");
         assertTrue(openAction.getConsumed().contains("key"), "The 'key' consumed entity is missing for 'open'");
         assertTrue(openAction.getProduced().contains("cellar"), "The 'cellar' produced entity is missing for 'open'");
@@ -44,7 +44,7 @@ class ActionsParserBasicTest {
 
     @Test
     void testAttributesOfChopAction() {
-        GameAction chopAction = gameActions.get("chop").iterator().next();
+        AdvancedAction chopAction = gameActions.get("chop").iterator().next();
         assertTrue(chopAction.getSubjects().contains("tree"), "The 'tree' subject is missing for 'chop'");
         assertTrue(chopAction.getConsumed().contains("tree"), "The 'tree' consumed entity is missing for 'chop'");
         assertTrue(chopAction.getProduced().contains("log"), "The 'log' produced entity is missing for 'chop'");
@@ -53,7 +53,7 @@ class ActionsParserBasicTest {
 
     @Test
     void testAttributesOfDrinkAction() {
-        GameAction drinkAction = gameActions.get("drink").iterator().next();
+        AdvancedAction drinkAction = gameActions.get("drink").iterator().next();
         assertTrue(drinkAction.getSubjects().contains("potion"), "The 'potion' subject is missing for 'drink'");
         assertTrue(drinkAction.getConsumed().contains("potion"), "The 'potion' consumed entity is missing for 'drink'");
         assertTrue(drinkAction.getProduced().contains("health"), "The 'health' produced entity is missing for 'drink'");
@@ -62,7 +62,7 @@ class ActionsParserBasicTest {
 
     @Test
     void testAttributesOfFightAction() {
-        GameAction fightAction = gameActions.get("fight").iterator().next();
+        AdvancedAction fightAction = gameActions.get("fight").iterator().next();
         assertTrue(fightAction.getSubjects().contains("elf"), "The 'elf' subject is missing for 'fight'");
         assertTrue(fightAction.getConsumed().contains("health"), "The 'health' consumed entity is missing for 'fight'");
         assertEquals("You attack the elf, but he fights back and you lose some health", fightAction.getNarration(), "Incorrect narration for 'fight'");

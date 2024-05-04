@@ -8,16 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class GameAction
+public class AdvancedAction
 {
     //INPUT
-    public List<String> triggers;
+    private List<String> triggers;
     //List of entities NECESSARY
-    public List<String> subjects;
+    private List<String> subjects;
     //List of entities that are REMOVED
-    public List<String> consumed;
+    private List<String> consumed;
     //List of entities that are CREATED
-    public List<String> produced;
+    private List<String> produced;
     //OUTPUT to console
     private String narration;
 
@@ -67,13 +67,13 @@ public class GameAction
         //TODO incorrect logic for axe + chop tree!
         Location currentLocation = map.get(player.getCurrentLocation());
         if (currentLocation == null) return false;
-        for (String subject : subjects) {
+        for (String subject : getSubjects()) {
             if (!currentLocation.getAllEntitiesToString().contains(subject) && !player.getInventory().toString().contains(subject)) {
                 return false;
             }
         }
         // Check if required consumed items are available
-        for (String item : consumed) {
+        for (String item : getConsumed()) {
             if (!player.getInventory().containsKey(item) && !currentLocation.entityList.contains(item)) {
                 return false;
             }
@@ -85,7 +85,7 @@ public class GameAction
     public String execute(Player player, Map<String, Location> map) {
         Location currentLocation = map.get(player.getCurrentLocation());
         // Consume items from player's inventory or the location
-        for (String item : consumed) {
+        for (String item : getConsumed()) {
             if (player.getInventory().containsKey(item)) {
                 player.getInventory().remove(item);
             } else if (currentLocation != null) {
@@ -93,9 +93,25 @@ public class GameAction
             }
         }
         // Produce new items in the location
-        for (String item : produced) {
+        for (String item : getProduced()) {
             currentLocation.addArtefact(new Artefact(item, item));
         }
         return narration + "\n";
+    }
+
+    public void setTriggers(List<String> triggers) {
+        this.triggers = triggers;
+    }
+
+    public void setSubjects(List<String> subjects) {
+        this.subjects = subjects;
+    }
+
+    public void setConsumed(List<String> consumed) {
+        this.consumed = consumed;
+    }
+
+    public void setProduced(List<String> produced) {
+        this.produced = produced;
     }
 }

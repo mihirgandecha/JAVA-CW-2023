@@ -1,7 +1,7 @@
 package edu.uob.ActionsFile;
 
 import edu.uob.DocumentParser;
-import edu.uob.Command.GameAction;
+import edu.uob.Command.AdvancedAction;
 import edu.uob.GameError;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class ActionsParserExtendedTest {
     private DocumentParser parser;
-    private HashMap<String, HashSet<GameAction>> gameActions;
+    private HashMap<String, HashSet<AdvancedAction>> gameActions;
 
     @BeforeEach
     void setUp() throws GameError {
@@ -39,7 +39,7 @@ class ActionsParserExtendedTest {
 
     @Test
     void testAttributesOfOpenAction() {
-        GameAction openAction = gameActions.get("open").iterator().next();
+        AdvancedAction openAction = gameActions.get("open").iterator().next();
         assertTrue(openAction.getSubjects().contains("trapdoor"), "Missing 'trapdoor' in 'open'");
         assertTrue(openAction.getConsumed().contains("key"), "Missing 'key' in 'open'");
         assertTrue(openAction.getProduced().contains("cellar"), "Missing 'cellar' in 'open'");
@@ -48,7 +48,7 @@ class ActionsParserExtendedTest {
 
     @Test
     void testAttributesOfChopAction() {
-        GameAction chopAction = gameActions.get("chop").iterator().next();
+        AdvancedAction chopAction = gameActions.get("chop").iterator().next();
         assertTrue(chopAction.getSubjects().contains("tree"), "Missing 'tree' in 'chop'");
         assertTrue(chopAction.getConsumed().contains("tree"), "Missing 'tree' in 'chop'");
         assertTrue(chopAction.getProduced().contains("log"), "Missing 'log' in 'chop'");
@@ -57,7 +57,7 @@ class ActionsParserExtendedTest {
 
     @Test
     void testAttributesOfDrinkAction() {
-        GameAction drinkAction = gameActions.get("drink").iterator().next();
+        AdvancedAction drinkAction = gameActions.get("drink").iterator().next();
         assertTrue(drinkAction.getSubjects().contains("potion"), "Missing 'potion' in 'drink'");
         assertTrue(drinkAction.getConsumed().contains("potion"), "Missing 'potion' in 'drink'");
         assertTrue(drinkAction.getProduced().contains("health"), "Missing 'health' in 'drink'");
@@ -66,7 +66,7 @@ class ActionsParserExtendedTest {
 
     @Test
     void testAttributesOfFightAction() {
-        GameAction fightAction = gameActions.get("fight").iterator().next();
+        AdvancedAction fightAction = gameActions.get("fight").iterator().next();
         assertTrue(fightAction.getSubjects().contains("elf"), "Missing 'elf' in 'fight'");
         assertTrue(fightAction.getConsumed().contains("health"), "Missing 'health' in 'fight'");
         assertEquals("You attack the elf, but he fights back and you lose some health", fightAction.getNarration(), "Incorrect narration for 'fight'");
@@ -74,7 +74,7 @@ class ActionsParserExtendedTest {
 
     @Test
     void testAttributesOfPayAction() {
-        GameAction payAction = gameActions.get("pay").iterator().next();
+        AdvancedAction payAction = gameActions.get("pay").iterator().next();
         assertTrue(payAction.getSubjects().contains("elf"), "Missing 'elf' in 'pay'");
         assertTrue(payAction.getConsumed().contains("coin"), "Missing 'coin' in 'pay'");
         assertTrue(payAction.getProduced().contains("shovel"), "Missing 'shovel' in 'pay'");
@@ -83,7 +83,7 @@ class ActionsParserExtendedTest {
 
     @Test
     void testAttributesOfBridgeAction() {
-        GameAction bridgeAction = gameActions.get("bridge").iterator().next();
+        AdvancedAction bridgeAction = gameActions.get("bridge").iterator().next();
         assertTrue(bridgeAction.getSubjects().contains("log"), "Missing 'log' in 'bridge'");
         assertTrue(bridgeAction.getSubjects().contains("river"), "Missing 'river' in 'bridge'");
         assertTrue(bridgeAction.getConsumed().contains("log"), "Missing 'log' in 'bridge'");
@@ -93,7 +93,7 @@ class ActionsParserExtendedTest {
 
     @Test
     void testAttributesOfDigAction() {
-        GameAction digAction = gameActions.get("dig").iterator().next();
+        AdvancedAction digAction = gameActions.get("dig").iterator().next();
         assertTrue(digAction.getSubjects().contains("ground"), "Missing 'ground' in 'dig'");
         assertTrue(digAction.getSubjects().contains("shovel"), "Missing 'shovel' in 'dig'");
         assertTrue(digAction.getConsumed().contains("ground"), "Missing 'ground' in 'dig'");
@@ -104,7 +104,7 @@ class ActionsParserExtendedTest {
 
     @Test
     void testAttributesOfBlowAction() {
-        GameAction blowAction = gameActions.get("blow").iterator().next();
+        AdvancedAction blowAction = gameActions.get("blow").iterator().next();
         assertTrue(blowAction.getSubjects().contains("horn"), "Missing 'horn' in 'blow'");
         assertTrue(blowAction.getProduced().contains("lumberjack"), "Missing 'lumberjack' in 'blow'");
         assertEquals("You blow the horn and as if by magic, a lumberjack appears !", blowAction.getNarration(), "Incorrect narration for 'blow'");
