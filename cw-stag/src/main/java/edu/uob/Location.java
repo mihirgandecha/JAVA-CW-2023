@@ -26,6 +26,7 @@ public class Location extends GameEntity {
     this.characters = new ArrayList<>();
     this.furnitures = new ArrayList<>();
     this.pathTo = new ArrayList<>();
+    setAllEntities();
   }
 
   public void addArtefact(Artefact artefact) {
@@ -89,11 +90,10 @@ public class Location extends GameEntity {
   }
 
   public void setAllEntities() {
-    List<GameEntity> allEntities = new ArrayList<>();
-    allEntities.addAll(this.artefacts);
-    allEntities.addAll(this.characters);
-    allEntities.addAll(this.furnitures);
-    this.entityList = allEntities;
+    this.entityList = new ArrayList<>();
+    this.entityList.addAll(this.artefacts);
+    this.entityList.addAll(this.characters);
+    this.entityList.addAll(this.furnitures);
   }
 
   private String addPrefixIfNeeded(String description) {
