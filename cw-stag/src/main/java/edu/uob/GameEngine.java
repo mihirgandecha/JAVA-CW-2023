@@ -15,7 +15,7 @@ public class GameEngine {
     private Map<String, Location> map;
     private HashMap<String, HashSet<AdvancedAction>> actions;
     private String firstLocation;
-    private Set<String> basicActions;
+
     private Set<String> advancedActions;
 
     public GameEngine(String entitiesFile, String actionsFile, Player player) throws Exception {
@@ -24,18 +24,7 @@ public class GameEngine {
         this.actionsFile = actionsFile;
         this.map = processEntitiesFile();
         this.actions = processActionsFile();
-        setBasicActions();
         setAdvancedActions();
-   }
-
-    // Add Basic Actions to Set
-   private void setBasicActions(){
-        this.basicActions = new HashSet<>();
-        this.basicActions.add("inv");
-        this.basicActions.add("get");
-        this.basicActions.add("goto");
-        this.basicActions.add("look");
-        this.basicActions.add("drop");
    }
 
     // Add action commands from the XML file to Set
@@ -56,20 +45,12 @@ public class GameEngine {
     }
 
     public String toString(String cleanCommand) throws Exception {
-//        Sentence sentence = new Sentence(cleanCommand);
-        //inventory -> inv
-//        List<String> lemmas = sentence.lemmas();
-//        List<String> posTags = sentence.posTags();
-//        List<String> filteredWords = lemmas.stream()
-//                .filter(lemma -> actionKeywords.contains(lemma))
-//                .collect(Collectors.toList());
         return executeCommand(cleanCommand);
     }
 
     private String executeCommand(String command) throws Exception {
         String[] words = command.split("\\s+");
         String actionWord = words[0];
-
         if (command.contains("look")) {
             Look look = new Look(this, player, command);
             return look.toString();
