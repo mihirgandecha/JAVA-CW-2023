@@ -8,21 +8,19 @@ import java.util.HashMap;
 
 public class Inventory extends GameCommand{
 
-
-    private final HashMap<String, Artefact> inventoryList;
-
     public Inventory(GameEngine gameEngine, Player player, String cleanCommand) {
         super(gameEngine, player, cleanCommand);
-        this.inventoryList = player.getInventory();
     }
 
     @Override
     public String toString() {
-        if(inventoryList.isEmpty()){
-            return "";
-        }
         StringBuilder str = new StringBuilder();
+        if(player.getInventory() == null || player.getInventory().isEmpty()){
+            str.append("Inventory is empty" + "\n");
+            return str.toString();
+        }
         str.append("You have: " + "\n");
+        HashMap<String, Artefact> inventoryList = player.getInventory();
         for(Artefact artefact : inventoryList.values()){
             str.append(artefact.getDescription() + "\n");
         }

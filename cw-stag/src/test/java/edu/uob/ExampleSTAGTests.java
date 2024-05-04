@@ -89,10 +89,17 @@ class ExampleSTAGTests {
 
   @Test
   void testExampleScript(){
+      String response = sendCommandToServer("simon: inv");
+      assertEquals("inventory is empty\n", response.toLowerCase());
+
       //Initial look
-      String response = sendCommandToServer("simon: look");
+      response = sendCommandToServer("simon: look");
       response = response.toLowerCase();
       assertTrue(Arrays.asList("cabin", "potion", "axe", "trapdoor", "forest").stream().allMatch(response::contains));
+
+      // Check inventory after picking axe
+      response = sendCommandToServer("simon: inv");
+      assertEquals("inventory is empty\n", response.toLowerCase());
 
       //Pickup Axe
       response = sendCommandToServer("simon: get axe");
