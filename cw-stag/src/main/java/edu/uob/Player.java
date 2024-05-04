@@ -46,4 +46,11 @@ public class Player {
     public String getCurrentLocation() {
         return this.currentLocation;
     }
+
+    public void decreaseHealth() {
+        if(this.health == 0){
+            return;
+        }
+        this.health --;
+    }
 }

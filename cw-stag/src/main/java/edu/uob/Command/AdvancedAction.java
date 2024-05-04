@@ -25,6 +25,7 @@ public class AdvancedAction
     private List<GameEntity> locationEntities;
     private HashMap<String, Artefact> playerEntities;
     private Player player;
+    private Location storeroom;
 
     public List<String> getTriggers() {
         return triggers;
@@ -75,6 +76,7 @@ public class AdvancedAction
         this.playerEntities = player.getInventory();
         currentLocation.setAllEntities();
         doesSubjectsExist();
+        this.storeroom = map.get("storeroom");
 //        doesProducedExist();
 //        doesConsumedExist(map);
         return true;
@@ -121,7 +123,7 @@ public class AdvancedAction
         return this.playerEntities.containsKey(entityToCheck);
     }
 
-    public String execute() {
+    public String execute() throws GameError {
         consumeEntities();
         produceEntities();
         return narration + "\n";
@@ -129,6 +131,10 @@ public class AdvancedAction
 
     private void consumeEntities() {
         for (String item : getConsumed()) {
+            if (item.equalsIgnoreCase("health")) {
+                player.decreaseHealth();
+                break;
+            }
             if (player.getInventory().containsKey(item)) {
                 player.getInventory().remove(item);
             } else if (currentLocation != null) {
@@ -137,9 +143,14 @@ public class AdvancedAction
         }
     }
 
-    private void produceEntities() {
+
+    private void produceEntities() throws GameError {
         for (String item : getProduced()) {
             //TODO need a way of getting item description from parser
+            this.storeroom.setAllEntities();
+            if(!this.storeroom.entityList.contains(item)){
+                throw new GameError("Storeroom does not contain item!");
+            }
             currentLocation.addArtefact(new Artefact(item, item));
         }
     }
