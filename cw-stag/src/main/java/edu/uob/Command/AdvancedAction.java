@@ -1,6 +1,10 @@
 package edu.uob.Command;
 
-import edu.uob.*;
+import edu.uob.Artefact;
+import edu.uob.GameEntity;
+import edu.uob.GameError;
+import edu.uob.Location;
+import edu.uob.Player;
 
 import java.util.*;
 
@@ -20,6 +24,7 @@ public class AdvancedAction
     private Location currentLocation;
     private List<GameEntity> locationEntities;
     private HashMap<String, Artefact> playerEntities;
+    private Player player;
 
     public List<String> getTriggers() {
         return triggers;
@@ -63,50 +68,66 @@ public class AdvancedAction
 
     // Method to check if the action can be executed based on current game state
     public boolean canExecute(Player player, Map<String, Location> map) throws GameError {
-        // Check if all required subjects are present in the player's location or inventory
-        //TODO incorrect logic for axe + chop tree!
+        this.player = player;
         this.currentLocation = map.get(player.getCurrentLocation());
         map.get(player.getCurrentLocation()).setAllEntities();
         this.locationEntities = map.get(player.getCurrentLocation()).entityList;
         this.playerEntities = player.getInventory();
         currentLocation.setAllEntities();
-        if (currentLocation == null) return false;
         doesSubjectsExist();
-        // Check if required consumed items are available
-        for (String item : getConsumed()) {
-            if (!player.getInventory().containsKey(item) && !currentLocation.entityList.contains(item)) {
-                return false;
+//        doesProducedExist();
+//        doesConsumedExist(map);
+        return true;
+    }
+
+    private void doesProducedExist() throws GameError {
+        List<String> producables = getProduced();
+        for(String produce: producables){
+            if(!checkLocationForEntity(produce)){
+                throw new GameError("Produced cannot be in another players inventory!");
             }
         }
-        return true;
+    }
+
+    private void doesConsumedExist(Map<String, Location> map) throws GameError {
+        List<String> consumables = getConsumed();
+        for(Location location: map.values()){
+            for (GameEntity locationEntity : locationEntities) {
+                if(!checkLocationForEntity(locationEntity.getName())){
+                    throw new GameError("Produced cannot be in another players inventory!");
+                }
+            }
+        }
     }
 
     private void doesSubjectsExist() throws GameError {
         for(String subject : subjects){
-            if(!checkLocationForSubject(subject) && !checkInventoryForSubject(subject)){
+            if(!checkLocationForEntity(subject) && !checkInventoryForEntity(subject)){
                 throw new GameError("Game Subject does not exist in Location or Player Inventory!\n");
             }
         }
     }
 
-    private boolean checkLocationForSubject(String subject){
+    private boolean checkLocationForEntity(String entityToCheck){
         for(GameEntity entity : this.locationEntities){
-            if(subject.equals(entity.getName())){
+            if(entityToCheck.equals(entity.getName())){
                 return true;
             }
         }
         return false;
     }
 
-    private boolean checkInventoryForSubject(String subject){
-        boolean b = this.playerEntities.containsKey(subject);
-        return b;
+    private boolean checkInventoryForEntity(String entityToCheck){
+        return this.playerEntities.containsKey(entityToCheck);
     }
 
-    // Method to execute the action
-    public String execute(Player player, Map<String, Location> map) {
-        Location currentLocation = map.get(player.getCurrentLocation());
-        // Consume items from player's inventory or the location
+    public String execute() {
+        consumeEntities();
+        produceEntities();
+        return narration + "\n";
+    }
+
+    private void consumeEntities() {
         for (String item : getConsumed()) {
             if (player.getInventory().containsKey(item)) {
                 player.getInventory().remove(item);
@@ -114,11 +135,13 @@ public class AdvancedAction
                 currentLocation.removeEntity(item);
             }
         }
-        // Produce new items in the location
+    }
+
+    private void produceEntities() {
         for (String item : getProduced()) {
+            //TODO need a way of getting item description from parser
             currentLocation.addArtefact(new Artefact(item, item));
         }
-        return narration + "\n";
     }
 
     public void setTriggers(List<String> triggers) {

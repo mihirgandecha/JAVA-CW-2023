@@ -85,7 +85,7 @@ public class GameEngine {
         }
         for (AdvancedAction action : possibleActions) {
             if (action.canExecute(player, map)) {
-                return action.execute(player, map);
+                return action.execute();
             }
         }
         throw new GameError("Unknown Command: " + command);

@@ -132,10 +132,8 @@ class ExampleSTAGTests {
       response = response.toLowerCase();
       assertTrue(Arrays.asList("forest", "key", "cabin").stream().allMatch(response::contains));
 
-      //TODO Checking subjects logic incorrect!
-//      response = sendCommandToServer("simon: chop tree");
-//      System.out.println(response);
-//      assertEquals("you cut down the tree with the axe\n", response.toLowerCase());
+      response = sendCommandToServer("simon: chop tree");
+      assertEquals("you cut down the tree with the axe\n", response.toLowerCase());
 
 
       //Pickup Key - check key not in forest location
@@ -149,14 +147,11 @@ class ExampleSTAGTests {
 
       //Check advanced Action: trapdoor can be opened as player holds key
       response = sendCommandToServer("simon: open trapdoor");
-      response = response.toLowerCase();
-
-      //Check for exact narration as xml file
       assertEquals("you unlock the trapdoor and see steps leading down into a cellar\n", response.toLowerCase());
 
-      //Goto - TODO not working yet
-      response = sendCommandToServer("simon: goto cellar");
-      response = response.toLowerCase();
+//      //Goto - TODO not working yet
+//      response = sendCommandToServer("simon: goto cellar");
+//      response = response.toLowerCase();
   }
 
     @Test
