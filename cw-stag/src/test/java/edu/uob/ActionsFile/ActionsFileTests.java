@@ -1,14 +1,9 @@
 package edu.uob.ActionsFile;
 
-import edu.uob.DocumentParser;
-import edu.uob.GameAction;
-import edu.uob.GameError;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;

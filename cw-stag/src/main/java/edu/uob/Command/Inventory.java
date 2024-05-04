@@ -1,4 +1,4 @@
-package edu.uob.basic_commands;
+package edu.uob.Command;
 
 import edu.uob.Artefact;
 import edu.uob.GameEngine;

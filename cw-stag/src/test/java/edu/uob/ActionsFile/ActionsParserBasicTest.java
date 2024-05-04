@@ -1,22 +1,13 @@
 package edu.uob.ActionsFile;
 
 import edu.uob.DocumentParser;
-import edu.uob.GameAction;
+import edu.uob.Command.GameAction;
 import edu.uob.GameError;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
 
-import org.xml.sax.SAXException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.*;

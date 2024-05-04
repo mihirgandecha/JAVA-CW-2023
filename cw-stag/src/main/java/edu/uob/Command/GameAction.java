@@ -1,17 +1,27 @@
-package edu.uob;
+package edu.uob.Command;
+
+import edu.uob.Artefact;
+import edu.uob.Location;
+import edu.uob.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class GameAction
 {
-    public ArrayList<String> triggers;
-    public ArrayList<String> subjects;
-    public ArrayList<String> consumed;
-    public ArrayList<String> produced;
+    //INPUT
+    public List<String> triggers;
+    //List of entities NECESSARY
+    public List<String> subjects;
+    //List of entities that are REMOVED
+    public List<String> consumed;
+    //List of entities that are CREATED
+    public List<String> produced;
+    //OUTPUT to console
     private String narration;
 
-    public ArrayList<String> getTriggers() {
+    public List<String> getTriggers() {
         return triggers;
     }
 
@@ -19,7 +29,7 @@ public class GameAction
         this.triggers = triggers;
     }
 
-    public ArrayList<String> getSubjects() {
+    public List<String> getSubjects() {
         return subjects;
     }
 
@@ -27,7 +37,7 @@ public class GameAction
         this.subjects = subjects;
     }
 
-    public ArrayList<String> getConsumed() {
+    public List<String> getConsumed() {
         return consumed;
     }
 
@@ -35,7 +45,7 @@ public class GameAction
         this.consumed = consumed;
     }
 
-    public ArrayList<String> getProduced() {
+    public List<String> getProduced() {
         return produced;
     }
 

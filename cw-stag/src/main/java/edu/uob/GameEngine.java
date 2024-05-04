@@ -1,6 +1,6 @@
 package edu.uob;
 
-import edu.uob.basic_commands.*;
+import edu.uob.Command.*;
 
 import java.util.HashMap;
 import java.util.HashSet;

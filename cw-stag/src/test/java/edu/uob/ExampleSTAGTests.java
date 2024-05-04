@@ -237,6 +237,28 @@ class ExampleSTAGTests {
 //    }
 
     @Test
+    void testAdvancedActions(){
+      String response;
+      response = sendCommandToServer("mihir: inv");
+      response = sendCommandToServer("mihir: look");
+      response = sendCommandToServer("mihir: get axe");
+      response = sendCommandToServer("mihir: look");
+      response = sendCommandToServer("mihir: get potion");
+      response = sendCommandToServer("mihir: look");
+      //TODO: Response so get cannot be furniture
+      response = sendCommandToServer("mihir: get trapdoor");
+      response = sendCommandToServer("mihir: look");
+      response = sendCommandToServer("mihir: goto forest");
+      response = sendCommandToServer("mihir: look");
+      response = sendCommandToServer("mihir: inv");
+      response = sendCommandToServer("mihir: get key");
+      response = sendCommandToServer("mihir: inv");
+        response = sendCommandToServer("mihir: look");
+        response = sendCommandToServer("mihir: chop axe");
+
+    }
+
+    @Test
     void testMultipleUsers() {
         String responseSimon = sendCommandToServer(randomiseCasing("simon: look"));
         String responseMihir = sendCommandToServer(randomiseCasing("Mihir: look"));
