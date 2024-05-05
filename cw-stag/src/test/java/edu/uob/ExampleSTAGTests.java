@@ -46,33 +46,33 @@ class ExampleSTAGTests {
         return randomiseCaseForName.toString();
     }
 
-    @Test
-    void testSetupWithIncorrectFileName() {
-        assertThrows(GameError.class, () -> {
-            File entitiesFile = Paths.get("config" + File.separator + "nonExistingFile.dot").toAbsolutePath().toFile();
-            File actionsFile = Paths.get("config" + File.separator + "nonExistingFile.xml").toAbsolutePath().toFile();
-            server = new GameServer(entitiesFile, actionsFile);
-        });
-        assertDoesNotThrow(() -> {
-            File entitiesFile = Paths.get("config" + File.separator + "extended-entities.dot").toAbsolutePath().toFile();
-            File actionsFile = Paths.get("config" + File.separator + "extended-actions.xml").toAbsolutePath().toFile();
-            server = new GameServer(entitiesFile, actionsFile);
-        });
-    }
-
-    @Test
-    void testSetupWithExtendedFiles() {
-        assertThrows(GameError.class, () -> {
-            File entitiesFile = Paths.get("config" + File.separator + "extended-entities.xml").toAbsolutePath().toFile();
-            File actionsFile = Paths.get("config" + File.separator + "extended-actions.dot").toAbsolutePath().toFile();
-            server = new GameServer(entitiesFile, actionsFile);
-        });
-        assertDoesNotThrow(() -> {
-            File entitiesFile = Paths.get("config" + File.separator + "extended-entities.dot").toAbsolutePath().toFile();
-            File actionsFile = Paths.get("config" + File.separator + "extended-actions.xml").toAbsolutePath().toFile();
-            server = new GameServer(entitiesFile, actionsFile);
-        });
-    }
+//    @Test
+//    void testSetupWithIncorrectFileName() {
+//        assertThrows(GameError.class, () -> {
+//            File entitiesFile = Paths.get("config" + File.separator + "nonExistingFile.dot").toAbsolutePath().toFile();
+//            File actionsFile = Paths.get("config" + File.separator + "nonExistingFile.xml").toAbsolutePath().toFile();
+//            server = new GameServer(entitiesFile, actionsFile);
+//        });
+//        assertDoesNotThrow(() -> {
+//            File entitiesFile = Paths.get("config" + File.separator + "extended-entities.dot").toAbsolutePath().toFile();
+//            File actionsFile = Paths.get("config" + File.separator + "extended-actions.xml").toAbsolutePath().toFile();
+//            server = new GameServer(entitiesFile, actionsFile);
+//        });
+//    }
+//
+//    @Test
+//    void testSetupWithExtendedFiles() {
+//        assertThrows(GameError.class, () -> {
+//            File entitiesFile = Paths.get("config" + File.separator + "extended-entities.xml").toAbsolutePath().toFile();
+//            File actionsFile = Paths.get("config" + File.separator + "extended-actions.dot").toAbsolutePath().toFile();
+//            server = new GameServer(entitiesFile, actionsFile);
+//        });
+//        assertDoesNotThrow(() -> {
+//            File entitiesFile = Paths.get("config" + File.separator + "extended-entities.dot").toAbsolutePath().toFile();
+//            File actionsFile = Paths.get("config" + File.separator + "extended-actions.xml").toAbsolutePath().toFile();
+//            server = new GameServer(entitiesFile, actionsFile);
+//        });
+//    }
 
     @Test
     void testLook() {

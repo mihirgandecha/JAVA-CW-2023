@@ -23,11 +23,27 @@ public final class GameServer {
   private final String actionsFileString;
 
   public static void main(String[] args) throws Exception {
-    File entitiesFile = Paths.get("config" + File.separator + "basic-entities.dot").toAbsolutePath().toFile();
-    File actionsFile = Paths.get("config" + File.separator + "basic-actions.xml").toAbsolutePath().toFile();
+    File defaultEntitiesFile = Paths.get("config" + File.separator + "basic-entities.dot").toAbsolutePath().toFile();
+    File defaultActionsFile = Paths.get("config" + File.separator + "basic-actions.xml").toAbsolutePath().toFile();
+    File entitiesFile = defaultEntitiesFile;
+    File actionsFile = defaultActionsFile;
+    if(args.length == 2) {
+      File customEntitiesFile = Path.of("config" + File.separator + args[0]).toFile();
+      File customActionsFile = Path.of("config" + File.separator + args[1]).toFile();
+      if (customEntitiesFile.exists() && customEntitiesFile.getName().endsWith(".dot") &&
+              customActionsFile.exists() && customActionsFile.getName().endsWith(".xml"))
+      {
+        entitiesFile = customEntitiesFile;
+        actionsFile = customActionsFile;
+      } else {
+        System.out.println("Invalid or non-existent custom files, using default files.");
+      }
+    }
     GameServer server = new GameServer(entitiesFile, actionsFile);
     server.blockingListenOn(8888);
+//    announceGameFiles(entitiesFile, actionsFile);
   }
+
 
   /**
    * Do not change the following method signature or we won't be able to mark your
@@ -48,9 +64,17 @@ public final class GameServer {
     Path entitiesPath = entitiesFile.toPath();
     Path actionsPath = actionsFile.toPath();
     if (!Files.exists(entitiesPath) || !Files.exists(actionsPath)) throw new GameError("One or both files do not exist");
-    this.entitiesFileString = entitiesPath.toString();
-    this.actionsFileString = actionsPath.toString();
+    this.entitiesFileString = entitiesFile.toString();
+    this.actionsFileString = actionsFile.toString();
   }
+
+  // Message to inform the player about the game configuration
+//  private void announceGameFiles(String entitiesFile, File actionsFile) throws GameError {
+//    System.out.println("🎮 Game Input Loaded 🎮");
+//    System.out.println(">> Venturing into new territories with: " + entitiesFile.toString());
+//    System.out.println(">> Mastering dynamic challenges with: " + actionsFile.toString());
+//    System.out.println("Ready your gear and prepare for an adventure like no other!");
+//  }
 
   /**
    * Do not change the following method signature or we won't be able to mark your
