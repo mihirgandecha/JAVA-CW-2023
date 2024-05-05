@@ -1,16 +1,12 @@
 package edu.uob.Command;
 
-import edu.uob.Artefact;
-import edu.uob.GameEntity;
-import edu.uob.GameError;
-import edu.uob.Location;
-import edu.uob.Player;
+import edu.uob.*;
+import edu.uob.Character;
 
 import java.util.*;
 
 public class AdvancedAction
 {
-    private HashMap<String, HashSet<AdvancedAction>> gameActions;
     //INPUT
     private List<String> triggers;
     //List of entities NECESSARY
@@ -26,6 +22,7 @@ public class AdvancedAction
     private HashMap<String, Artefact> playerEntities;
     private Player player;
     private Location storeroom;
+    private Map<String, Location> map;
 
     public List<String> getTriggers() {
         return triggers;
@@ -77,30 +74,32 @@ public class AdvancedAction
         currentLocation.setAllEntities();
         doesSubjectsExist();
         this.storeroom = map.get("storeroom");
+        this.storeroom.setAllEntities();
+        this.map = map;
 //        doesProducedExist();
 //        doesConsumedExist(map);
         return true;
     }
 
-    private void doesProducedExist() throws GameError {
-        List<String> producables = getProduced();
-        for(String produce: producables){
-            if(!checkLocationForEntity(produce)){
-                throw new GameError("Produced cannot be in another players inventory!");
-            }
-        }
-    }
-
-    private void doesConsumedExist(Map<String, Location> map) throws GameError {
-        List<String> consumables = getConsumed();
-        for(Location location: map.values()){
-            for (GameEntity locationEntity : locationEntities) {
-                if(!checkLocationForEntity(locationEntity.getName())){
-                    throw new GameError("Produced cannot be in another players inventory!");
-                }
-            }
-        }
-    }
+//    private void doesProducedExist() throws GameError {
+//        List<String> producables = getProduced();
+//        for(String produce: producables){
+//            if(!checkLocationForEntity(produce)){
+//                throw new GameError("Produced cannot be in another players inventory!");
+//            }
+//        }
+//    }
+//
+//    private void doesConsumedExist(Map<String, Location> map) throws GameError {
+//        List<String> consumables = getConsumed();
+//        for(Location location: map.values()){
+//            for (GameEntity locationEntity : locationEntities) {
+//                if(!checkLocationForEntity(locationEntity.getName())){
+//                    throw new GameError("Produced cannot be in another players inventory!");
+//                }
+//            }
+//        }
+//    }
 
     private void doesSubjectsExist() throws GameError {
         for(String subject : subjects){
@@ -146,12 +145,33 @@ public class AdvancedAction
 
     private void produceEntities() throws GameError {
         for (String item : getProduced()) {
-            //TODO need a way of getting item description from parser
-            this.storeroom.setAllEntities();
-            if(!this.storeroom.entityList.contains(item)){
-                throw new GameError("Storeroom does not contain item!");
+            GameEntity storedEntity = this.storeroom.setEntityForProduce(item);
+            if (storedEntity != null) {
+                addEntityToLocation(storedEntity);
+            } else if (map.containsKey(item)) {
+                currentLocation.pathTo.add(item);
+            } else {
+                throw new GameError("Produced entity does not exist in Location or Player Inventory!\n");
             }
-            currentLocation.addArtefact(new Artefact(item, item));
+        }
+    }
+
+    private void addEntityToLocation(GameEntity storedEntity) throws GameError {
+        GameEntityType entityType = storedEntity.getType();
+        String name = storedEntity.getName();
+        String description = storedEntity.getDescription();
+        switch (entityType) {
+            case ARTEFACT:
+                currentLocation.addArtefact(new Artefact(name, description));
+                break;
+            case FURNITURE:
+                currentLocation.addFurniture(new Furniture(name, description));
+                break;
+            case CHARACTER:
+                currentLocation.addCharacters(new Character(name, description));
+                break;
+            default:
+                throw new GameError("Unknown Artefact type!");
         }
     }
 

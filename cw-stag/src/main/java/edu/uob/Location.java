@@ -115,29 +115,26 @@ public class Location extends GameEntity {
     }
   }
 
-//  public int getEntityIndexByType(GameEntityType entityType, String entityName) throws Exception {
-//    List<? extends GameEntity> targetList;
-//    switch (entityType) {
-//      case ARTEFACT:
-//        targetList = this.artefacts;
-//        break;
-//      case CHARACTER:
-//        targetList = this.characters;
-//        break;
-//      case FURNITURE:
-//        targetList = this.furnitures;
-//        break;
-//      default:
-//        throw new Exception("Unsupported entity type: " + entityType);
-//    }
-//    for (int i = 0; i < targetList.size(); i++) {
-//      if (targetList.get(i).getName().equalsIgnoreCase(entityName)) {
-//        return i;
-//      }
-//    }
-//    throw new GameError("Entity not found: " + entityName + " of type " + entityType);
-//  }
+  public boolean getEntityForProduce(String item) {
+    if(this.entityList == null){
+      setAllEntities();
+    }
+    for (GameEntity entity : entityList) {
+      if (entity.getName().equalsIgnoreCase(item)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-
+  public GameEntity setEntityForProduce(String item) {
+    for (GameEntity entity : entityList) {
+      if (entity.getName().equalsIgnoreCase(item)) {
+        entityList.remove(entity);
+        return entity;
+      }
+    }
+    return null;
+  }
 
 }

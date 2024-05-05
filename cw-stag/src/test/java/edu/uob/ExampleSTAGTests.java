@@ -12,7 +12,7 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ExampleSTAGTests {
+class  ExampleSTAGTests {
 
   private GameServer server;
 
@@ -135,11 +135,11 @@ class ExampleSTAGTests {
       response = sendCommandToServer("simon: chop tree");
       assertEquals("you cut down the tree with the axe\n", response.toLowerCase());
 
-
       //Pickup Key - check key not in forest location
       response = sendCommandToServer("simon: get key");
       assertEquals("you picked up a key\n", response.toLowerCase());
 
+      response = sendCommandToServer("simon: inv");
       //Goto cabin now having key
       response = sendCommandToServer("simon: goto cabin");
       response = response.toLowerCase();
@@ -149,9 +149,14 @@ class ExampleSTAGTests {
       response = sendCommandToServer("simon: open trapdoor");
       assertEquals("you unlock the trapdoor and see steps leading down into a cellar\n", response.toLowerCase());
 
-//      //Goto - TODO not working yet
-//      response = sendCommandToServer("simon: goto cellar");
-//      response = response.toLowerCase();
+      response = sendCommandToServer("simon: look");
+      response = response.toLowerCase();
+      assertTrue(response.contains("cellar"));
+
+      //TODO need to remove trapdoor?
+      response = sendCommandToServer("simon: goto cellar");
+      response = response.toLowerCase();
+      assertTrue(Arrays.asList("cellar", "elf", "cabin").stream().allMatch(response::contains));
   }
 
     @Test
