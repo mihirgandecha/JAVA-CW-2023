@@ -2,6 +2,7 @@ package edu.uob;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.io.File;
 import java.nio.file.Paths;
 import java.io.IOException;
@@ -12,17 +13,17 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class  ExampleSTAGTests {
+class ExampleSTAGTests {
 
-  private GameServer server;
+    private GameServer server;
 
-  // Create a new server _before_ every @Test
-  @BeforeEach
-  void setup() throws Exception {
-      File entitiesFile = Paths.get("config" + File.separator + "basic-entities.dot").toAbsolutePath().toFile();
-      File actionsFile = Paths.get("config" + File.separator + "basic-actions.xml").toAbsolutePath().toFile();
-      server = new GameServer(entitiesFile, actionsFile);
-  }
+    // Create a new server _before_ every @Test
+    @BeforeEach
+    void setup() throws Exception {
+        File entitiesFile = Paths.get("config" + File.separator + "basic-entities.dot").toAbsolutePath().toFile();
+        File actionsFile = Paths.get("config" + File.separator + "basic-actions.xml").toAbsolutePath().toFile();
+        server = new GameServer(entitiesFile, actionsFile);
+    }
 
     String sendCommandToServer(String command) {
         // Try to send a command to the server - this call will timeout if it takes too long (in case the server enters an infinite loop)
@@ -45,17 +46,44 @@ class  ExampleSTAGTests {
         return randomiseCaseForName.toString();
     }
 
-    // A lot of tests will probably check the game state using 'look' - so we better make sure 'look' works well !
-  @Test
-  void testLook() {
-    String response = sendCommandToServer("simon: look");
-    response = response.toLowerCase();
-    assertTrue(response.contains("cabin"), "Did not see the name of the current room in response to look");
-    assertTrue(response.contains("log cabin"), "Did not see a description of the room in response to look");
-    assertTrue(response.contains("magic potion"), "Did not see a description of artifacts in response to look");
-    assertTrue(response.contains("wooden trapdoor"), "Did not see description of furniture in response to look");
-    assertTrue(response.contains("forest"), "Did not see available paths in response to look");
-  }
+    @Test
+    void testSetupWithIncorrectFileName() {
+        assertThrows(GameError.class, () -> {
+            File entitiesFile = Paths.get("config" + File.separator + "nonExistingFile.dot").toAbsolutePath().toFile();
+            File actionsFile = Paths.get("config" + File.separator + "nonExistingFile.xml").toAbsolutePath().toFile();
+            server = new GameServer(entitiesFile, actionsFile);
+        });
+        assertDoesNotThrow(() -> {
+            File entitiesFile = Paths.get("config" + File.separator + "extended-entities.dot").toAbsolutePath().toFile();
+            File actionsFile = Paths.get("config" + File.separator + "extended-actions.xml").toAbsolutePath().toFile();
+            server = new GameServer(entitiesFile, actionsFile);
+        });
+    }
+
+    @Test
+    void testSetupWithExtendedFiles() {
+        assertThrows(GameError.class, () -> {
+            File entitiesFile = Paths.get("config" + File.separator + "extended-entities.xml").toAbsolutePath().toFile();
+            File actionsFile = Paths.get("config" + File.separator + "extended-actions.dot").toAbsolutePath().toFile();
+            server = new GameServer(entitiesFile, actionsFile);
+        });
+        assertDoesNotThrow(() -> {
+            File entitiesFile = Paths.get("config" + File.separator + "extended-entities.dot").toAbsolutePath().toFile();
+            File actionsFile = Paths.get("config" + File.separator + "extended-actions.xml").toAbsolutePath().toFile();
+            server = new GameServer(entitiesFile, actionsFile);
+        });
+    }
+
+    @Test
+    void testLook() {
+        String response = sendCommandToServer("simon: look");
+        response = response.toLowerCase();
+        assertTrue(response.contains("cabin"), "Did not see the name of the current room in response to look");
+        assertTrue(response.contains("log cabin"), "Did not see a description of the room in response to look");
+        assertTrue(response.contains("magic potion"), "Did not see a description of artifacts in response to look");
+        assertTrue(response.contains("wooden trapdoor"), "Did not see description of furniture in response to look");
+        assertTrue(response.contains("forest"), "Did not see available paths in response to look");
+    }
 
     @Test
     void testLookRandomiseCasing() {
@@ -63,101 +91,100 @@ class  ExampleSTAGTests {
         response = response.toLowerCase();
         assertTrue(response.contains("cabin"), "Did not see the name of the current room in response to look");
     }
-  // Test that we can pick something up and that it appears in our inventory
-  @Test
-  void testGet()
-  {
-      String response;
-      sendCommandToServer("simon: get potion");
-      response = sendCommandToServer("simon: inv");
-      response = response.toLowerCase();
-      assertTrue(response.contains("potion"), "Did not see the potion in the inventory after an attempt was made to get it");
-      response = sendCommandToServer("simon: look");
-      response = response.toLowerCase();
-      assertFalse(response.contains("potion"), "Potion is still present in the room after an attempt was made to get it");
-  }
 
-  // Test that we can goto a different location (we won't get very far if we can't move around the game !)
-  @Test
-  void testGoto()
-  {
-      sendCommandToServer("simon: goto forest");
-      String response = sendCommandToServer("simon: look");
-      response = response.toLowerCase();
-      assertTrue(response.contains("key"), "Failed attempt to use 'goto' command to move to the forest - there is no key in the current location");
-  }
+    // Test that we can pick something up and that it appears in our inventory
+    @Test
+    void testGet() {
+        String response;
+        sendCommandToServer("simon: get potion");
+        response = sendCommandToServer("simon: inv");
+        response = response.toLowerCase();
+        assertTrue(response.contains("potion"), "Did not see the potion in the inventory after an attempt was made to get it");
+        response = sendCommandToServer("simon: look");
+        response = response.toLowerCase();
+        assertFalse(response.contains("potion"), "Potion is still present in the room after an attempt was made to get it");
+    }
 
-  @Test
-  void testExampleScript(){
-      String response = sendCommandToServer("simon: inv");
-      assertEquals("inventory is empty\n", response.toLowerCase());
+    // Test that we can goto a different location (we won't get very far if we can't move around the game !)
+    @Test
+    void testGoto() {
+        sendCommandToServer("simon: goto forest");
+        String response = sendCommandToServer("simon: look");
+        response = response.toLowerCase();
+        assertTrue(response.contains("key"), "Failed attempt to use 'goto' command to move to the forest - there is no key in the current location");
+    }
 
-      //Initial look
-      response = sendCommandToServer("simon: look");
-      response = response.toLowerCase();
-      assertTrue(Arrays.asList("cabin", "potion", "axe", "trapdoor", "forest").stream().allMatch(response::contains));
+    @Test
+    void testExampleScript() {
+        String response = sendCommandToServer("simon: inv");
+        assertEquals("inventory is empty\n", response.toLowerCase());
 
-      // Check inventory after picking axe
-      response = sendCommandToServer("simon: inv");
-      assertEquals("inventory is empty\n", response.toLowerCase());
+        //Initial look
+        response = sendCommandToServer("simon: look");
+        response = response.toLowerCase();
+        assertTrue(Arrays.asList("cabin", "potion", "axe", "trapdoor", "forest").stream().allMatch(response::contains));
 
-      //Pickup Axe
-      response = sendCommandToServer("simon: get axe");
-      assertEquals("you picked up a axe\n", response.toLowerCase());
+        // Check inventory after picking axe
+        response = sendCommandToServer("simon: inv");
+        assertEquals("inventory is empty\n", response.toLowerCase());
 
-      // Check inventory after picking axe
-      response = sendCommandToServer("simon: inv");
-      assertTrue(response.toLowerCase().contains("axe"));
+        //Pickup Axe
+        response = sendCommandToServer("simon: get axe");
+        assertEquals("you picked up a axe\n", response.toLowerCase());
 
-      //Look - check axe not in cabin location
-      response = sendCommandToServer("simon: look");
-      response = response.toLowerCase();
-      assertTrue(Arrays.asList("cabin", "potion", "trapdoor", "forest").stream().allMatch(response::contains));
+        // Check inventory after picking axe
+        response = sendCommandToServer("simon: inv");
+        assertTrue(response.toLowerCase().contains("axe"));
 
-      //Pickup Potion
-      response = sendCommandToServer("simon: get potion");
-      assertEquals("you picked up a potion\n", response.toLowerCase());
+        //Look - check axe not in cabin location
+        response = sendCommandToServer("simon: look");
+        response = response.toLowerCase();
+        assertTrue(Arrays.asList("cabin", "potion", "trapdoor", "forest").stream().allMatch(response::contains));
 
-      //Look - check potion not in cabin location
-      response = sendCommandToServer("simon: look");
-      response = response.toLowerCase();
-      assertTrue(Arrays.asList("cabin", "trapdoor", "forest").stream().allMatch(response::contains));
+        //Pickup Potion
+        response = sendCommandToServer("simon: get potion");
+        assertEquals("you picked up a potion\n", response.toLowerCase());
 
-      // Check inventory after picking potion with 'inventory'
-      response = sendCommandToServer("simon: inv");
-      assertTrue(response.toLowerCase().contains("potion"));
+        //Look - check potion not in cabin location
+        response = sendCommandToServer("simon: look");
+        response = response.toLowerCase();
+        assertTrue(Arrays.asList("cabin", "trapdoor", "forest").stream().allMatch(response::contains));
 
-      //Goto - check player is moved
-      response = sendCommandToServer("simon: goto forest");
-      response = response.toLowerCase();
-      assertTrue(Arrays.asList("forest", "key", "cabin").stream().allMatch(response::contains));
+        // Check inventory after picking potion with 'inventory'
+        response = sendCommandToServer("simon: inv");
+        assertTrue(response.toLowerCase().contains("potion"));
 
-      response = sendCommandToServer("simon: chop tree");
-      assertEquals("you cut down the tree with the axe\n", response.toLowerCase());
+        //Goto - check player is moved
+        response = sendCommandToServer("simon: goto forest");
+        response = response.toLowerCase();
+        assertTrue(Arrays.asList("forest", "key", "cabin").stream().allMatch(response::contains));
 
-      //Pickup Key - check key not in forest location
-      response = sendCommandToServer("simon: get key");
-      assertEquals("you picked up a key\n", response.toLowerCase());
+        response = sendCommandToServer("simon: chop tree");
+        assertEquals("you cut down the tree with the axe\n", response.toLowerCase());
 
-      response = sendCommandToServer("simon: inv");
-      //Goto cabin now having key
-      response = sendCommandToServer("simon: goto cabin");
-      response = response.toLowerCase();
-      assertTrue(Arrays.asList("cabin", "trapdoor", "forest").stream().allMatch(response::contains));
+        //Pickup Key - check key not in forest location
+        response = sendCommandToServer("simon: get key");
+        assertEquals("you picked up a key\n", response.toLowerCase());
 
-      //Check advanced Action: trapdoor can be opened as player holds key
-      response = sendCommandToServer("simon: open trapdoor");
-      assertEquals("you unlock the trapdoor and see steps leading down into a cellar\n", response.toLowerCase());
+        response = sendCommandToServer("simon: inv");
+        //Goto cabin now having key
+        response = sendCommandToServer("simon: goto cabin");
+        response = response.toLowerCase();
+        assertTrue(Arrays.asList("cabin", "trapdoor", "forest").stream().allMatch(response::contains));
 
-      response = sendCommandToServer("simon: look");
-      response = response.toLowerCase();
-      assertTrue(response.contains("cellar"));
+        //Check advanced Action: trapdoor can be opened as player holds key
+        response = sendCommandToServer("simon: open trapdoor");
+        assertEquals("you unlock the trapdoor and see steps leading down into a cellar\n", response.toLowerCase());
 
-      //TODO need to remove trapdoor?
-      response = sendCommandToServer("simon: goto cellar");
-      response = response.toLowerCase();
-      assertTrue(Arrays.asList("cellar", "elf", "cabin").stream().allMatch(response::contains));
-  }
+        response = sendCommandToServer("simon: look");
+        response = response.toLowerCase();
+        assertTrue(response.contains("cellar"));
+
+        //TODO need to remove trapdoor?
+        response = sendCommandToServer("simon: goto cellar");
+        response = response.toLowerCase();
+        assertTrue(Arrays.asList("cellar", "elf", "cabin").stream().allMatch(response::contains));
+    }
 
     @Test
     void testBasicGameCommands() {
@@ -201,8 +228,7 @@ class  ExampleSTAGTests {
     }
 
     @Test
-    void testInvalidCommand()
-    {
+    void testInvalidCommand() {
 //        String response1 = sendCommandToServer("simon: unlock");
 //        assertTrue(response1.contains("null"));
         String response = sendCommandToServer("simon: quiet");
@@ -210,7 +236,7 @@ class  ExampleSTAGTests {
         assertTrue(response.contains("unknown command"));
     }
 
-  // Add more unit tests or integration tests here.
+    // Add more unit tests or integration tests here.
 //    @Test
 //    void testAddingBasicEntitiesToGameMap() throws Exception {
 //        ArrayList<Location>gameMap = server.GameEngine.map;
@@ -236,23 +262,24 @@ class  ExampleSTAGTests {
 //        assertEquals("forest",playerOne.getPlayerCurrentLocation().getName());
 //    }
 
+
     @Test
-    void testAdvancedActions(){
-      String response;
-      response = sendCommandToServer("mihir: inv");
-      response = sendCommandToServer("mihir: look");
-      response = sendCommandToServer("mihir: get axe");
-      response = sendCommandToServer("mihir: look");
-      response = sendCommandToServer("mihir: get potion");
-      response = sendCommandToServer("mihir: look");
-      //TODO: Response so get cannot be furniture
-      response = sendCommandToServer("mihir: get trapdoor");
-      response = sendCommandToServer("mihir: look");
-      response = sendCommandToServer("mihir: goto forest");
-      response = sendCommandToServer("mihir: look");
-      response = sendCommandToServer("mihir: inv");
-      response = sendCommandToServer("mihir: get key");
-      response = sendCommandToServer("mihir: inv");
+    void testAdvancedActions() {
+        String response;
+        response = sendCommandToServer("mihir: inv");
+        response = sendCommandToServer("mihir: look");
+        response = sendCommandToServer("mihir: get axe");
+        response = sendCommandToServer("mihir: look");
+        response = sendCommandToServer("mihir: get potion");
+        response = sendCommandToServer("mihir: look");
+        //TODO: Response so get cannot be furniture
+        response = sendCommandToServer("mihir: get trapdoor");
+        response = sendCommandToServer("mihir: look");
+        response = sendCommandToServer("mihir: goto forest");
+        response = sendCommandToServer("mihir: look");
+        response = sendCommandToServer("mihir: inv");
+        response = sendCommandToServer("mihir: get key");
+        response = sendCommandToServer("mihir: inv");
         response = sendCommandToServer("mihir: look");
         response = sendCommandToServer("mihir: chop axe");
 
@@ -275,17 +302,17 @@ class  ExampleSTAGTests {
 
     //Currently: 32 Failures/53 tests -> 21 Tests
     //TODO: Objective by Monday: 26 Failures -> 8 more tests passed
-        //TODO Weekend: [5-10 passes]: Actions Handling
-            //TODO: 4. Fully pass testing of basic files
-                //Understand logic with actions - ie subject, triggers, etc...
-                    //TODO: 1. Draw out on big A3 sheet what is going on when things like "open trapdoor"
-                    //TODO: 2. THEN - Understand what I am doing now (especially Game Action)
-                    //TODO: 3. Optimise working solution such that every situation of basic files passes
-            //TODO: 5. Fully pass testing of advanced files
-            //TODO: 6. For any file given, integration test build so every situation is tested
-            //TODO: 7. Ask how other files should be handled...
-            //TODO: 8. Make my own entity/action files! (just one more but add more later)
-            //TODO: 9. Get someone else to play
+    //TODO Weekend: [5-10 passes]: Actions Handling
+    //TODO: 4. Fully pass testing of basic files
+    //Understand logic with actions - ie subject, triggers, etc...
+    //TODO: 1. Draw out on big A3 sheet what is going on when things like "open trapdoor"
+    //TODO: 2. THEN - Understand what I am doing now (especially Game Action)
+    //TODO: 3. Optimise working solution such that every situation of basic files passes
+    //TODO: 5. Fully pass testing of advanced files
+    //TODO: 6. For any file given, integration test build so every situation is tested
+    //TODO: 7. Ask how other files should be handled...
+    //TODO: 8. Make my own entity/action files! (just one more but add more later)
+    //TODO: 9. Get someone else to play
 
     //TODO: Tuesday (need above logic finished - given 26 failures): [32 Pass/21 Failures]/53 Tests -> 60%
     //TODO: [5 passes]: Multiplayer function - states change -> 70%

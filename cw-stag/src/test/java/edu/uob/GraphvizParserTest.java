@@ -20,19 +20,19 @@ class GraphvizParserTest {
 
     @BeforeEach
     void setup() throws Exception {
-        p = new GraphvizParser("basic-entities.dot");
+        p = new GraphvizParser("config/basic-entities.dot");
         p.setup();
     }
 
     @Test
     public void testFileExistReturnsTrue() throws Exception {
-        GraphvizParser graphvizParser = new GraphvizParser("basic-entities.dot");
+        GraphvizParser graphvizParser = new GraphvizParser("config/basic-entities.dot");
         assertTrue(graphvizParser.doesDOTFileExist());
     }
 
     @Test
     public void testFileNotExistReturnsFalse() throws Exception {
-        GraphvizParser graphvizParser = new GraphvizParser("fails.dot");
+        GraphvizParser graphvizParser = new GraphvizParser("config/fails.dot");
         assertFalse(graphvizParser.doesDOTFileExist());
     }
 
@@ -41,13 +41,6 @@ class GraphvizParserTest {
         GraphvizParser graphvizParser = new GraphvizParser("");
         assertFalse(graphvizParser.doesDOTFileExist());
     }
-
-//    @Test
-//    public void testGetWholeGraphIsSizeOne() throws FileNotFoundException, ParseException {
-//        ArrayList<Graph> g = p.getWholeDocumentGraphList();
-//        assertEquals(1, g.size());
-//        assertThrows(IndexOutOfBoundsException.class, () -> p.getWholeDocumentGraphList().get(1));
-//    }
 
     @Test
     public void hashMapReturnsCorrectLocationNamesAndSize() throws Exception {
@@ -59,7 +52,6 @@ class GraphvizParserTest {
         assertEquals("cellar", gameMap.get("cellar").getName());
         assertEquals("storeroom", gameMap.get("storeroom").getName());
     }
-    //TODO Extra: .dot extension, if none add .dot extension and allow
 
     @Test
     void getPathsReturnsCorrectPaths(){
@@ -93,7 +85,7 @@ class GraphvizParserTest {
 
     @Test
     void pathToSetReturnsCorrectPathsForExtended() throws Exception {
-        p = new GraphvizParser("extended-entities.dot");
+        p = new GraphvizParser("config/extended-entities.dot");
         p.setup();
         p.setPaths();
         Map<String, Location> map = p.getGameMap();

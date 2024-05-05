@@ -20,8 +20,8 @@ public class GraphvizParser {
     private HashMap<String, GameEntity> entityList;
     public Node firstNode;
 
-    public GraphvizParser(String entityFileName) throws Exception {
-        this.entityFilePath = Paths.get("config" + File.separator + entityFileName).toAbsolutePath();
+    public GraphvizParser(String entityFilePath) throws Exception {
+        this.entityFilePath = Paths.get(entityFilePath);
         this.p = new Parser();
         this.locationNames = new ArrayList<>();
         this.gameMap = new HashMap<>();
