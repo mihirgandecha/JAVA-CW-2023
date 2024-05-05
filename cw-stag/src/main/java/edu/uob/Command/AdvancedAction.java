@@ -23,6 +23,7 @@ public class AdvancedAction
     private Player player;
     private Location storeroom;
     private Map<String, Location> map;
+    private boolean resetActivated = false;
 
     public List<String> getTriggers() {
         return triggers;
@@ -124,6 +125,9 @@ public class AdvancedAction
 
     public String execute() throws GameError {
         consumeEntities();
+        if(this.resetActivated){
+            return "you died and lost all of your items, you must return to the start of the game\n";
+        }
         produceEntities();
         return narration + "\n";
     }
@@ -132,6 +136,10 @@ public class AdvancedAction
         for (String item : getConsumed()) {
             if (item.equalsIgnoreCase("health")) {
                 player.decreaseHealth();
+                if(player.isPlayerDead()){
+                    resetPlayer();
+                    this.resetActivated = true;
+                }
                 break;
             }
             if (player.getInventory().containsKey(item)) {
@@ -142,9 +150,22 @@ public class AdvancedAction
         }
     }
 
+    private void resetPlayer(){
+        HashMap<String, Artefact> inventory = player.getInventory();
+        if(inventory.size() > 0){
+            this.map.get(this.currentLocation).entityList.addAll(inventory.values());
+        }
+        this.player = new Player(this.player.getPlayerName());
+        this.player.setLocation("cabin");
+    }
+
 
     private void produceEntities() throws GameError {
         for (String item : getProduced()) {
+            if (item.equalsIgnoreCase("health")) {
+                player.increaseHealth();
+                break;
+            }
             GameEntity storedEntity = this.storeroom.setEntityForProduce(item);
             if (storedEntity != null) {
                 addEntityToLocation(storedEntity);
