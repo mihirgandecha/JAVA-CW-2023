@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,10 +40,16 @@ public final class GameServer {
    * @param actionsFile  The game configuration file containing all game actions
    *                     to use in your game
    */
-  public GameServer(File entitiesFile, File actionsFile) throws Exception {
-    // TODO implement your server logic here
-    this.entitiesFileString = entitiesFile.toString();
-    this.actionsFileString = actionsFile.toString();
+
+  // Validate file types and existence
+  public GameServer(File entitiesFile, File actionsFile) throws GameError {
+    if (!entitiesFile.getName().endsWith(".dot")) throw new GameError("Entities file must be a .dot file");
+    if (!actionsFile.getName().endsWith(".xml")) throw new GameError("Actions file must be an .xml file");
+    Path entitiesPath = entitiesFile.toPath();
+    Path actionsPath = actionsFile.toPath();
+    if (!Files.exists(entitiesPath) || !Files.exists(actionsPath)) throw new GameError("One or both files do not exist");
+    this.entitiesFileString = entitiesPath.toString();
+    this.actionsFileString = actionsPath.toString();
   }
 
   /**
@@ -54,7 +62,6 @@ public final class GameServer {
    * @param command The incoming command to be processed
    */
   public String handleCommand(String command) {
-    // TODO implement your server logic here
     try{
       initializeGamePlayers();
       Tokeniser tokeniser = new Tokeniser(command);
@@ -64,7 +71,7 @@ public final class GameServer {
       Player player = addOrRetrievePlayer(username);
       //Process Command:
       if(GameEngine == null){
-        GameEngine = new GameEngine("basic-entities.dot", this.actionsFileString, player);
+        GameEngine = new GameEngine(this.entitiesFileString, this.actionsFileString, player);
         GameEngine.setFirstLocation();
       }
       return GameEngine.toString(cleanCommand);
