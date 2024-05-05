@@ -30,9 +30,14 @@ public final class GameServer {
     if (args.length == 2) {
       File customEntitiesFile = Paths.get("config" + File.separator + args[0]).toAbsolutePath().toFile();
       File customActionsFile = Paths.get("config" + File.separator + args[1]).toAbsolutePath().toFile();
-      entitiesFile = customEntitiesFile;
-      actionsFile = customActionsFile;
-      System.out.println("Using custom files.");
+      if (customEntitiesFile.exists() && customEntitiesFile.getName().endsWith(".dot") &&
+              customActionsFile.exists() && customActionsFile.getName().endsWith(".xml")) {
+        entitiesFile = customEntitiesFile;
+        actionsFile = customActionsFile;
+        System.out.println("Using custom files.");
+      } else {
+        System.out.println("Invalid or non-existent custom files, using default files.");
+      }
     }
     GameServer server = new GameServer(entitiesFile, actionsFile);
     server.blockingListenOn(8888);

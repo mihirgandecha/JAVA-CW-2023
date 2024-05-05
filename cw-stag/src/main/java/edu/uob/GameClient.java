@@ -22,7 +22,6 @@ public final class GameClient {
         } else{
             String username = args[0];
             while (!Thread.interrupted()){
-                System.out.print(username + ":> ");
                 handleNextCommand(username);
             }
 
@@ -30,6 +29,7 @@ public final class GameClient {
     }
 
     private static void handleNextCommand(String username) throws IOException {
+        System.out.print(username + ":> ");
         BufferedReader commandLine = new BufferedReader(new InputStreamReader(System.in));
         String command = commandLine.readLine();
         try (var socket = new Socket("localhost", 8888);
