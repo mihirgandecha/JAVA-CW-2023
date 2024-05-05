@@ -27,21 +27,15 @@ public final class GameServer {
     File defaultActionsFile = Paths.get("config" + File.separator + "basic-actions.xml").toAbsolutePath().toFile();
     File entitiesFile = defaultEntitiesFile;
     File actionsFile = defaultActionsFile;
-    if(args.length == 2) {
-      File customEntitiesFile = Path.of("config" + File.separator + args[0]).toFile();
-      File customActionsFile = Path.of("config" + File.separator + args[1]).toFile();
-      if (customEntitiesFile.exists() && customEntitiesFile.getName().endsWith(".dot") &&
-              customActionsFile.exists() && customActionsFile.getName().endsWith(".xml"))
-      {
-        entitiesFile = customEntitiesFile;
-        actionsFile = customActionsFile;
-      } else {
-        System.out.println("Invalid or non-existent custom files, using default files.");
-      }
+    if (args.length == 2) {
+      File customEntitiesFile = Paths.get("config" + File.separator + args[0]).toAbsolutePath().toFile();
+      File customActionsFile = Paths.get("config" + File.separator + args[1]).toAbsolutePath().toFile();
+      entitiesFile = customEntitiesFile;
+      actionsFile = customActionsFile;
+      System.out.println("Using custom files.");
     }
     GameServer server = new GameServer(entitiesFile, actionsFile);
     server.blockingListenOn(8888);
-//    announceGameFiles(entitiesFile, actionsFile);
   }
 
 
@@ -59,11 +53,6 @@ public final class GameServer {
 
   // Validate file types and existence
   public GameServer(File entitiesFile, File actionsFile) throws GameError {
-    if (!entitiesFile.getName().endsWith(".dot")) throw new GameError("Entities file must be a .dot file");
-    if (!actionsFile.getName().endsWith(".xml")) throw new GameError("Actions file must be an .xml file");
-    Path entitiesPath = entitiesFile.toPath();
-    Path actionsPath = actionsFile.toPath();
-    if (!Files.exists(entitiesPath) || !Files.exists(actionsPath)) throw new GameError("One or both files do not exist");
     this.entitiesFileString = entitiesFile.toString();
     this.actionsFileString = actionsFile.toString();
   }

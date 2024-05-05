@@ -17,13 +17,19 @@ public final class GameClient {
     private static final char END_OF_TRANSMISSION = 4;
 
     public static void main(String[] args) throws IOException {
-        if(args == null || args.length != 1) throw new IOException("Require Player Name!");
-        String username = args[0];
-        while (!Thread.interrupted()) handleNextCommand(username);
+        if(args == null || args.length != 1){
+            System.out.println("Require player name!");
+        } else{
+            String username = args[0];
+            while (!Thread.interrupted()){
+                System.out.print(username + ":> ");
+                handleNextCommand(username);
+            }
+
+        }
     }
 
     private static void handleNextCommand(String username) throws IOException {
-        System.out.print(username + ":> ");
         BufferedReader commandLine = new BufferedReader(new InputStreamReader(System.in));
         String command = commandLine.readLine();
         try (var socket = new Socket("localhost", 8888);
