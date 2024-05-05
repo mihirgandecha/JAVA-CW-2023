@@ -1,17 +1,18 @@
 package edu.uob;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Player {
-    public String playerName;
-    private int health = 3;
+    private final String playerName;
     private HashMap<String, Artefact> inventory;
     public String currentLocation;
+    private static final int MAXIMUM_HEALTH = 3;
+    private int health;
 
     public Player(String playerName) {
         this.playerName = playerName;
         this.inventory = new HashMap<>();
+        this.health = MAXIMUM_HEALTH;
     }
 
     public String getPlayerName() {
@@ -22,8 +23,27 @@ public class Player {
         return this.health;
     }
 
+    public void increaseHealth(){
+        if(this.health < MAXIMUM_HEALTH) this.health++;
+    }
+
+    public void decreaseHealth() {
+        if(this.health == 0){
+            return;
+        }
+        this.health --;
+    }
+
+    public void resetHealth(){
+        this.health = MAXIMUM_HEALTH;
+    }
+
+    public boolean isPlayerDead(){
+        return this.health <= 0;
+    }
+
     public HashMap<String, Artefact> getInventory() {
-        if(this.inventory == null || this.inventory.size() == 0) {
+        if(this.inventory == null || this.inventory.isEmpty()) {
             this.inventory = new HashMap<>();
         }
         return this.inventory;
@@ -47,10 +67,4 @@ public class Player {
         return this.currentLocation;
     }
 
-    public void decreaseHealth() {
-        if(this.health == 0){
-            return;
-        }
-        this.health --;
-    }
 }
