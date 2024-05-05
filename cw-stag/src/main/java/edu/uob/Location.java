@@ -97,9 +97,9 @@ public class Location extends GameEntity {
   }
 
   private String addPrefixIfNeeded(String description) {
-    if(!description.startsWith("A ")){
-      return "A " + description;
-    }
+//    if(!description.startsWith("A ")){
+//      return "A " + description;
+//    }
     return description;
   }
 
