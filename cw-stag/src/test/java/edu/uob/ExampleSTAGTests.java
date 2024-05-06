@@ -320,7 +320,7 @@ class ExampleSTAGTests {
 
     //Currently: 31 Failures/53 tests -> 22 Tests Passed/53 (Goto fixed bugs)
     //Objective by Tuesday (need 55-60% to not use extension): 35Passed/53 -> 13 additional tests
-    //TODO: Read through docs carefullY! Pick out any features I've missed!
+    //TODO: Read through docs carefullY! Pick out any features I've missed! Write down features below.
     //!TODO 1. Decorative command handling!!! [Guess 5 tests] {get the axe!}
     //TODO: 2. Write tests for Fully pass testing of basic files + Completing Game
         //TODO: Ensure Health functionality working by modifying Advanced Actions to use Super instead [Guess 5 tests]
@@ -337,5 +337,24 @@ class ExampleSTAGTests {
     //TODO: Gitignore definitely cleaned
     //TODO: Code Quality - following last feedback
     //TODO: 100% code coverage testing
+
+    /*[FEATURES]:
+        T2: Game Engine:
+            Server always running, however: "When a client connects to the server, the server accepts the connection and assigns a unique identifier to the client to distinguish it from other clients."
+            ie for every new player -> assigns a unique identifier to the client? Does this mean new port?
+            [Test Multiplayer] -> is game state (GameEngine) reset with each new command? TODO: testing inventory game state, run in multiple server, ie simon in one, mihir in another, test that the command dependency order is the same
+            [Test Multiplayer] -> is game players reset?
+                [Test server] -> only config is loaded into GameServer EACH TIME server is restarted, thats all! //TODO test this happens!
+                [Test server] -> TODO arg length, null commands, decorative, if command is repeated, if command has username again?
+            [Test client: Username] -> what happens when no username is sent as an arguement, what is an appropriate username that wont cause conflicts (ie maybe no punctuation, what if its a game action?
+            [Test server: Command] -> decorative commands
+            [Test client/server] -> server should remain operational (ie test for handling Game Error), however should GameClient? TODO: surround client in try/catch!
+            [Test client]: -> flood server with high volume of commandss in short period to test high-load situation //TODO is there a delay?
+            [Test client] -> TODO run multiple clients ESSENTIAL!!! threading?
+            [Test server]: TODO disconnect client, is server still running?
+            TODO file handling
+
+    */
+
 
 }
