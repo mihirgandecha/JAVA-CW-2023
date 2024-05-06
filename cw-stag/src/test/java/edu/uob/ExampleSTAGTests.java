@@ -318,28 +318,24 @@ class ExampleSTAGTests {
         assertFalse(response.toLowerCase().contains("key"), "Mihir should not have the key picked up by Simon.");
     }
 
-    //Currently: 32 Failures/53 tests -> 21 Tests
-    //TODO: Objective by Monday: 26 Failures -> 8 more tests passed
-    //TODO Weekend: [5-10 passes]: Actions Handling
-    //TODO: 4. Fully pass testing of basic files
-    //Understand logic with actions - ie subject, triggers, etc...
-    //TODO: 1. Draw out on big A3 sheet what is going on when things like "open trapdoor"
-    //TODO: 2. THEN - Understand what I am doing now (especially Game Action)
-    //TODO: 3. Optimise working solution such that every situation of basic files passes
-    //TODO: 5. Fully pass testing of advanced files
-    //TODO: 6. For any file given, integration test build so every situation is tested
-    //TODO: 7. Ask how other files should be handled...
-    //TODO: 8. Make my own entity/action files! (just one more but add more later)
-    //TODO: 9. Get someone else to play
+    //Currently: 31 Failures/53 tests -> 22 Tests Passed/53 (Goto fixed bugs)
+    //Objective by Tuesday (need 55-60% to not use extension): 35Passed/53 -> 13 additional tests
+    //TODO: Read through docs carefullY! Pick out any features I've missed!
+    //!TODO 1. Decorative command handling!!! [Guess 5 tests] {get the axe!}
+    //TODO: 2. Write tests for Fully pass testing of basic files + Completing Game
+        //TODO: Ensure Health functionality working by modifying Advanced Actions to use Super instead [Guess 5 tests]
+        //TODO: Ensure Multiplayer functionality working in tests [Guess 5 tests]
+        //TODO: (Q) Ask file handling logic correct
+    //TODO: 2. Write tests for Fully pass testing of extended files + Completing Game
 
-    //TODO: Tuesday (need above logic finished - given 26 failures): [32 Pass/21 Failures]/53 Tests -> 60%
-    //TODO: [5 passes]: Multiplayer function - states change -> 70%
-    //TODO: [5 passes]: Health function -> 79%
-    //TODO: [5 passes]: Decorative command handling -> 88%
+
+    //Advanced:
+    //TODO: For any file given, integration test build so every situation is tested
+    //TODO: Make my own entity/action files! (just one more but add more later)
+    //TODO: Get someone else to play
     //TODO: Code cleanup - find out approx lines of code + try match
     //TODO: Gitignore definitely cleaned
     //TODO: Code Quality - following last feedback
     //TODO: 100% code coverage testing
-    //Then submit
 
 }
