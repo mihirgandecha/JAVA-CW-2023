@@ -12,6 +12,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class DocumentParser {
+    private AdvancedAction actions;
     public HashMap<String, HashSet<AdvancedAction>> gameActions;
 
     public DocumentParser(String actionsFileString) throws GameError {
@@ -40,13 +41,13 @@ public class DocumentParser {
     }
 
     private AdvancedAction parseGameAction(Element actionElement) {
-        AdvancedAction advancedAction = new AdvancedAction();
-        advancedAction.setTriggers(new ArrayList<>(parseHashSet(actionElement, "triggers", "keyphrase")));
-        advancedAction.setSubjects(new ArrayList<>(parseHashSet(actionElement, "subjects", "entity")));
-        advancedAction.setConsumed(new ArrayList<>(parseOptionalHashSet(actionElement, "consumed")));
-        advancedAction.setProduced(new ArrayList<>(parseOptionalHashSet(actionElement, "produced")));
-        advancedAction.setNarration(parseTextContent(actionElement));
-        return advancedAction;
+        actions = new AdvancedAction();
+        actions.setTriggers(new ArrayList<>(parseHashSet(actionElement, "triggers", "keyphrase")));
+        actions.setSubjects(new ArrayList<>(parseHashSet(actionElement, "subjects", "entity")));
+        actions.setConsumed(new ArrayList<>(parseOptionalHashSet(actionElement, "consumed")));
+        actions.setProduced(new ArrayList<>(parseOptionalHashSet(actionElement, "produced")));
+        actions.setNarration(parseTextContent(actionElement));
+        return actions;
     }
 
     private HashSet<String> parseHashSet(Element parentElement, String tag, String childTag) {
@@ -79,6 +80,10 @@ public class DocumentParser {
         for (String trigger : advancedAction.getTriggers()) {
             gameActions.computeIfAbsent(trigger, k -> new HashSet<>()).add(advancedAction);
         }
+    }
+
+    public AdvancedAction getActionsState() {
+        return actions;
     }
 
     public HashMap<String, HashSet<AdvancedAction>> getGameActions() {

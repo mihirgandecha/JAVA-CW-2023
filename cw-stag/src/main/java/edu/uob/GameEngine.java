@@ -13,10 +13,10 @@ public class GameEngine {
     private String entitiesFile;
     private String actionsFile;
     private Map<String, Location> map;
+    private AdvancedAction advancedAction;
     private HashMap<String, HashSet<AdvancedAction>> actions;
     private String firstLocation;
-
-    private Set<String> advancedActions;
+    private Set<String> advancedActionsNames;
 
     public GameEngine(String entitiesFile, String actionsFile, Player player) throws Exception {
         this.player = player;
@@ -29,8 +29,8 @@ public class GameEngine {
 
     // Add action commands from the XML file to Set
     private void setAdvancedActions() {
-        this.advancedActions = new HashSet<>();
-        this.advancedActions.addAll(actions.keySet());
+        this.advancedActionsNames = new HashSet<>();
+        this.advancedActionsNames.addAll(actions.keySet());
     }
 
     private Map<String, Location> processEntitiesFile() throws Exception {
@@ -41,6 +41,7 @@ public class GameEngine {
 
     private HashMap<String, HashSet<AdvancedAction>> processActionsFile() throws GameError {
         DocumentParser p = new DocumentParser(this.actionsFile);
+        this.advancedAction = p.getActionsState();
         return p.getGameActions();
     }
 
@@ -69,7 +70,7 @@ public class GameEngine {
         } else if(command.contains("health")){
             String health = String.valueOf(player.getHealth());
             return "Player health " + health;
-        } else if (this.advancedActions.contains(actionWord)){
+        } else if (this.advancedActionsNames.contains(actionWord)){
             return handleGameAction(command);
         } else{
             throw new GameError("Unknown command: " + command);
