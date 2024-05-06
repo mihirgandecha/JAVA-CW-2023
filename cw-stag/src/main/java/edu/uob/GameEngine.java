@@ -40,8 +40,9 @@ public class GameEngine {
     }
 
     private HashMap<String, HashSet<AdvancedAction>> processActionsFile() throws GameError {
-        DocumentParser p = new DocumentParser(this.actionsFile);
+        DocumentParser p = new DocumentParser(this, player, this.actionsFile);
         this.advancedAction = p.getActionsState();
+        this.advancedAction.setFirstLocation(this.firstLocation);
         return p.getGameActions();
     }
 

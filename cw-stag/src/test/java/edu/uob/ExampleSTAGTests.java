@@ -128,6 +128,7 @@ class ExampleSTAGTests {
         String response = sendCommandToServer("simon: fight with elf");
         response = response.toLowerCase();
         assertEquals("you died and lost all of your items, you must return to the start of the game\n", response);
+        sendCommandToServer("simon: look");
         //TODO: Need to fix reset location
     }
 

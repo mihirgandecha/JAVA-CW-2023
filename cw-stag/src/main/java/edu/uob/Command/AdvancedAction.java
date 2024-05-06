@@ -5,7 +5,7 @@ import edu.uob.Character;
 
 import java.util.*;
 
-public class AdvancedAction
+public class AdvancedAction extends GameCommand
 {
     //INPUT
     private List<String> triggers;
@@ -24,6 +24,11 @@ public class AdvancedAction
     private Location storeroom;
     private Map<String, Location> map;
     private boolean resetActivated = false;
+    private String firstLocation;
+
+    public AdvancedAction(GameEngine gameEngine, Player player, String basicCommand) {
+        super(gameEngine, player, basicCommand);
+    }
 
     public List<String> getTriggers() {
         return triggers;
@@ -157,6 +162,10 @@ public class AdvancedAction
         }
         this.player = new Player(this.player.getPlayerName());
         this.player.setLocation("cabin");
+    }
+
+    public void setFirstLocation(String location){
+        this.firstLocation = location;
     }
 
 
