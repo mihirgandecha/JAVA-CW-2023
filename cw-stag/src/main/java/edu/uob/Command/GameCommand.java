@@ -3,6 +3,9 @@ package edu.uob.Command;
 import edu.uob.GameEngine;
 import edu.uob.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class GameCommand {
     GameEngine engine;
     Player player;
@@ -24,6 +27,14 @@ public abstract class GameCommand {
 
     public String getBasicCommand() {
         return this.basicCommand;
+    }
+
+    public ArrayList<String> getEntityList(){
+        return this.engine.getEntities();
+    }
+
+    public List<String> getCommand(){
+        return engine.command;
     }
 
     @Override

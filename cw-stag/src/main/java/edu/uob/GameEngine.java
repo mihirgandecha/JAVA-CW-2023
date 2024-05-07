@@ -15,12 +15,14 @@ public class GameEngine {
     private Set<String> advancedActionsNames;
     private Set<String> basicActionsNames;
     private ArrayList<String> entities;
+    public List<String> command;
 
     public GameEngine(String entitiesFile, String actionsFile, Player player) throws Exception {
         this.player = player;
         this.entitiesFile = entitiesFile;
         this.actionsFile = actionsFile;
         this.map = processEntitiesFile();
+        this.entities = new ArrayList<>();
         for(Location location : map.values()) {
             location.setAllEntities();
             this.entities.add(location.getName());
@@ -31,6 +33,7 @@ public class GameEngine {
         this.actions = processActionsFile();
         setAdvancedActions();
    }
+
 
     // Add action commands from the XML file to Set
     private void setAdvancedActions() {
@@ -53,13 +56,64 @@ public class GameEngine {
         return p.getGameActions();
     }
 
-    public String toString(String cleanCommand) throws Exception {
-        return executeCommand(cleanCommand);
+    public String execute(List<String> cleanCommand) throws Exception {
+        checkCommand(cleanCommand);
+        return executeCommand(this.command).toString();
     }
 
-    private String executeCommand(String command) throws Exception {
-        String[] words = command.split("\\s+");
-        String actionWord = words[0];
+    public ArrayList<String> getEntities(){
+        return this.entities;
+    }
+
+    private void checkCommand(List<String> cleanCommand) throws GameError {
+        List<String> possibleEntities = new ArrayList<>();
+        for(String token : cleanCommand) {
+            if(this.entities.contains(token.trim())) {
+                possibleEntities.add(token.trim());
+            }
+        }
+        boolean checkAdvanced = false;
+        List<String> possibleAction = new ArrayList<>();
+        for(String token : cleanCommand) {
+            if(this.basicActionsNames.contains(token.trim())){
+                possibleAction.add(token.trim());
+            } else if(this.advancedActionsNames.contains(token.trim())) {
+                possibleAction.add(token.trim());
+                checkAdvanced = true;
+            }
+        }
+        if (!checkAdvanced) {
+            if (possibleEntities.size() == 0) {
+                String action = possibleAction.get(0);
+                if (!(action.contains("look") || action.contains("inv"))) {
+                    throw new GameError("You need to specify at least one entity");
+                }
+            } else if (possibleEntities.size() > 1) {
+                throw new GameError("Too many entities for a basic command!");
+            }
+        }
+        if(checkAdvanced) {
+            HashSet<String> narrations = new HashSet<>();
+            HashSet<AdvancedAction> actionsList = actions.get(possibleAction);
+            for(AdvancedAction action : actionsList) {
+                narrations.add(action.getNarration());
+                if(narrations.size() > 1) throw new GameError("Too many Game Actions!");
+                for(String entitie : possibleEntities) {
+                    if(!action.getSubjects().contains(entitie)) {
+                        throw new GameError("Invalid Entity: " + entitie);
+                    }
+                }
+            }
+        }
+        this.command = new ArrayList<>();
+        this.command.add(possibleAction.get(0));
+        this.command.addAll(possibleEntities);
+    }
+
+    private String executeCommand(List<String> commandList) throws Exception {
+//        String[] words = command.split("\\s+");
+//        String actionWord = words[0];
+        String command = commandList.toString();
         if (command.contains("look")) {
             Look look = new Look(this, player, command);
             return look.toString();
@@ -78,16 +132,16 @@ public class GameEngine {
         } else if(command.contains("health")){
             String health = String.valueOf(player.getHealth());
             return "Player health " + health;
-        } else if (this.advancedActionsNames.contains(actionWord)){
-            return handleGameAction(command);
+        } else if (this.advancedActionsNames.contains(command)){
+            return handleGameAction(commandList);
         } else{
             throw new GameError("Unknown command: " + command);
         }
     }
 
-    private String handleGameAction(String command) throws GameError {
-        String[] words = command.split("\\s+");
-        String actionWord = words[0];
+    private String handleGameAction(List<String> command) throws GameError {
+//        String[] words = command.split("\\s+");
+        String actionWord = command.get(0);
         HashSet<AdvancedAction> possibleActions = actions.get(actionWord);
         if (possibleActions == null) {
             throw new GameError("Unknown command: " + command);

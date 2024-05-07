@@ -8,10 +8,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class GameServer {
@@ -85,6 +84,7 @@ public final class GameServer {
       Tokeniser tokeniser = new Tokeniser(command);
       String username = tokeniser.getUsername();
       String cleanCommand = tokeniser.getCleanCommand();
+      List<String> tokens = tokeniser.getTokens();
       //Check if player already exists:
       Player player = addOrRetrievePlayer(username);
       //Process Command:
@@ -92,7 +92,7 @@ public final class GameServer {
         GameEngine = new GameEngine(this.entitiesFileString, this.actionsFileString, player);
         GameEngine.setFirstLocation();
       }
-      return GameEngine.toString(cleanCommand);
+      return GameEngine.execute(tokens);
     } catch (Exception e){
       return e.getMessage();
     }

@@ -3,6 +3,7 @@ package edu.uob.Command;
 import edu.uob.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class Get extends GameCommand {
     Location currentLocation;
@@ -16,12 +17,19 @@ public class Get extends GameCommand {
     }
 
     private void setArtefactName() throws GameError {
-        if (basicCommand.startsWith("get ")) {
-            String[] commandParts = basicCommand.split(" ");
-            if(commandParts.length > 1) {
-                this.requestedArtefact = commandParts[1];
-            } else {
-                throw new GameError("Unknown get command!");
+//        if (basicCommand.startsWith("get ")) {
+//            String[] commandParts = basicCommand.split(" ");
+//            if(commandParts.length > 1) {
+//                this.requestedArtefact = commandParts[1];
+//            } else {
+//                throw new GameError("Unknown get command!");
+//            }
+//        }
+        List<String> command = getCommand();
+        for (String part : command) {
+            if(getEntityList().contains(part)) {
+                this.requestedArtefact = part;
+                break;
             }
         }
     }
