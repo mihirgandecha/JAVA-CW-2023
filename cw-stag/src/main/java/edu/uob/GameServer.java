@@ -8,10 +8,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class GameServer {
@@ -23,26 +22,11 @@ public final class GameServer {
   private final String actionsFileString;
 
   public static void main(String[] args) throws Exception {
-    File defaultEntitiesFile = Paths.get("config" + File.separator + "basic-entities.dot").toAbsolutePath().toFile();
-    File defaultActionsFile = Paths.get("config" + File.separator + "basic-actions.xml").toAbsolutePath().toFile();
-    File entitiesFile = defaultEntitiesFile;
-    File actionsFile = defaultActionsFile;
-    if (args.length == 2) {
-      File customEntitiesFile = Paths.get("config" + File.separator + args[0]).toAbsolutePath().toFile();
-      File customActionsFile = Paths.get("config" + File.separator + args[1]).toAbsolutePath().toFile();
-      if (customEntitiesFile.exists() && customEntitiesFile.getName().endsWith(".dot") &&
-              customActionsFile.exists() && customActionsFile.getName().endsWith(".xml")) {
-        entitiesFile = customEntitiesFile;
-        actionsFile = customActionsFile;
-        System.out.println("Using custom files.");
-      } else {
-        System.out.println("Invalid or non-existent custom files, using default files.");
-      }
-    }
+    File entitiesFile = Paths.get("config" + File.separator + "basic-entities.dot").toAbsolutePath().toFile();
+    File actionsFile = Paths.get("config" + File.separator + "basic-actions.xml").toAbsolutePath().toFile();
     GameServer server = new GameServer(entitiesFile, actionsFile);
     server.blockingListenOn(8888);
   }
-
 
   /**
    * Do not change the following method signature or we won't be able to mark your
@@ -57,18 +41,16 @@ public final class GameServer {
    */
 
   // Validate file types and existence
-  public GameServer(File entitiesFile, File actionsFile) throws GameError {
-    this.entitiesFileString = entitiesFile.toString();
-    this.actionsFileString = actionsFile.toString();
+  public GameServer(File entitiesFile, File actionsFile) throws GameError{
+      if (entitiesFile.exists() && entitiesFile.getName().endsWith(".dot") &&
+              actionsFile.exists() && actionsFile.getName().endsWith(".xml"))
+      {
+        this.entitiesFileString = entitiesFile.toString();
+        this.actionsFileString = actionsFile.toString();
+      }else{
+        throw new GameError("File does not exist!");
+      }
   }
-
-  // Message to inform the player about the game configuration
-//  private void announceGameFiles(String entitiesFile, File actionsFile) throws GameError {
-//    System.out.println("🎮 Game Input Loaded 🎮");
-//    System.out.println(">> Venturing into new territories with: " + entitiesFile.toString());
-//    System.out.println(">> Mastering dynamic challenges with: " + actionsFile.toString());
-//    System.out.println("Ready your gear and prepare for an adventure like no other!");
-//  }
 
   /**
    * Do not change the following method signature or we won't be able to mark your
@@ -80,22 +62,40 @@ public final class GameServer {
    * @param command The incoming command to be processed
    */
   public String handleCommand(String command) {
-    try{
+    try {
       initializeGamePlayers();
       Tokeniser tokeniser = new Tokeniser(command);
       String username = tokeniser.getUsername();
-      String cleanCommand = tokeniser.getCleanCommand();
+      List<String> tokens = tokeniser.getTokens();
       //Check if player already exists:
       Player player = addOrRetrievePlayer(username);
       //Process Command:
-      if(GameEngine == null){
-        GameEngine = new GameEngine(this.entitiesFileString, this.actionsFileString, player);
-        GameEngine.setFirstLocation();
+      if (GameEngine == null) {
+        GameEngine = new GameEngine(this.entitiesFileString, this.actionsFileString, GamePlayers);
+//        GameEngine.setFirstLocation();
       }
-      return GameEngine.toString(cleanCommand);
-    } catch (Exception e){
+      GameEngine.updatePlayer(GamePlayers);
+      if (GamePlayers.size() > 1) {
+        for (String token : tokens) {
+          if (token.contains("look") || token.contains("goto")) {
+            return GameEngine.execute(tokens, username) + "\n" + getPlayersNameToString(username);
+          }
+        }
+      }
+      return GameEngine.execute(tokens, username);
+    } catch (Exception e) {
       return e.getMessage();
     }
+  }
+
+  private String getPlayersNameToString(String username){
+    StringBuilder sb = new StringBuilder();
+    for(Player player : GamePlayers.values()){
+      if(!player.equals(username)){
+        sb.append(player.getPlayerName() + "\n");
+      }
+    }
+    return sb.toString();
   }
 
   private void initializeGamePlayers() {
@@ -113,6 +113,10 @@ public final class GameServer {
       GamePlayers.put(username, player);
     }
     return player;
+  }
+
+  public edu.uob.GameEngine getGameEngine() {
+    return GameEngine;
   }
 
   /**

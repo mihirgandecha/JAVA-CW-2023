@@ -3,8 +3,11 @@ package edu.uob.ActionsFile;
 import edu.uob.DocumentParser;
 import edu.uob.Command.AdvancedAction;
 import edu.uob.GameError;
+import edu.uob.GameServer;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -20,8 +23,11 @@ class ActionsParserBasicTest {
 
     @BeforeEach
     void setUp() throws GameError {
-        DocumentParser parser = new DocumentParser("config/basic-actions.xml");
-        gameActions = parser.getGameActions();
+        File entitiesFile = Paths.get("config" + File.separator + "basic-entities.dot").toAbsolutePath().toFile();
+        File actionsFile = Paths.get("config" + File.separator + "basic-actions.xml").toAbsolutePath().toFile();
+        GameServer server = new GameServer(entitiesFile, actionsFile);
+        server.handleCommand("simon: look");
+        gameActions = server.getGameEngine().getActions();
     }
 
     // Check that the expected triggers are present

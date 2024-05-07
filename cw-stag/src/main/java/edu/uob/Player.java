@@ -64,6 +64,9 @@ public class Player {
     }
 
     public String getCurrentLocation() {
+        if(this.currentLocation == null){
+            return null;
+        }
         return this.currentLocation;
     }
 

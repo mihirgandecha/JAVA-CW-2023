@@ -1,5 +1,6 @@
 package edu.uob;
 import edu.uob.Command.AdvancedAction;
+import edu.uob.Command.GameCommand;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -11,12 +12,14 @@ import java.util.HashMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-public class DocumentParser {
+public class DocumentParser extends GameCommand {
+    private AdvancedAction actions;
     public HashMap<String, HashSet<AdvancedAction>> gameActions;
 
-    public DocumentParser(String actionsFileString) throws GameError {
+    public DocumentParser(GameEngine gameEngine, Player player, String basicCommand) throws GameError {
+        super(gameEngine, player, basicCommand);
         gameActions = new HashMap<>();
-        setup(actionsFileString);
+        setup(basicCommand);
     }
 
     private void setup(String actionsFileString) throws GameError {
@@ -40,13 +43,13 @@ public class DocumentParser {
     }
 
     private AdvancedAction parseGameAction(Element actionElement) {
-        AdvancedAction advancedAction = new AdvancedAction();
-        advancedAction.setTriggers(new ArrayList<>(parseHashSet(actionElement, "triggers", "keyphrase")));
-        advancedAction.setSubjects(new ArrayList<>(parseHashSet(actionElement, "subjects", "entity")));
-        advancedAction.setConsumed(new ArrayList<>(parseOptionalHashSet(actionElement, "consumed")));
-        advancedAction.setProduced(new ArrayList<>(parseOptionalHashSet(actionElement, "produced")));
-        advancedAction.setNarration(parseTextContent(actionElement));
-        return advancedAction;
+        actions = new AdvancedAction(getEngine(), getPlayer(), getBasicCommand());
+        actions.setTriggers(new ArrayList<>(parseHashSet(actionElement, "triggers", "keyphrase")));
+        actions.setSubjects(new ArrayList<>(parseHashSet(actionElement, "subjects", "entity")));
+        actions.setConsumed(new ArrayList<>(parseOptionalHashSet(actionElement, "consumed")));
+        actions.setProduced(new ArrayList<>(parseOptionalHashSet(actionElement, "produced")));
+        actions.setNarration(parseTextContent(actionElement));
+        return actions;
     }
 
     private HashSet<String> parseHashSet(Element parentElement, String tag, String childTag) {
@@ -79,6 +82,10 @@ public class DocumentParser {
         for (String trigger : advancedAction.getTriggers()) {
             gameActions.computeIfAbsent(trigger, k -> new HashSet<>()).add(advancedAction);
         }
+    }
+
+    public AdvancedAction getActionsState() {
+        return actions;
     }
 
     public HashMap<String, HashSet<AdvancedAction>> getGameActions() {

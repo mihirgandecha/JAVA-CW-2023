@@ -5,21 +5,12 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.File;
 import java.util.Random;
 
-import com.alexmerz.graphviz.Parser;
-import com.alexmerz.graphviz.ParseException;
-import com.alexmerz.graphviz.objects.Graph;
-import com.alexmerz.graphviz.objects.Node;
-import com.alexmerz.graphviz.objects.Edge;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-class BasicCmndTest {
+class DecorativeCommand {
 
     private GameServer server;
 
@@ -92,6 +83,7 @@ class BasicCmndTest {
     @Test
     void testCommandWithDecorativeWords() {
         String response = sendCommandToServer("simon: please, could you kindly look around?");
+        System.out.println(response);
         assertTrue(response.toLowerCase().contains("cabin"));
     }
 
@@ -101,16 +93,28 @@ class BasicCmndTest {
         assertTrue(response.toLowerCase().contains("cabin"));
     }
 
-//    @Test
-//    void testIncorrectCommand() {
-//        String response = sendCommandToServer("simon: leap over");
-//        assertTrue(response.toLowerCase().contains("unrecognized"));
-//    }
+    @Test
+    void testIncorrectCommand() {
+        String response = sendCommandToServer("simon: leap over");
+        assertTrue(response.toLowerCase().contains("unknown"));
+    }
 
     @Test
     void testMultipleSpacesAndTabs() {
         String response = sendCommandToServer("simon:\t  look  ");
         assertTrue(response.toLowerCase().contains("cabin"));
+    }
+
+    @Test
+    void doubleLook() {
+        String response = sendCommandToServer("simon:\t  look  look !$ ");
+        assertTrue(response.toLowerCase().contains("cabin"));
+    }
+
+    @Test
+    void doubleInv() {
+        String response = sendCommandToServer("simon:inv ! inv !$ ");
+        assertTrue(response.toLowerCase().contains("empty"));
     }
 
     @Test

@@ -46,34 +46,17 @@ class ExampleSTAGTests {
         return randomiseCaseForName.toString();
     }
 
-//    @Test
-//    void testSetupWithIncorrectFileName() {
-//        assertThrows(GameError.class, () -> {
-//            File entitiesFile = Paths.get("config" + File.separator + "nonExistingFile.dot").toAbsolutePath().toFile();
-//            File actionsFile = Paths.get("config" + File.separator + "nonExistingFile.xml").toAbsolutePath().toFile();
-//            server = new GameServer(entitiesFile, actionsFile);
-//        });
-//        assertDoesNotThrow(() -> {
-//            File entitiesFile = Paths.get("config" + File.separator + "extended-entities.dot").toAbsolutePath().toFile();
-//            File actionsFile = Paths.get("config" + File.separator + "extended-actions.xml").toAbsolutePath().toFile();
-//            server = new GameServer(entitiesFile, actionsFile);
-//        });
-//    }
-//
-//    @Test
-//    void testSetupWithExtendedFiles() {
-//        assertThrows(GameError.class, () -> {
-//            File entitiesFile = Paths.get("config" + File.separator + "extended-entities.xml").toAbsolutePath().toFile();
-//            File actionsFile = Paths.get("config" + File.separator + "extended-actions.dot").toAbsolutePath().toFile();
-//            server = new GameServer(entitiesFile, actionsFile);
-//        });
-//        assertDoesNotThrow(() -> {
-//            File entitiesFile = Paths.get("config" + File.separator + "extended-entities.dot").toAbsolutePath().toFile();
-//            File actionsFile = Paths.get("config" + File.separator + "extended-actions.xml").toAbsolutePath().toFile();
-//            server = new GameServer(entitiesFile, actionsFile);
-//        });
-//    }
+    @Test
+    void testFileHandling() throws GameError {
+        File entitiesFile = Paths.get("config" + File.separator + "extended-entities.dot").toAbsolutePath().toFile();
+        File actionsFile = Paths.get("config" + File.separator + "extended-actions.xml").toAbsolutePath().toFile();
+        server = new GameServer(entitiesFile, actionsFile);
+        String response = sendCommandToServer("simon: look");
+        response = response.toLowerCase();
+        assertTrue(response.contains("coin"), "Did not see the name of the current room in response to look");
+    }
 
+    //Look testing:
     @Test
     void testLook() {
         String response = sendCommandToServer("simon: look");
@@ -86,10 +69,37 @@ class ExampleSTAGTests {
     }
 
     @Test
-    void testLookRandomiseCasing() {
-        String response = sendCommandToServer("SimOn: lOok");
+    void lookRandomiseCasingUsingMethod() {
+        String response = randomiseCasing("simon: look");
+        response = sendCommandToServer(response);
         response = response.toLowerCase();
         assertTrue(response.contains("cabin"), "Did not see the name of the current room in response to look");
+    }
+
+    @Test
+    void lookDecorativeWithRandomisedCasingPassed(){
+        String response = "simon: i want to look wherever i am please";
+        randomiseCasing(response);
+        response = sendCommandToServer(response);
+        assertTrue(response.contains("cabin"), "Failed attempt to use 'look' command");
+        assertTrue(response.contains("axe"), "Failed attempt to use 'look' command");
+        assertTrue(response.contains("potion"), "Failed attempt to use 'look' command");
+        assertTrue(response.contains("trapdoor"), "Failed attempt to use 'look' command");
+    }
+
+    @Test
+    void testWithIncorrectSpellingFails(){
+        String response = "simon: loker looky lookatme ilooknoworky";
+        randomiseCasing(response);
+        response = sendCommandToServer(response);
+        assertTrue(response.toLowerCase().contains("unknown"));
+    }
+
+    @Test
+    void lookAdvancedDecorative(){
+        String response = "simon: look in forest";
+        response = sendCommandToServer(response);
+        assertTrue(response.toLowerCase().contains("you can't specify any entities with this command"));
     }
 
     // Test that we can pick something up and that it appears in our inventory
@@ -116,18 +126,22 @@ class ExampleSTAGTests {
 
     @Test
     void testPlayerDeath() {
-        sendCommandToServer("simon: goto forest");
-        sendCommandToServer("simon: get key");
-        sendCommandToServer("simon: goto cabin");
-        sendCommandToServer("simon: open trapdoor");
-        sendCommandToServer("simon: goto cellar");
+        String response;
+        response = sendCommandToServer("simon: goto forest");
+        response = sendCommandToServer("simon: get key");
+        response = sendCommandToServer("simon: goto cabin");
+        response = sendCommandToServer("simon: open trapdoor");
+        System.out.println(response);
+
+        response = sendCommandToServer("simon: goto cellar");
         sendCommandToServer("simon: fight with elf");
         sendCommandToServer("simon: health");
         sendCommandToServer("simon: fight with elf");
         sendCommandToServer("simon: health");
-        String response = sendCommandToServer("simon: fight with elf");
+        response = sendCommandToServer("simon: fight with elf");
         response = response.toLowerCase();
         assertEquals("you died and lost all of your items, you must return to the start of the game\n", response);
+        sendCommandToServer("simon: look");
         //TODO: Need to fix reset location
     }
 
@@ -247,11 +261,9 @@ class ExampleSTAGTests {
 
     @Test
     void testInvalidCommand() {
-//        String response1 = sendCommandToServer("simon: unlock");
-//        assertTrue(response1.contains("null"));
         String response = sendCommandToServer("simon: quiet");
         response = response.toLowerCase();
-        assertTrue(response.contains("unknown command"));
+        assertTrue(response.contains("unknown action"));
     }
 
     // Add more unit tests or integration tests here.
@@ -318,28 +330,69 @@ class ExampleSTAGTests {
         assertFalse(response.toLowerCase().contains("key"), "Mihir should not have the key picked up by Simon.");
     }
 
-    //Currently: 32 Failures/53 tests -> 21 Tests
-    //TODO: Objective by Monday: 26 Failures -> 8 more tests passed
-    //TODO Weekend: [5-10 passes]: Actions Handling
-    //TODO: 4. Fully pass testing of basic files
-    //Understand logic with actions - ie subject, triggers, etc...
-    //TODO: 1. Draw out on big A3 sheet what is going on when things like "open trapdoor"
-    //TODO: 2. THEN - Understand what I am doing now (especially Game Action)
-    //TODO: 3. Optimise working solution such that every situation of basic files passes
-    //TODO: 5. Fully pass testing of advanced files
-    //TODO: 6. For any file given, integration test build so every situation is tested
-    //TODO: 7. Ask how other files should be handled...
-    //TODO: 8. Make my own entity/action files! (just one more but add more later)
-    //TODO: 9. Get someone else to play
+    @Test
+    void decorativeCommandTestOne() {
+        sendCommandToServer("Simon: please get the potion");
+        String response = sendCommandToServer("Mihir: inventory");
+        assertFalse(response.toLowerCase().contains("key"), "Mihir should not have the key picked up by Simon.");
+    }
 
-    //TODO: Tuesday (need above logic finished - given 26 failures): [32 Pass/21 Failures]/53 Tests -> 60%
-    //TODO: [5 passes]: Multiplayer function - states change -> 70%
-    //TODO: [5 passes]: Health function -> 79%
-    //TODO: [5 passes]: Decorative command handling -> 88%
+    @Test
+    void multiplayerTesting(){
+        String response = "simon: goto forest";
+        response = sendCommandToServer(response);
+        String response2 = sendCommandToServer("mihir: goto forest");
+        assertTrue(response2.toLowerCase().contains("mihir"));
+        String response3 = sendCommandToServer("sion: look");
+        assertTrue(response3.contains("cabin"));
+        assertTrue(response3.contains("axe"));
+        assertTrue(response3.contains("simon"));
+        assertTrue(response3.contains("mihir"));
+        response = sendCommandToServer("simon: look");
+        assertTrue(response.contains("forest"));
+        assertTrue(response.contains("key"));
+        assertTrue(response.contains("tree"));
+        assertTrue(response.contains("mihir"));
+        assertTrue(response.contains("sion"));
+    }
+
+    //Currently: 31 Failures/53 tests -> 22 Tests Passed/53 (Goto fixed bugs)
+    //Objective by Tuesday (need 55-60% to not use extension): 35Passed/53 -> 13 additional tests
+    //TODO: Read through docs carefullY! Pick out any features I've missed! Write down features below.
+    //!TODO 1. Decorative command handling!!! [Guess 5 tests] {get the axe!}
+    //TODO: 2. Write tests for Fully pass testing of basic files + Completing Game
+        //TODO: Ensure Health functionality working by modifying Advanced Actions to use Super instead [Guess 5 tests]
+        //TODO: Ensure Multiplayer functionality working in tests [Guess 5 tests]
+        //TODO: (Q) Ask file handling logic correct
+    //TODO: 2. Write tests for Fully pass testing of extended files + Completing Game
+
+
+    //Advanced:
+    //TODO: For any file given, integration test build so every situation is tested
+    //TODO: Make my own entity/action files! (just one more but add more later)
+    //TODO: Get someone else to play
     //TODO: Code cleanup - find out approx lines of code + try match
     //TODO: Gitignore definitely cleaned
     //TODO: Code Quality - following last feedback
     //TODO: 100% code coverage testing
-    //Then submit
+
+    /*[FEATURES]:
+        T2: Game Engine:
+            Server always running, however: "When a client connects to the server, the server accepts the connection and assigns a unique identifier to the client to distinguish it from other clients."
+            ie for every new player -> assigns a unique identifier to the client? Does this mean new port?
+            [Test Multiplayer] -> is game state (GameEngine) reset with each new command? TODO: testing inventory game state, run in multiple server, ie simon in one, mihir in another, test that the command dependency order is the same
+            [Test Multiplayer] -> is game players reset?
+                [Test server] -> only config is loaded into GameServer EACH TIME server is restarted, thats all! //TODO test this happens!
+                [Test server] -> TODO arg length, null commands, decorative, if command is repeated, if command has username again?
+            [Test client: Username] -> what happens when no username is sent as an arguement, what is an appropriate username that wont cause conflicts (ie maybe no punctuation, what if its a game action?
+            [Test server: Command] -> decorative commands
+            [Test client/server] -> server should remain operational (ie test for handling Game Error), however should GameClient? TODO: surround client in try/catch!
+            [Test client]: -> flood server with high volume of commandss in short period to test high-load situation //TODO is there a delay?
+            [Test client] -> TODO run multiple clients ESSENTIAL!!! threading?
+            [Test server]: TODO disconnect client, is server still running?
+            TODO file handling
+
+    */
+
 
 }

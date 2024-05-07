@@ -1,8 +1,5 @@
 package edu.uob;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * The `Tokeniser` class processes the command from GameServer, extracts the username, and generates tokens
@@ -10,17 +7,19 @@ import java.util.List;
  */
 
 public class Tokeniser {
-    private String serverCommand;
     private String username;
     private String cleanCommand;
-    private String[] splitCommand;
+    private List<String> tokens;
 
     public Tokeniser(String command) throws GameError {
         validateCommand(command);
-        this.serverCommand = command.toLowerCase().trim();
-        this.splitCommand = splitCommandAtColon(serverCommand);
+        command = command.toLowerCase().trim();
+        this.tokens = splitCommandAtColon(command);
         setUsername();
-        setCleanCommand();
+        this.username = validateUsername(this.username);
+        setIndividualTokens();
+        this.tokens = removeDuplicates(this.tokens);
+//        setCleanCommand();
     }
 
     public String getUsername() {
@@ -31,8 +30,8 @@ public class Tokeniser {
         return this.cleanCommand;
     }
 
-    public String getOriginalCommand() {
-        return this.serverCommand;
+    public List<String> getTokens() {
+        return this.tokens;
     }
 
     // Ensure the command is not null or empty
@@ -43,8 +42,8 @@ public class Tokeniser {
     }
 
     private void setUsername() throws GameError {
-        if (this.splitCommand.length == 2) {
-            this.username = this.splitCommand[0].trim();
+        if (this.tokens.size() == 2) {
+            this.username = this.tokens.get(0).trim();
             if (this.username.isEmpty()) {
                 throw new GameError("Username is invalid");
             }
@@ -53,30 +52,79 @@ public class Tokeniser {
         }
     }
 
+
+    private String validateUsername(String username) {
+        return username.replaceAll("[^a-zA-Z '\\-]", "");
+    }
+
     // Set the clean command without the username and punctuation
     private void setCleanCommand() throws GameError {
-        if (this.splitCommand.length == 2) {
-            this.cleanCommand = removePunctuation(this.splitCommand[1].trim());
+        if (this.tokens.size() == 2) {
+            this.cleanCommand = removePunctuation(this.tokens.get(1).trim());
         } else {
             throw new GameError("Invalid command format");
         }
     }
 
     // Split the clean command into individual tokens
-    public List<String> getIndividualTokens() {
-        if (cleanCommand == null) {
-            return Collections.emptyList();
+//    public ArrayList<String> getIndividualTokens(String command) {
+//        StringTokenizer tokenizer = new StringTokenizer(command);
+//        ArrayList<String> tokens = new ArrayList<>();
+//        while (tokenizer.hasMoreTokens()) {
+//            tokens.add(tokenizer.nextToken() + " ");
+//        }
+//        return tokens;
+//    }
+
+    private void setIndividualTokens() throws GameError {
+        if (this.tokens.size() == 2) {
+            this.cleanCommand = removePunctuation(this.tokens.get(1).trim());
+            this.tokens = getIndividualTokens(this.cleanCommand);
+        } else {
+            throw new GameError("Invalid command format");
         }
-        return new ArrayList<>(Arrays.asList(cleanCommand.split("\\s+")));
+    }
+
+    // Split the clean command into individual tokens
+    public ArrayList<String> getIndividualTokens(String command) {
+        StringTokenizer tokenizer = new StringTokenizer(command);
+        ArrayList<String> tokens = new ArrayList<>();
+        while (tokenizer.hasMoreTokens()) {
+            String token = tokenizer.nextToken();
+            String cleanedToken = removePunctuation(token);
+            //Removing repeated words
+            if (!cleanedToken.isEmpty() && !tokens.contains(cleanedToken)) {
+                tokens.add(cleanedToken + " ");
+            }
+        }
+        return tokens;
+    }
+
+    public ArrayList<String> removeDuplicates(List<String> list) {
+        Set<String> set = new LinkedHashSet<>(list);
+        return new ArrayList<>(set);
     }
 
     // Split the command at the first colon, returning at most two parts
-    private String[] splitCommandAtColon(String command) {
-        return command.split(":", 2);
+//    private List<String> splitCommandAtColon(String command) {
+//        return new ArrayList<>(Arrays.asList(command.split(":", 2)));
+//    }
+
+    // Split the command at the first colon, returning at most two parts
+    private List<String> splitCommandAtColon(String command) throws GameError {
+        List<String> parts = new ArrayList<>(Arrays.asList(command.split(":", 2)));
+        if (parts.size() != 2) {
+            throw new GameError("Invalid command format: expected a colon separating username and command");
+        }
+        return parts;
     }
+
+//    private void splitCommandAtColon() {
+//        return Arrays.asList(this.tokens.spliterator(":", 2)));
+//    }
 
     // Remove punctuation and convert text to lowercase
     private String removePunctuation(String text) {
-        return text.replaceAll("[-,.:!?()]", "").toLowerCase();
+        return text.replaceAll("[^a-z]", " ");
     }
 }
