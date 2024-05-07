@@ -46,34 +46,6 @@ class ExampleSTAGTests {
         return randomiseCaseForName.toString();
     }
 
-//    @Test
-//    void testSetupWithIncorrectFileName() {
-//        assertThrows(GameError.class, () -> {
-//            File entitiesFile = Paths.get("config" + File.separator + "nonExistingFile.dot").toAbsolutePath().toFile();
-//            File actionsFile = Paths.get("config" + File.separator + "nonExistingFile.xml").toAbsolutePath().toFile();
-//            server = new GameServer(entitiesFile, actionsFile);
-//        });
-//        assertDoesNotThrow(() -> {
-//            File entitiesFile = Paths.get("config" + File.separator + "extended-entities.dot").toAbsolutePath().toFile();
-//            File actionsFile = Paths.get("config" + File.separator + "extended-actions.xml").toAbsolutePath().toFile();
-//            server = new GameServer(entitiesFile, actionsFile);
-//        });
-//    }
-//
-//    @Test
-//    void testSetupWithExtendedFiles() {
-//        assertThrows(GameError.class, () -> {
-//            File entitiesFile = Paths.get("config" + File.separator + "extended-entities.xml").toAbsolutePath().toFile();
-//            File actionsFile = Paths.get("config" + File.separator + "extended-actions.dot").toAbsolutePath().toFile();
-//            server = new GameServer(entitiesFile, actionsFile);
-//        });
-//        assertDoesNotThrow(() -> {
-//            File entitiesFile = Paths.get("config" + File.separator + "extended-entities.dot").toAbsolutePath().toFile();
-//            File actionsFile = Paths.get("config" + File.separator + "extended-actions.xml").toAbsolutePath().toFile();
-//            server = new GameServer(entitiesFile, actionsFile);
-//        });
-//    }
-
     @Test
     void testFileHandling() throws GameError {
         File entitiesFile = Paths.get("config" + File.separator + "extended-entities.dot").toAbsolutePath().toFile();
@@ -84,6 +56,7 @@ class ExampleSTAGTests {
         assertTrue(response.contains("coin"), "Did not see the name of the current room in response to look");
     }
 
+    //Look testing:
     @Test
     void testLook() {
         String response = sendCommandToServer("simon: look");
@@ -96,10 +69,37 @@ class ExampleSTAGTests {
     }
 
     @Test
-    void testLookRandomiseCasing() {
-        String response = sendCommandToServer("SimOn: lOok");
+    void lookRandomiseCasingUsingMethod() {
+        String response = randomiseCasing("simon: look");
+        response = sendCommandToServer(response);
         response = response.toLowerCase();
         assertTrue(response.contains("cabin"), "Did not see the name of the current room in response to look");
+    }
+
+    @Test
+    void lookDecorativeWithRandomisedCasingPassed(){
+        String response = "simon: i want to look wherever i am please";
+        randomiseCasing(response);
+        response = sendCommandToServer(response);
+        assertTrue(response.contains("cabin"), "Failed attempt to use 'look' command");
+        assertTrue(response.contains("axe"), "Failed attempt to use 'look' command");
+        assertTrue(response.contains("potion"), "Failed attempt to use 'look' command");
+        assertTrue(response.contains("trapdoor"), "Failed attempt to use 'look' command");
+    }
+
+    @Test
+    void testWithIncorrectSpellingFails(){
+        String response = "simon: loker looky lookatme ilooknoworky";
+        randomiseCasing(response);
+        response = sendCommandToServer(response);
+        assertTrue(response.toLowerCase().contains("unknown"));
+    }
+
+    @Test
+    void lookAdvancedDecorative(){
+        String response = "simon: look in forest";
+        response = sendCommandToServer(response);
+        assertTrue(response.toLowerCase().contains("you can't specify any entities with this command"));
     }
 
     // Test that we can pick something up and that it appears in our inventory
