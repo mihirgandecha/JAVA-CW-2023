@@ -97,11 +97,11 @@ public class GameEngine {
         if(possibleAction.isEmpty()) throw new GameError("Unknown action");
         if (!checkAdvanced) {
             String action = possibleAction.get(0);
-            if ((action.contains("look") || action.contains("inv")) && possibleEntities.size() >=1) {
+            if ((action.contains("look") || action.contains("inv") || action.contains("health")) && possibleEntities.size() >=1) {
                 throw new GameError("You can't specify any entities with this command.");
             }
             if (possibleEntities.size() == 0) {
-                if (!(action.contains("look") || action.contains("inv"))) {
+                if (!(action.contains("look") || action.contains("inv") || action.contains("health"))) {
                     throw new GameError("You need to specify at least one entity");
                 }
             } else if (possibleEntities.size() > 1) {
