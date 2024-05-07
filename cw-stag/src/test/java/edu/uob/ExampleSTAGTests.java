@@ -102,7 +102,7 @@ class ExampleSTAGTests {
         assertTrue(response.toLowerCase().contains("you can't specify any entities with this command"));
     }
 
-    // Test that we can pick something up and that it appears in our inventory
+    //Get Test:
     @Test
     void testGet() {
         String response;
@@ -113,6 +113,66 @@ class ExampleSTAGTests {
         response = sendCommandToServer("simon: look");
         response = response.toLowerCase();
         assertFalse(response.contains("potion"), "Potion is still present in the room after an attempt was made to get it");
+    }
+
+    @Test
+    void emptyGetFails() {
+        String response = "simon: get ";
+        randomiseCasing(response);
+        response = sendCommandToServer(response);
+        response = response.toLowerCase();
+        assertTrue(response.contains("error"));
+    }
+
+    @Test
+    void getWithWrongEntityFails() {
+        String response = "simon: water ";
+        randomiseCasing(response);
+        response = sendCommandToServer(response);
+        response = response.toLowerCase();
+        assertTrue(response.contains("error"));
+    }
+
+    @Test
+    void getFailsFromDifferentLocation(){
+        String response = "simon: get key";
+        randomiseCasing(response);
+        response = sendCommandToServer(response);
+        response = response.toLowerCase();
+        assertTrue(response.contains("error"));
+    }
+
+    @Test
+    void getFailsWithMultiplayer(){
+        String response = "simon: get axe";
+        randomiseCasing(response);
+        response = sendCommandToServer(response);
+        response = sendCommandToServer("simon: inv");
+        assertTrue(response.contains("axe"));
+        response = "mihir: get axe";
+        randomiseCasing(response);
+        response = sendCommandToServer(response);
+        response = response.toLowerCase();
+        assertTrue(response.contains("error"));
+        response = sendCommandToServer("mihir: inv");
+        assertTrue(response.contains("empty"));
+        response = sendCommandToServer("simon: inv");
+        assertTrue(response.contains("axe"));
+    }
+
+    @Test
+    void gotoWithMultipleEntitiesShouldFail(){
+        String response = "simon: get axe and potion";
+        randomiseCasing(response);
+        response = sendCommandToServer(response);
+        assertTrue(response.toLowerCase().contains("error"));
+        response = "get axe, potion";
+        randomiseCasing(response);
+        response = sendCommandToServer(response);
+        assertTrue(response.toLowerCase().contains("error"));
+        response = randomiseCasing("simon: get and swing my big axe axe from cabin");
+        response = sendCommandToServer(response);
+        assertTrue(response.toLowerCase().contains("error"));
     }
 
     // Test that we can goto a different location (we won't get very far if we can't move around the game !)
