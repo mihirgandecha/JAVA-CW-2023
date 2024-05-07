@@ -18,6 +18,7 @@ public class Tokeniser {
         setUsername();
         this.username = validateUsername(this.username);
         setIndividualTokens();
+        this.tokens = removeDuplicates(this.tokens);
 //        setCleanCommand();
     }
 
@@ -92,11 +93,16 @@ public class Tokeniser {
             String token = tokenizer.nextToken();
             String cleanedToken = removePunctuation(token);
             //Removing repeated words
-            if (!cleanedToken.isEmpty()) {
+            if (!cleanedToken.isEmpty() && !tokens.contains(cleanedToken)) {
                 tokens.add(cleanedToken + " ");
             }
         }
         return tokens;
+    }
+
+    public ArrayList<String> removeDuplicates(List<String> list) {
+        Set<String> set = new LinkedHashSet<>(list);
+        return new ArrayList<>(set);
     }
 
     // Split the command at the first colon, returning at most two parts

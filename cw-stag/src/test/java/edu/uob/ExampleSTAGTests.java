@@ -75,6 +75,16 @@ class ExampleSTAGTests {
 //    }
 
     @Test
+    void testFileHandling() throws GameError {
+        File entitiesFile = Paths.get("config" + File.separator + "extended-entities.dot").toAbsolutePath().toFile();
+        File actionsFile = Paths.get("config" + File.separator + "extended-actions.xml").toAbsolutePath().toFile();
+        server = new GameServer(entitiesFile, actionsFile);
+        String response = sendCommandToServer("simon: look");
+        response = response.toLowerCase();
+        assertTrue(response.contains("coin"), "Did not see the name of the current room in response to look");
+    }
+
+    @Test
     void testLook() {
         String response = sendCommandToServer("simon: look");
         response = response.toLowerCase();

@@ -22,26 +22,11 @@ public final class GameServer {
   private final String actionsFileString;
 
   public static void main(String[] args) throws Exception {
-    File defaultEntitiesFile = Paths.get("config" + File.separator + "basic-entities.dot").toAbsolutePath().toFile();
-    File defaultActionsFile = Paths.get("config" + File.separator + "basic-actions.xml").toAbsolutePath().toFile();
-    File entitiesFile = defaultEntitiesFile;
-    File actionsFile = defaultActionsFile;
-    if (args.length == 2) {
-      File customEntitiesFile = Paths.get("config" + File.separator + args[0]).toAbsolutePath().toFile();
-      File customActionsFile = Paths.get("config" + File.separator + args[1]).toAbsolutePath().toFile();
-      if (customEntitiesFile.exists() && customEntitiesFile.getName().endsWith(".dot") &&
-              customActionsFile.exists() && customActionsFile.getName().endsWith(".xml")) {
-        entitiesFile = customEntitiesFile;
-        actionsFile = customActionsFile;
-        System.out.println("Using custom files.");
-      } else {
-        System.out.println("Invalid or non-existent custom files, using default files.");
-      }
-    }
+    File entitiesFile = Paths.get("config" + File.separator + "basic-entities.dot").toAbsolutePath().toFile();
+    File actionsFile = Paths.get("config" + File.separator + "basic-actions.xml").toAbsolutePath().toFile();
     GameServer server = new GameServer(entitiesFile, actionsFile);
     server.blockingListenOn(8888);
   }
-
 
   /**
    * Do not change the following method signature or we won't be able to mark your
@@ -56,18 +41,16 @@ public final class GameServer {
    */
 
   // Validate file types and existence
-  public GameServer(File entitiesFile, File actionsFile) throws GameError {
-    this.entitiesFileString = entitiesFile.toString();
-    this.actionsFileString = actionsFile.toString();
+  public GameServer(File entitiesFile, File actionsFile) throws GameError{
+      if (entitiesFile.exists() && entitiesFile.getName().endsWith(".dot") &&
+              actionsFile.exists() && actionsFile.getName().endsWith(".xml"))
+      {
+        this.entitiesFileString = entitiesFile.toString();
+        this.actionsFileString = actionsFile.toString();
+      }else{
+        throw new GameError("File does not exist!");
+      }
   }
-
-  // Message to inform the player about the game configuration
-//  private void announceGameFiles(String entitiesFile, File actionsFile) throws GameError {
-//    System.out.println("🎮 Game Input Loaded 🎮");
-//    System.out.println(">> Venturing into new territories with: " + entitiesFile.toString());
-//    System.out.println(">> Mastering dynamic challenges with: " + actionsFile.toString());
-//    System.out.println("Ready your gear and prepare for an adventure like no other!");
-//  }
 
   /**
    * Do not change the following method signature or we won't be able to mark your
@@ -83,7 +66,6 @@ public final class GameServer {
       initializeGamePlayers();
       Tokeniser tokeniser = new Tokeniser(command);
       String username = tokeniser.getUsername();
-      String cleanCommand = tokeniser.getCleanCommand();
       List<String> tokens = tokeniser.getTokens();
       //Check if player already exists:
       Player player = addOrRetrievePlayer(username);
