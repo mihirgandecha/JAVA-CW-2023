@@ -2,11 +2,7 @@ package edu.uob;
 
 import edu.uob.Command.*;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class GameEngine {
     private final Player player;
@@ -17,12 +13,21 @@ public class GameEngine {
     private HashMap<String, HashSet<AdvancedAction>> actions;
     private String firstLocation;
     private Set<String> advancedActionsNames;
+    private Set<String> basicActionsNames;
+    private ArrayList<String> entities;
 
     public GameEngine(String entitiesFile, String actionsFile, Player player) throws Exception {
         this.player = player;
         this.entitiesFile = entitiesFile;
         this.actionsFile = actionsFile;
         this.map = processEntitiesFile();
+        for(Location location : map.values()) {
+            location.setAllEntities();
+            this.entities.add(location.getName());
+            for(GameEntity gameEntity: location.entityList){
+                this.entities.add(gameEntity.getName());
+            }
+        }
         this.actions = processActionsFile();
         setAdvancedActions();
    }
@@ -31,6 +36,8 @@ public class GameEngine {
     private void setAdvancedActions() {
         this.advancedActionsNames = new HashSet<>();
         this.advancedActionsNames.addAll(actions.keySet());
+        this.basicActionsNames = new HashSet<>();
+        this.basicActionsNames.addAll(Arrays.asList("get", "look", "inv", "goto", "drop", "health"));
     }
 
     private Map<String, Location> processEntitiesFile() throws Exception {

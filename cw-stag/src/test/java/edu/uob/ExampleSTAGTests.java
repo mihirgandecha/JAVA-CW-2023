@@ -319,6 +319,12 @@ class ExampleSTAGTests {
         assertFalse(response.toLowerCase().contains("key"), "Mihir should not have the key picked up by Simon.");
     }
 
+    @Test
+    void decorativeCommandTestOne() {
+        sendCommandToServer("Simon: please get the potion");
+        String response = sendCommandToServer("Mihir: inventory");
+        assertFalse(response.toLowerCase().contains("key"), "Mihir should not have the key picked up by Simon.");
+    }
     //Currently: 31 Failures/53 tests -> 22 Tests Passed/53 (Goto fixed bugs)
     //Objective by Tuesday (need 55-60% to not use extension): 35Passed/53 -> 13 additional tests
     //TODO: Read through docs carefullY! Pick out any features I've missed! Write down features below.
