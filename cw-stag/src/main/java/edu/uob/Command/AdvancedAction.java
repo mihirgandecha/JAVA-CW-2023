@@ -158,7 +158,8 @@ public class AdvancedAction extends GameCommand
     private void resetPlayer(){
         HashMap<String, Artefact> inventory = player.getInventory();
         if(inventory.size() > 0){
-            this.map.get(this.currentLocation).entityList.addAll(inventory.values());
+            engine.getMap().get(player.currentLocation).entityList.addAll(inventory.values());
+            engine.getMap().get(player.currentLocation).artefacts.addAll(inventory.values());
         }
         this.player = new Player(this.player.getPlayerName());
         this.player.setLocation("cabin");
