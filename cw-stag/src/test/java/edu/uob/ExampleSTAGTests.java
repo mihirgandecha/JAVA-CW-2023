@@ -116,16 +116,19 @@ class ExampleSTAGTests {
 
     @Test
     void testPlayerDeath() {
-        sendCommandToServer("simon: goto forest");
-        sendCommandToServer("simon: get key");
-        sendCommandToServer("simon: goto cabin");
-        sendCommandToServer("simon: open trapdoor");
-        sendCommandToServer("simon: goto cellar");
+        String response;
+        response = sendCommandToServer("simon: goto forest");
+        response = sendCommandToServer("simon: get key");
+        response = sendCommandToServer("simon: goto cabin");
+        response = sendCommandToServer("simon: open trapdoor");
+        System.out.println(response);
+
+        response = sendCommandToServer("simon: goto cellar");
         sendCommandToServer("simon: fight with elf");
         sendCommandToServer("simon: health");
         sendCommandToServer("simon: fight with elf");
         sendCommandToServer("simon: health");
-        String response = sendCommandToServer("simon: fight with elf");
+        response = sendCommandToServer("simon: fight with elf");
         response = response.toLowerCase();
         assertEquals("you died and lost all of your items, you must return to the start of the game\n", response);
         sendCommandToServer("simon: look");
@@ -248,11 +251,9 @@ class ExampleSTAGTests {
 
     @Test
     void testInvalidCommand() {
-//        String response1 = sendCommandToServer("simon: unlock");
-//        assertTrue(response1.contains("null"));
         String response = sendCommandToServer("simon: quiet");
         response = response.toLowerCase();
-        assertTrue(response.contains("unknown command"));
+        assertTrue(response.contains("unknown action"));
     }
 
     // Add more unit tests or integration tests here.

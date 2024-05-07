@@ -92,6 +92,7 @@ class BasicCmndTest {
     @Test
     void testCommandWithDecorativeWords() {
         String response = sendCommandToServer("simon: please, could you kindly look around?");
+        System.out.println(response);
         assertTrue(response.toLowerCase().contains("cabin"));
     }
 

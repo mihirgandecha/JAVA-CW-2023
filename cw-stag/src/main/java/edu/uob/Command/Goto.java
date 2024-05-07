@@ -17,15 +17,15 @@ public class Goto extends GameCommand {
         super(gameEngine, player, basicCommand);
         this.builder = new StringBuilder();
         this.currentLocation = player.getCurrentLocation();
-        parseCommand(basicCommand);
+        this.goLocation = getCommand().get(1);
+//        parseCommand(basicCommand);
         executeMove();
     }
 
-    private void parseCommand(String command) {
-        if (command.startsWith("goto ")) {
-            this.goLocation = command.substring(5).trim();
-        }
-    }
+//    private void parseCommand(String command) {
+//        if (command.startsWith("goto ")) {
+//        }
+//    }
 
     private void executeMove() throws GameError {
         Location currentLoc = getEngine().getMap().get(currentLocation);

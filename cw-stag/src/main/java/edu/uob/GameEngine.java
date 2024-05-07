@@ -40,7 +40,7 @@ public class GameEngine {
         this.advancedActionsNames = new HashSet<>();
         this.advancedActionsNames.addAll(actions.keySet());
         this.basicActionsNames = new HashSet<>();
-        this.basicActionsNames.addAll(Arrays.asList("get", "look", "inv", "goto", "drop", "health"));
+        this.basicActionsNames.addAll(Arrays.asList("get", "look", "inv", "inventory", "goto", "drop", "health"));
     }
 
     private Map<String, Location> processEntitiesFile() throws Exception {
@@ -82,6 +82,7 @@ public class GameEngine {
                 checkAdvanced = true;
             }
         }
+        if(possibleAction.isEmpty()) throw new GameError("Unknown action");
         if (!checkAdvanced) {
             if (possibleEntities.size() == 0) {
                 String action = possibleAction.get(0);
@@ -94,7 +95,11 @@ public class GameEngine {
         }
         if(checkAdvanced) {
             HashSet<String> narrations = new HashSet<>();
-            HashSet<AdvancedAction> actionsList = actions.get(possibleAction);
+            HashSet<AdvancedAction> actionsList = new HashSet<>();
+            int size = possibleEntities.size();
+            for(int i = 0; i < size; i++) {
+                actionsList.addAll(this.actions.get(possibleAction.get(i)));
+            }
             for(AdvancedAction action : actionsList) {
                 narrations.add(action.getNarration());
                 if(narrations.size() > 1) throw new GameError("Too many Game Actions!");
@@ -111,8 +116,8 @@ public class GameEngine {
     }
 
     private String executeCommand(List<String> commandList) throws Exception {
-//        String[] words = command.split("\\s+");
-//        String actionWord = words[0];
+        String[] words = commandList.toArray(new String[commandList.size()]);
+        String actionWord = words[0].trim();
         String command = commandList.toString();
         if (command.contains("look")) {
             Look look = new Look(this, player, command);
@@ -132,7 +137,7 @@ public class GameEngine {
         } else if(command.contains("health")){
             String health = String.valueOf(player.getHealth());
             return "Player health " + health;
-        } else if (this.advancedActionsNames.contains(command)){
+        } else if (this.advancedActionsNames.contains(actionWord)){
             return handleGameAction(commandList);
         } else{
             throw new GameError("Unknown command: " + command);

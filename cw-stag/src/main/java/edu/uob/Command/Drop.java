@@ -3,6 +3,7 @@ package edu.uob.Command;
 import edu.uob.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class Drop extends GameCommand {
     private Location currentLocation;
@@ -16,14 +17,21 @@ public class Drop extends GameCommand {
     }
 
     private void parseArtefactName() throws GameError {
-        if (basicCommand.startsWith("drop ")) {
-            String[] commandParts = basicCommand.split(" ");
-            if(commandParts.length > 1) {
-                this.requestedArtefact = commandParts[1];
-            } else {
-                throw new GameError("Unknown drop command!");
+        List<String> command = getCommand();
+        for (String part : command) {
+            if(getEntityList().contains(part)) {
+                this.requestedArtefact = part;
+                break;
             }
         }
+//        if (basicCommand.startsWith("drop ")) {
+//            String[] commandParts = basicCommand.split(" ");
+//            if(commandParts.length > 1) {
+//                this.requestedArtefact = commandParts[1];
+//            } else {
+//                throw new GameError("Unknown drop command!");
+//            }
+//        }
     }
 
     private void executeDrop() throws GameError {

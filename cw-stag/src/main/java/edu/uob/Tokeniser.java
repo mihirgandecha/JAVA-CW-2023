@@ -119,6 +119,6 @@ public class Tokeniser {
 
     // Remove punctuation and convert text to lowercase
     private String removePunctuation(String text) {
-        return text.replaceAll("[-,.:!?()]", " ").toLowerCase();
+        return text.replaceAll("[^a-z]", " ");
     }
 }
