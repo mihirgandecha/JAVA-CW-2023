@@ -62,7 +62,7 @@ public final class GameServer {
    * @param command The incoming command to be processed
    */
   public String handleCommand(String command) {
-    try{
+    try {
       initializeGamePlayers();
       Tokeniser tokeniser = new Tokeniser(command);
       String username = tokeniser.getUsername();
@@ -70,14 +70,32 @@ public final class GameServer {
       //Check if player already exists:
       Player player = addOrRetrievePlayer(username);
       //Process Command:
-      if(GameEngine == null){
-        GameEngine = new GameEngine(this.entitiesFileString, this.actionsFileString, player);
-        GameEngine.setFirstLocation();
+      if (GameEngine == null) {
+        GameEngine = new GameEngine(this.entitiesFileString, this.actionsFileString, GamePlayers);
+//        GameEngine.setFirstLocation();
       }
-      return GameEngine.execute(tokens);
-    } catch (Exception e){
+      GameEngine.updatePlayer(GamePlayers);
+      if (GamePlayers.size() > 1) {
+        for (String token : tokens) {
+          if (token.contains("look") || token.contains("goto")) {
+            return GameEngine.execute(tokens, username) + "\n" + getPlayersNameToString(username);
+          }
+        }
+      }
+      return GameEngine.execute(tokens, username);
+    } catch (Exception e) {
       return e.getMessage();
     }
+  }
+
+  private String getPlayersNameToString(String username){
+    StringBuilder sb = new StringBuilder();
+    for(Player player : GamePlayers.values()){
+      if(!player.equals(username)){
+        sb.append(player.getPlayerName() + "\n");
+      }
+    }
+    return sb.toString();
   }
 
   private void initializeGamePlayers() {
@@ -95,6 +113,10 @@ public final class GameServer {
       GamePlayers.put(username, player);
     }
     return player;
+  }
+
+  public edu.uob.GameEngine getGameEngine() {
+    return GameEngine;
   }
 
   /**

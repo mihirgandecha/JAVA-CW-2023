@@ -5,7 +5,8 @@ import edu.uob.Command.*;
 import java.util.*;
 
 public class GameEngine {
-    private final Player player;
+    private Map<String, Player> GamePlayers;
+    private Player player;
     private String entitiesFile;
     private String actionsFile;
     private Map<String, Location> map;
@@ -17,8 +18,9 @@ public class GameEngine {
     private ArrayList<String> entities;
     public List<String> command;
 
-    public GameEngine(String entitiesFile, String actionsFile, Player player) throws Exception {
-        this.player = player;
+    public GameEngine(String entitiesFile, String actionsFile, Map<String, Player> GamePlayers) throws Exception {
+        this.GamePlayers = GamePlayers;
+//        this.player = player;
         this.entitiesFile = entitiesFile;
         this.actionsFile = actionsFile;
         this.map = processEntitiesFile();
@@ -56,13 +58,23 @@ public class GameEngine {
         return p.getGameActions();
     }
 
-    public String execute(List<String> cleanCommand) throws Exception {
+    public String execute(List<String> cleanCommand, String playerName) throws Exception {
+        setGamePlayers(playerName);
         checkCommand(cleanCommand);
         return executeCommand(this.command).toString();
     }
 
     public ArrayList<String> getEntities(){
         return this.entities;
+    }
+
+    public HashMap<String, HashSet<AdvancedAction>> getActions() {
+        return actions;
+    }
+
+    private void setGamePlayers(String playerName) {
+        this.player = GamePlayers.get(playerName);
+        setFirstLocation();
     }
 
     private void checkCommand(List<String> cleanCommand) throws GameError {
@@ -160,7 +172,9 @@ public class GameEngine {
     }
 
     public void setFirstLocation() {
-        player.setLocation(this.firstLocation);
+        if(this.player.getCurrentLocation() == null){
+            this.player.setLocation(this.firstLocation);
+        }
     }
 
     public Artefact pickupArtefact(String locationId, String artefactName) throws GameError{
@@ -186,5 +200,13 @@ public class GameEngine {
 
     public Map<String, Location> getMap() {
         return map;
+    }
+
+    public void setNewPlayer(Player player) {
+        this.GamePlayers.put(player.getPlayerName(), player);
+    }
+
+    public void updatePlayer(Map<String, Player> gamePlayers) {
+        this.GamePlayers = gamePlayers;
     }
 }
