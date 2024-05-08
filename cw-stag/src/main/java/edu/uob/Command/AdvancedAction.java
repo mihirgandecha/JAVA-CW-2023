@@ -142,7 +142,9 @@ public class AdvancedAction extends GameCommand
                 }
                 player.getInventory().remove(item);
             }
-            addEntityToStore(entityToMove);
+            if(entityToMove != null){
+                addEntityToStore(entityToMove);
+            }
 //            else if (getEngineMap().get(player.currentLocation) != null) {
 //                getEngineMap().get(player.currentLocation).removeEntity(item);
 //            }
