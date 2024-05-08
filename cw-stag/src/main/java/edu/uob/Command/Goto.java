@@ -1,9 +1,6 @@
 package edu.uob.Command;
 
-import edu.uob.GameEngine;
-import edu.uob.Location;
-import edu.uob.Player;
-import edu.uob.GameError;
+import edu.uob.*;
 
 import java.util.ArrayList;
 
@@ -17,15 +14,10 @@ public class Goto extends GameCommand {
         super(gameEngine, player, basicCommand);
         this.builder = new StringBuilder();
         this.currentLocation = player.getCurrentLocation();
+        //TODO Compilation Error! possible this escape before subclass is fully initialised
         this.goLocation = getCommand().get(1);
-//        parseCommand(basicCommand);
         executeMove();
     }
-
-//    private void parseCommand(String command) {
-//        if (command.startsWith("goto ")) {
-//        }
-//    }
 
     private void executeMove() throws GameError {
         Location currentLoc = getEngine().getMap().get(currentLocation);
@@ -43,7 +35,7 @@ public class Goto extends GameCommand {
         }
     }
 
-    private void setLocationToString() throws GameError {
+    private void setLocationToString() {
         String description = this.location.getDescription();
         this.builder.append("You are in " + description + ". You can see: " + "\n");
     }

@@ -1,8 +1,6 @@
 package edu.uob.Command;
 
-import edu.uob.Artefact;
-import edu.uob.GameEngine;
-import edu.uob.Player;
+import edu.uob.*;
 
 import java.util.HashMap;
 

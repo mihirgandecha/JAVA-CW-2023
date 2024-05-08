@@ -79,33 +79,12 @@ public class AdvancedAction extends GameCommand
         this.playerEntities = player.getInventory();
         currentLocation.setAllEntities();
         doesSubjectsExist();
+        //TODO - cannot activate action twice! blow horn two times duplicates!!
         this.storeroom = map.get("storeroom");
         this.storeroom.setAllEntities();
         this.map = map;
-//        doesProducedExist();
-//        doesConsumedExist(map);
         return true;
     }
-
-//    private void doesProducedExist() throws GameError {
-//        List<String> producables = getProduced();
-//        for(String produce: producables){
-//            if(!checkLocationForEntity(produce)){
-//                throw new GameError("Produced cannot be in another players inventory!");
-//            }
-//        }
-//    }
-//
-//    private void doesConsumedExist(Map<String, Location> map) throws GameError {
-//        List<String> consumables = getConsumed();
-//        for(Location location: map.values()){
-//            for (GameEntity locationEntity : locationEntities) {
-//                if(!checkLocationForEntity(locationEntity.getName())){
-//                    throw new GameError("Produced cannot be in another players inventory!");
-//                }
-//            }
-//        }
-//    }
 
     private void doesSubjectsExist() throws GameError {
         for(String subject : subjects){
@@ -131,6 +110,7 @@ public class AdvancedAction extends GameCommand
     public String execute() throws GameError {
         consumeEntities();
         if(this.resetActivated){
+            this.resetActivated = false;
             return "you died and lost all of your items, you must return to the start of the game\n";
         }
         produceEntities();
@@ -149,20 +129,23 @@ public class AdvancedAction extends GameCommand
             }
             if (player.getInventory().containsKey(item)) {
                 player.getInventory().remove(item);
-            } else if (currentLocation != null) {
-                currentLocation.removeEntity(item);
+            } else if (getEngineMap().get(player.currentLocation) != null) {
+                getEngineMap().get(player.currentLocation).removeEntity(item);
             }
         }
     }
 
     private void resetPlayer(){
-        HashMap<String, Artefact> inventory = player.getInventory();
-        if(inventory.size() > 0){
-            engine.getMap().get(player.currentLocation).entityList.addAll(inventory.values());
-            engine.getMap().get(player.currentLocation).artefacts.addAll(inventory.values());
+//        HashMap<String, Artefact> inventory = player.getInventory();
+        if(!player.getInventory().isEmpty()){
+            getEngineMap().get(player.currentLocation).artefacts.addAll(player.getInventory().values());
+            engine.getMap().get(player.currentLocation).setAllEntities();
+            HashMap<String, Artefact> inventory = player.getInventory();
+            inventory.clear();
+            player.setInventory(inventory);
         }
-        this.player = new Player(this.player.getPlayerName());
-        this.player.setLocation("cabin");
+        Player resetPlayer = new Player(player.getPlayerName());
+        setResetPlayer(resetPlayer);
     }
 
     public void setFirstLocation(String location){
@@ -179,7 +162,7 @@ public class AdvancedAction extends GameCommand
             GameEntity storedEntity = this.storeroom.setEntityForProduce(item);
             if (storedEntity != null) {
                 addEntityToLocation(storedEntity);
-            } else if (map.containsKey(item)) {
+            } else if (engine.getMap().containsKey(item)) {
                 currentLocation.pathTo.add(item);
             } else {
                 throw new GameError("Produced entity does not exist in Location or Player Inventory!\n");

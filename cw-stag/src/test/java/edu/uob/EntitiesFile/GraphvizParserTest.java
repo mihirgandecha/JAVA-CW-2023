@@ -1,12 +1,11 @@
-package edu.uob;
+package edu.uob.EntitiesFile;
 
-import com.alexmerz.graphviz.ParseException;
 import com.alexmerz.graphviz.objects.Graph;
+import edu.uob.GraphvizParser;
+import edu.uob.Location;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;

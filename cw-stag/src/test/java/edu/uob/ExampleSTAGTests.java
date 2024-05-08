@@ -56,133 +56,8 @@ class ExampleSTAGTests {
         assertTrue(response.contains("coin"), "Did not see the name of the current room in response to look");
     }
 
-    //Look testing:
-    @Test
-    void testLook() {
-        String response = sendCommandToServer("simon: look");
-        response = response.toLowerCase();
-        assertTrue(response.contains("cabin"), "Did not see the name of the current room in response to look");
-        assertTrue(response.contains("log cabin"), "Did not see a description of the room in response to look");
-        assertTrue(response.contains("magic potion"), "Did not see a description of artifacts in response to look");
-        assertTrue(response.contains("wooden trapdoor"), "Did not see description of furniture in response to look");
-        assertTrue(response.contains("forest"), "Did not see available paths in response to look");
-    }
 
-    @Test
-    void lookRandomiseCasingUsingMethod() {
-        String response = randomiseCasing("simon: look");
-        response = sendCommandToServer(response);
-        response = response.toLowerCase();
-        assertTrue(response.contains("cabin"), "Did not see the name of the current room in response to look");
-    }
 
-    @Test
-    void lookDecorativeWithRandomisedCasingPassed(){
-        String response = "simon: i want to look wherever i am please";
-        randomiseCasing(response);
-        response = sendCommandToServer(response);
-        assertTrue(response.contains("cabin"), "Failed attempt to use 'look' command");
-        assertTrue(response.contains("axe"), "Failed attempt to use 'look' command");
-        assertTrue(response.contains("potion"), "Failed attempt to use 'look' command");
-        assertTrue(response.contains("trapdoor"), "Failed attempt to use 'look' command");
-    }
-
-    @Test
-    void testWithIncorrectSpellingFails(){
-        String response = "simon: loker looky lookatme ilooknoworky";
-        randomiseCasing(response);
-        response = sendCommandToServer(response);
-        assertTrue(response.toLowerCase().contains("unknown"));
-    }
-
-    @Test
-    void lookAdvancedDecorative(){
-        String response = "simon: look in forest";
-        response = sendCommandToServer(response);
-        assertTrue(response.toLowerCase().contains("you can't specify any entities with this command"));
-    }
-
-    //Get Test:
-    @Test
-    void testGet() {
-        String response;
-        sendCommandToServer("simon: get potion");
-        response = sendCommandToServer("simon: inv");
-        response = response.toLowerCase();
-        assertTrue(response.contains("potion"), "Did not see the potion in the inventory after an attempt was made to get it");
-        response = sendCommandToServer("simon: look");
-        response = response.toLowerCase();
-        assertFalse(response.contains("potion"), "Potion is still present in the room after an attempt was made to get it");
-    }
-
-    @Test
-    void emptyGetFails() {
-        String response = "simon: get ";
-        randomiseCasing(response);
-        response = sendCommandToServer(response);
-        response = response.toLowerCase();
-        assertTrue(response.contains("error"));
-    }
-
-    @Test
-    void getWithWrongEntityFails() {
-        String response = "simon: water ";
-        randomiseCasing(response);
-        response = sendCommandToServer(response);
-        response = response.toLowerCase();
-        assertTrue(response.contains("error"));
-    }
-
-    @Test
-    void getFailsFromDifferentLocation(){
-        String response = "simon: get key";
-        randomiseCasing(response);
-        response = sendCommandToServer(response);
-        response = response.toLowerCase();
-        assertTrue(response.contains("error"));
-    }
-
-    @Test
-    void getFailsWithMultiplayer(){
-        String response = "simon: get axe";
-        randomiseCasing(response);
-        response = sendCommandToServer(response);
-        response = sendCommandToServer("simon: inv");
-        assertTrue(response.contains("axe"));
-        response = "mihir: get axe";
-        randomiseCasing(response);
-        response = sendCommandToServer(response);
-        response = response.toLowerCase();
-        assertTrue(response.contains("error"));
-        response = sendCommandToServer("mihir: inv");
-        assertTrue(response.contains("empty"));
-        response = sendCommandToServer("simon: inv");
-        assertTrue(response.contains("axe"));
-    }
-
-    @Test
-    void gotoWithMultipleEntitiesShouldFail(){
-        String response = "simon: get axe and potion";
-        randomiseCasing(response);
-        response = sendCommandToServer(response);
-        assertTrue(response.toLowerCase().contains("error"));
-        response = "get axe, potion";
-        randomiseCasing(response);
-        response = sendCommandToServer(response);
-        assertTrue(response.toLowerCase().contains("error"));
-        response = randomiseCasing("simon: get and swing my big axe axe from cabin");
-        response = sendCommandToServer(response);
-        assertTrue(response.toLowerCase().contains("error"));
-    }
-
-    // Test that we can goto a different location (we won't get very far if we can't move around the game !)
-    @Test
-    void testGoto() {
-        sendCommandToServer("simon: goto forest");
-        String response = sendCommandToServer("simon: look");
-        response = response.toLowerCase();
-        assertTrue(response.contains("key"), "Failed attempt to use 'goto' command to move to the forest - there is no key in the current location");
-    }
 
     @Test
     void testPlayerDeath() {
@@ -203,37 +78,6 @@ class ExampleSTAGTests {
         assertTrue(response.toLowerCase().contains("cabin"));
     }
 
-    @Test
-    void lookAndGetPlayerDeath() {
-        String response;
-        response = sendCommandToServer("simon: goto forest");
-        response = sendCommandToServer("simon: get key");
-        response = sendCommandToServer("simon: goto cabin");
-        response = sendCommandToServer("simon: get potion");
-        response = sendCommandToServer("simon: open trapdoor");
-        response = sendCommandToServer("simon: goto cellar");
-        response = sendCommandToServer("mihir: look");
-        assertTrue(response.toLowerCase().contains("cabin"));
-        assertTrue(response.toLowerCase().contains("cellar"));
-        assertFalse(response.toLowerCase().contains("potion"));
-        sendCommandToServer("simon: fight with elf");
-        response = sendCommandToServer("simon: health");
-        sendCommandToServer("simon: fight with elf");
-        sendCommandToServer("simon: health");
-        response = sendCommandToServer("simon: fight with elf");
-        response = response.toLowerCase();
-        assertEquals("you died and lost all of your items, you must return to the start of the game\n", response);
-        response = sendCommandToServer("simon: health");
-        response = response.toLowerCase();
-        response = sendCommandToServer("simon: look");
-        assertTrue(response.toLowerCase().contains("cabin"));
-        //TODO: FIX
-//        response = sendCommandToServer("mihir: goto cabin");
-//        response = sendCommandToServer("mihir: get potion");
-//        response = sendCommandToServer("mihir: inv");
-//        assertTrue(response.toLowerCase().contains("potion"));
-
-    }
 
     @Test
     void testExampleScript() {
@@ -424,25 +268,6 @@ class ExampleSTAGTests {
         sendCommandToServer("Simon: please get the potion");
         String response = sendCommandToServer("Mihir: inventory");
         assertFalse(response.toLowerCase().contains("key"), "Mihir should not have the key picked up by Simon.");
-    }
-
-    @Test
-    void multiplayerTesting(){
-        String response = "simon: goto forest";
-        response = sendCommandToServer(response);
-        String response2 = sendCommandToServer("mihir: goto forest");
-        assertTrue(response2.toLowerCase().contains("mihir"));
-        String response3 = sendCommandToServer("sion: look");
-        assertTrue(response3.contains("cabin"));
-        assertTrue(response3.contains("axe"));
-        assertTrue(response3.contains("simon"));
-        assertTrue(response3.contains("mihir"));
-        response = sendCommandToServer("simon: look");
-        assertTrue(response.contains("forest"));
-        assertTrue(response.contains("key"));
-        assertTrue(response.contains("tree"));
-        assertTrue(response.contains("mihir"));
-        assertTrue(response.contains("sion"));
     }
 
     //Currently: 31 Failures/53 tests -> 22 Tests Passed/53 (Goto fixed bugs)

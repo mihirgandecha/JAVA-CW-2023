@@ -1,12 +1,14 @@
-package edu.uob;
+package edu.uob.EntitiesFile;
 
+import edu.uob.*;
+import edu.uob.Character;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
-import java.util.ArrayList;
 
 public class LocationTest {
 
@@ -34,7 +36,7 @@ public class LocationTest {
 
         assertEquals(1, artefacts.size());
         assertEquals("Axe", artefacts.get(0).getName());
-        assertEquals(GameEntityType.ARTEFACT, artefacts.get(0).getType());
+        Assertions.assertEquals(GameEntityType.ARTEFACT, artefacts.get(0).getType());
     }
 
     @Test
