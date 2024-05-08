@@ -24,6 +24,7 @@ public class AdvancedAction extends GameCommand
     private Map<String, Location> map;
     private boolean resetActivated = false;
     private String firstLocation;
+    private Location currentLocation;
 
     public AdvancedAction(GameEngine gameEngine, Player player, String basicCommand) {
         super(gameEngine, player, basicCommand);
@@ -72,11 +73,10 @@ public class AdvancedAction extends GameCommand
     // Method to check if the action can be executed based on current game state
     public boolean canExecute(Player player, Map<String, Location> map) throws GameError {
         this.player = player;
-        this.storeroom = getEngineMap().get(player.getCurrentLocation());
+        this.currentLocation = getEngineMap().get(player.getCurrentLocation());
         getEngineMap().get(player.getCurrentLocation()).setAllEntities();
         this.locationEntities = map.get(player.getCurrentLocation()).entityList;
         this.playerEntities = player.getInventory();
-        storeroom.setAllEntities();
         doesSubjectsExist();
         //TODO - cannot activate action twice! blow horn two times duplicates!!
         this.storeroom = map.get("storeroom");
@@ -219,16 +219,16 @@ public class AdvancedAction extends GameCommand
         String description = storedEntity.getDescription();
         switch (entityType) {
             case ARTEFACT:
-                storeroom.addArtefact(new Artefact(name, description));
-                storeroom.setAllEntities();
+                currentLocation.addArtefact(new Artefact(name, description));
+                currentLocation.setAllEntities();
                 break;
             case FURNITURE:
-                storeroom.addFurniture(new Furniture(name, description));
-                storeroom.setAllEntities();
+                currentLocation.addFurniture(new Furniture(name, description));
+                currentLocation.setAllEntities();
                 break;
             case CHARACTER:
-                storeroom.addCharacters(new Character(name, description));
-                storeroom.setAllEntities();
+                currentLocation.addCharacters(new Character(name, description));
+                currentLocation.setAllEntities();
                 break;
             default:
                 throw new GameError("Unknown Artefact type!");
