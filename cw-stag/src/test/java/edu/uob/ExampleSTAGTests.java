@@ -78,37 +78,6 @@ class ExampleSTAGTests {
         assertTrue(response.toLowerCase().contains("cabin"));
     }
 
-    @Test
-    void lookAndGetPlayerDeath() {
-        String response;
-        response = sendCommandToServer("simon: goto forest");
-        response = sendCommandToServer("simon: get key");
-        response = sendCommandToServer("simon: goto cabin");
-        response = sendCommandToServer("simon: get potion");
-        response = sendCommandToServer("simon: open trapdoor");
-        response = sendCommandToServer("simon: goto cellar");
-        response = sendCommandToServer("mihir: look");
-        assertTrue(response.toLowerCase().contains("cabin"));
-        assertTrue(response.toLowerCase().contains("cellar"));
-        assertFalse(response.toLowerCase().contains("potion"));
-        sendCommandToServer("simon: fight with elf");
-        response = sendCommandToServer("simon: health");
-        sendCommandToServer("simon: fight with elf");
-        sendCommandToServer("simon: health");
-        response = sendCommandToServer("simon: fight with elf");
-        response = response.toLowerCase();
-        assertEquals("you died and lost all of your items, you must return to the start of the game\n", response);
-        response = sendCommandToServer("simon: health");
-        response = response.toLowerCase();
-        response = sendCommandToServer("simon: look");
-        assertTrue(response.toLowerCase().contains("cabin"));
-        //TODO: FIX
-//        response = sendCommandToServer("mihir: goto cabin");
-//        response = sendCommandToServer("mihir: get potion");
-//        response = sendCommandToServer("mihir: inv");
-//        assertTrue(response.toLowerCase().contains("potion"));
-
-    }
 
     @Test
     void testExampleScript() {

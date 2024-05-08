@@ -1,9 +1,6 @@
 package edu.uob.Command;
 
-import edu.uob.GameEngine;
-import edu.uob.GameError;
-import edu.uob.Location;
-import edu.uob.Player;
+import edu.uob.*;
 
 import java.util.ArrayList;
 

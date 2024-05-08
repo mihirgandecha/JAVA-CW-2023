@@ -20,7 +20,6 @@ public class GameEngine {
 
     public GameEngine(String entitiesFile, String actionsFile, Map<String, Player> GamePlayers) throws Exception {
         this.GamePlayers = GamePlayers;
-//        this.player = player;
         this.entitiesFile = entitiesFile;
         this.actionsFile = actionsFile;
         this.map = processEntitiesFile();
@@ -36,6 +35,9 @@ public class GameEngine {
         setAdvancedActions();
    }
 
+   public void setPlayer(Player setPlayer){
+        this.player = setPlayer;
+   }
 
     // Add action commands from the XML file to Set
     private void setAdvancedActions() {
@@ -49,6 +51,14 @@ public class GameEngine {
         GraphvizParser p = new GraphvizParser(this.entitiesFile);
         this.firstLocation = p.firstNode.getId().getId();
         return p.getGameMap();
+    }
+
+    public String getFirstLocation() {
+        return this.firstLocation;
+    }
+
+    public Map<String, Player> getGamePlayers() {
+        return GamePlayers;
     }
 
     private HashMap<String, HashSet<AdvancedAction>> processActionsFile() throws GameError {

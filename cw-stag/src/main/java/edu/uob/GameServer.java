@@ -75,6 +75,7 @@ public final class GameServer {
 //        GameEngine.setFirstLocation();
       }
       GameEngine.updatePlayer(GamePlayers);
+      GameEngine.setPlayer(player);
       if (GamePlayers.size() > 1) {
         for (String token : tokens) {
           if (token.contains("look") || token.contains("goto")) {
