@@ -22,8 +22,8 @@ public final class GameServer {
   private final String actionsFileString;
 
   public static void main(String[] args) throws Exception {
-    File entitiesFile = Paths.get("config" + File.separator + "basic-entities.dot").toAbsolutePath().toFile();
-    File actionsFile = Paths.get("config" + File.separator + "basic-actions.xml").toAbsolutePath().toFile();
+    File entitiesFile = Paths.get("config" + File.separator + "extended-entities.dot").toAbsolutePath().toFile();
+    File actionsFile = Paths.get("config" + File.separator + "extended-actions.xml").toAbsolutePath().toFile();
     GameServer server = new GameServer(entitiesFile, actionsFile);
     server.blockingListenOn(8888);
   }
@@ -72,17 +72,9 @@ public final class GameServer {
       //Process Command:
       if (GameEngine == null) {
         GameEngine = new GameEngine(this.entitiesFileString, this.actionsFileString, GamePlayers);
-//        GameEngine.setFirstLocation();
       }
       GameEngine.updatePlayer(GamePlayers);
       GameEngine.setPlayer(player);
-      if (GamePlayers.size() > 1) {
-        for (String token : tokens) {
-          if (token.contains("look") || token.contains("goto")) {
-            return GameEngine.execute(tokens, username) + "\n" + getPlayersNameToString(username);
-          }
-        }
-      }
       return GameEngine.execute(tokens, username);
     } catch (Exception e) {
       return e.getMessage();

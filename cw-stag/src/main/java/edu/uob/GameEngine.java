@@ -144,8 +144,15 @@ public class GameEngine {
         String[] words = commandList.toArray(new String[commandList.size()]);
         String actionWord = words[0].trim();
         String command = commandList.toString();
+        boolean printMultiplayer = false;
+        if(GamePlayers.size() > 1){
+            printMultiplayer = true;
+        }
         if (command.contains("look")) {
             Look look = new Look(this, player, command);
+            if(printMultiplayer){
+                return look.toString() + multiplayerToString();
+            }
             return look.toString();
         } else if (command.contains("get")) {
             Get get = new Get(this, player, command);
@@ -155,6 +162,9 @@ public class GameEngine {
             return inv.toString();
         } else if (command.contains("goto")) {
             Goto aGoto = new Goto(this, player, command);
+            if(printMultiplayer){
+                return aGoto.toString() + multiplayerToString();
+            }
             return aGoto.toString();
         } else if (command.contains("drop")) {
             Drop drop = new Drop(this, player, command);
@@ -167,6 +177,20 @@ public class GameEngine {
         } else{
             throw new GameError("Unknown command: " + command);
         }
+    }
+
+    private String multiplayerToString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        String checkLocation = this.player.getCurrentLocation();
+        for(Player p: GamePlayers.values()){
+            if(!checkLocation.isEmpty() && p.getPlayerName() != this.player.getPlayerName() && checkLocation.equalsIgnoreCase(p.getCurrentLocation())){
+                stringBuilder.append(p.getPlayerName() + "\n");
+            }
+        }
+        if (stringBuilder.length() > 0) {
+            stringBuilder.insert(0, "\n[PLAYERS]:\n");
+        }
+        return stringBuilder.toString();
     }
 
     private String handleGameAction(List<String> command) throws GameError {

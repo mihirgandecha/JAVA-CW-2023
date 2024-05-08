@@ -79,6 +79,7 @@ public class AdvancedAction extends GameCommand
         this.playerEntities = player.getInventory();
         currentLocation.setAllEntities();
         doesSubjectsExist();
+        //TODO - cannot activate action twice! blow horn two times duplicates!!
         this.storeroom = map.get("storeroom");
         this.storeroom.setAllEntities();
         this.map = map;

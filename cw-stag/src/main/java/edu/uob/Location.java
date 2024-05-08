@@ -37,6 +37,10 @@ public class Location extends GameEntity {
     return this.artefacts;
   }
 
+  public boolean removeArtefact(String entityName) {
+    return this.artefacts.removeIf(artefact -> artefact.getName().equalsIgnoreCase(entityName));
+  }
+
   public String getArtefactsToString() {
     if(this.artefacts.isEmpty()) {
       return "";
@@ -57,6 +61,10 @@ public class Location extends GameEntity {
     return this.characters;
   }
 
+  public boolean removeCharacter(String entityName) {
+    return characters.removeIf(character -> character.getName().equalsIgnoreCase(entityName));
+  }
+
   public String getCharactersToString() {
     if(this.characters.isEmpty()) {
       return "";
@@ -75,6 +83,10 @@ public class Location extends GameEntity {
 
   public List<Furniture> getFurniture(Furniture furniture) {
     return this.furnitures;
+  }
+
+  public boolean removeFurniture(String entityName) {
+    return furnitures.removeIf(furniture -> furniture.getName().equalsIgnoreCase(entityName));
   }
 
   public String getFurnitureToString() {
@@ -107,13 +119,28 @@ public class Location extends GameEntity {
     return getArtefactsToString() + getCharactersToString() + getFurnitureToString();
   }
 
-  public void removeEntity(String entityName){
-    for(int i=0; i<entityList.size(); i++){
-      if(entityList.get(i).getName().equalsIgnoreCase(entityName)){
-        entityList.remove(i);
-      }
+  public void removeEntity(String entityName) {
+    boolean removedFromArtefacts = removeArtefact(entityName);
+    boolean removedFromCharacters = removeCharacter(entityName);
+    boolean removedFromFurniture = removeFurniture(entityName);
+
+    // Remove the entity from the main entity list only if it's removed from one of the specialized lists
+    if (removedFromArtefacts || removedFromCharacters || removedFromFurniture) {
+      entityList.removeIf(entity -> entity.getName().equalsIgnoreCase(entityName));
     }
   }
+
+//  public void removeEntity(String entityName){
+//    for(int i=0; i<entityList.size(); i++){
+//      if(entityList.get(i).getName().equalsIgnoreCase(entityName)){
+//        removeArtefact(entityName);
+//        removeCharacter(entityName);
+//        removeFurniture(entityName);
+//        entityList.removeIf(entityList -> entityList.getName().equalsIgnoreCase(entityName));
+////        entityList.remove(i);
+//      }
+//    }
+//  }
 
   public boolean getEntityForProduce(String item) {
     if(this.entityList == null){

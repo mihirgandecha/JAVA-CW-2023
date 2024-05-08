@@ -46,7 +46,7 @@ public class HealthTesting {
 
 
     @Test
-    void lookAndGetPlayerDeath() {
+    void healthAndMultiplayerDeathPasses() {
         String response;
         response = sendCommandToServer("simon: goto forest");
         response = sendCommandToServer("simon: get key");
@@ -58,6 +58,7 @@ public class HealthTesting {
         assertTrue(response.toLowerCase().contains("cabin"));
         assertTrue(response.toLowerCase().contains("cellar"));
         assertFalse(response.toLowerCase().contains("potion"));
+        assertFalse(response.toLowerCase().contains("simon"));
         sendCommandToServer("simon: fight with elf");
         response = sendCommandToServer("simon: health");
         sendCommandToServer("simon: fight with elf");
@@ -80,5 +81,44 @@ public class HealthTesting {
         assertTrue(response.toLowerCase().contains("attack the elf"));
         response = sendCommandToServer("simon: health");
         assertTrue(response.toLowerCase().contains("2"));
+        //Test player 2 is accurately reset:
+        response = sendCommandToServer("mihir: goto cellar");
+        assertTrue(response.toLowerCase().contains("simon"));
+        response = sendCommandToServer("mihir: get potion");
+        response = sendCommandToServer("mihir: health");
+        assertTrue(response.toLowerCase().contains("3"));
+        response = sendCommandToServer("mihir: hit elf");
+        response = sendCommandToServer("mihir: health");
+        assertTrue(response.toLowerCase().contains("2"));
+        response = sendCommandToServer("mihir: fight the elf");
+        response = sendCommandToServer("mihir: health");
+        assertTrue(response.toLowerCase().contains("1"));
+        response = sendCommandToServer("mihir: break his back and hit elf");
+        response = sendCommandToServer("mihir: health");
+        assertTrue(response.toLowerCase().contains("3"));
+        response = sendCommandToServer("mihir: look");
+        assertTrue(response.toLowerCase().contains("cabin"));
+        assertTrue(response.toLowerCase().contains("cellar"));
+        assertFalse(response.toLowerCase().contains("simon"));
+        response = sendCommandToServer("mihir: inv");
+        assertTrue(response.toLowerCase().contains("empty"));
+        response = sendCommandToServer("simon: look");
+        assertTrue(response.toLowerCase().contains("potion"));
+        response = sendCommandToServer("simon: look");
+        assertTrue(response.toLowerCase().contains("potion"));
+        //Test drinking the potion wont increase health if on Full health:
+        response = sendCommandToServer("mihir: goto cellar");
+        assertTrue(response.toLowerCase().contains("potion"));
+        response = sendCommandToServer("mihir: health");
+        assertTrue(response.toLowerCase().contains("3"));
+        response = sendCommandToServer("mihir: drink the potion");
+        response = sendCommandToServer("mihir: look");
+        assertFalse(response.toLowerCase().contains("potion"));
+        response = sendCommandToServer("simon: look");
+        assertFalse(response.toLowerCase().contains("potion"));
+        response = sendCommandToServer("simon: drink potion");
+        assertTrue(response.toLowerCase().contains("error"));
+        response = sendCommandToServer("mihir: health");
+        assertTrue(response.toLowerCase().contains("3"));
     }
 }
