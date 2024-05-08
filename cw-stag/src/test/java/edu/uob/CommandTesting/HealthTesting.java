@@ -66,14 +66,19 @@ public class HealthTesting {
         response = response.toLowerCase();
         assertEquals("you died and lost all of your items, you must return to the start of the game\n", response);
         response = sendCommandToServer("simon: health");
-        response = response.toLowerCase();
+        assertEquals("player health 3", response.toLowerCase());
+        assertTrue(response.contains("3"));
         response = sendCommandToServer("simon: look");
         assertTrue(response.toLowerCase().contains("cabin"));
-        //TODO: FIX
-//        response = sendCommandToServer("mihir: goto cabin");
-//        response = sendCommandToServer("mihir: get potion");
-//        response = sendCommandToServer("mihir: inv");
-//        assertTrue(response.toLowerCase().contains("potion"));
-
+        response = sendCommandToServer("simon: look");
+        assertTrue(response.toLowerCase().contains("cellar"));
+        response = sendCommandToServer("simon: goto cellar");
+        assertTrue(response.toLowerCase().contains("potion"));
+        response = sendCommandToServer("simon: health");
+        assertEquals("player health 3", response.toLowerCase());
+        response = sendCommandToServer("simon: fight elf");
+        assertTrue(response.toLowerCase().contains("attack the elf"));
+        response = sendCommandToServer("simon: health");
+        assertTrue(response.toLowerCase().contains("2"));
     }
 }

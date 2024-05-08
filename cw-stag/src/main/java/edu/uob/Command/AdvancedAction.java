@@ -109,6 +109,7 @@ public class AdvancedAction extends GameCommand
     public String execute() throws GameError {
         consumeEntities();
         if(this.resetActivated){
+            this.resetActivated = false;
             return "you died and lost all of your items, you must return to the start of the game\n";
         }
         produceEntities();
@@ -127,8 +128,8 @@ public class AdvancedAction extends GameCommand
             }
             if (player.getInventory().containsKey(item)) {
                 player.getInventory().remove(item);
-            } else if (getEngineMap().get(getPlayer().currentLocation) != null) {
-                getEngineMap().get(getPlayer().currentLocation).removeEntity(item);
+            } else if (getEngineMap().get(player.currentLocation) != null) {
+                getEngineMap().get(player.currentLocation).removeEntity(item);
             }
         }
     }
@@ -136,8 +137,8 @@ public class AdvancedAction extends GameCommand
     private void resetPlayer(){
 //        HashMap<String, Artefact> inventory = player.getInventory();
         if(!player.getInventory().isEmpty()){
-            getEngineMap().get(player.currentLocation).artefacts.addAll(getPlayer().getInventory().values());
-            engine.getMap().get(getPlayer().currentLocation).setAllEntities();
+            getEngineMap().get(player.currentLocation).artefacts.addAll(player.getInventory().values());
+            engine.getMap().get(player.currentLocation).setAllEntities();
             HashMap<String, Artefact> inventory = player.getInventory();
             inventory.clear();
             player.setInventory(inventory);
