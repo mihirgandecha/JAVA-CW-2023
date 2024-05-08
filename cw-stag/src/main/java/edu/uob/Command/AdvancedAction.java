@@ -136,7 +136,6 @@ public class AdvancedAction extends GameCommand
     }
 
     private void resetPlayer(){
-//        HashMap<String, Artefact> inventory = player.getInventory();
         if(!player.getInventory().isEmpty()){
             getEngineMap().get(player.currentLocation).artefacts.addAll(player.getInventory().values());
             engine.getMap().get(player.currentLocation).setAllEntities();
@@ -159,9 +158,16 @@ public class AdvancedAction extends GameCommand
                 player.increaseHealth();
                 break;
             }
-            GameEntity storedEntity = this.storeroom.setEntityForProduce(item);
-            if (storedEntity != null) {
-                addEntityToLocation(storedEntity);
+            GameEntity entityToMove = null;
+            for(Location location: getEngineMap().values()){
+                if(location.getEntityForProduce(item)){
+                    entityToMove = location.getEntity(item);
+                    break;
+                }
+            }
+//            GameEntity storedEntity = this.storeroom.setEntityForProduce(item);
+            if (entityToMove != null) {
+                addEntityToLocation(entityToMove);
             } else if (engine.getMap().containsKey(item)) {
                 currentLocation.pathTo.add(item);
             } else {
@@ -177,12 +183,15 @@ public class AdvancedAction extends GameCommand
         switch (entityType) {
             case ARTEFACT:
                 currentLocation.addArtefact(new Artefact(name, description));
+                currentLocation.setAllEntities();
                 break;
             case FURNITURE:
                 currentLocation.addFurniture(new Furniture(name, description));
+                currentLocation.setAllEntities();
                 break;
             case CHARACTER:
                 currentLocation.addCharacters(new Character(name, description));
+                currentLocation.setAllEntities();
                 break;
             default:
                 throw new GameError("Unknown Artefact type!");

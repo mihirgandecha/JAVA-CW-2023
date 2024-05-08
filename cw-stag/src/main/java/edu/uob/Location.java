@@ -130,18 +130,6 @@ public class Location extends GameEntity {
     }
   }
 
-//  public void removeEntity(String entityName){
-//    for(int i=0; i<entityList.size(); i++){
-//      if(entityList.get(i).getName().equalsIgnoreCase(entityName)){
-//        removeArtefact(entityName);
-//        removeCharacter(entityName);
-//        removeFurniture(entityName);
-//        entityList.removeIf(entityList -> entityList.getName().equalsIgnoreCase(entityName));
-////        entityList.remove(i);
-//      }
-//    }
-//  }
-
   public boolean getEntityForProduce(String item) {
     if(this.entityList == null){
       setAllEntities();
@@ -153,6 +141,17 @@ public class Location extends GameEntity {
     }
     return false;
   }
+
+  public GameEntity getEntity(String entityName) {
+    for (GameEntity entity : entityList) {
+      if (entity.getName().equalsIgnoreCase(entityName)) {
+        removeEntity(entityName);
+        return entity;
+      }
+    }
+    return null;
+  }
+
 
   public GameEntity setEntityForProduce(String item) {
     for (GameEntity entity : entityList) {
