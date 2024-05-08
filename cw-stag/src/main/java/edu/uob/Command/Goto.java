@@ -17,6 +17,7 @@ public class Goto extends GameCommand {
         super(gameEngine, player, basicCommand);
         this.builder = new StringBuilder();
         this.currentLocation = player.getCurrentLocation();
+        //TODO Compilation Error! possible this escape before subclass is fully initialised
         this.goLocation = getCommand().get(1);
 //        parseCommand(basicCommand);
         executeMove();

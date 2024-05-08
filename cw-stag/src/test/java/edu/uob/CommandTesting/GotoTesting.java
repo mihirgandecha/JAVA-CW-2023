@@ -70,7 +70,6 @@ public class GotoTesting {
         sendCommandToServer("mihir: get key");
         response = "mihir: goto cabin";
         response = sendCommandToServer(response);
-        System.out.println(response);
         assertTrue(response.toLowerCase().contains("cabin"));
         response = "mihir: look";
         response = sendCommandToServer(response);

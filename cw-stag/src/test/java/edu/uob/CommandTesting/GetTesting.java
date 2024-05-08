@@ -119,5 +119,4 @@ public class GetTesting {
         response = sendCommandToServer(response);
         assertTrue(response.toLowerCase().contains("error"));
     }
-
 }

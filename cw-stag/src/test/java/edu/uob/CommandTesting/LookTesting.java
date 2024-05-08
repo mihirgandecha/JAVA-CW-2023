@@ -90,6 +90,4 @@ public class LookTesting {
         response = sendCommandToServer(response);
         assertTrue(response.toLowerCase().contains("you can't specify any entities with this command"));
     }
-
-
 }
