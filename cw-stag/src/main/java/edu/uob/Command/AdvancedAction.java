@@ -17,11 +17,10 @@ public class AdvancedAction extends GameCommand
     private List<String> produced;
     //OUTPUT to console
     private String narration;
-    private Location currentLocation;
+    private Location storeroom;
     private List<GameEntity> locationEntities;
     private HashMap<String, Artefact> playerEntities;
     private Player player;
-    private Location storeroom;
     private Map<String, Location> map;
     private boolean resetActivated = false;
     private String firstLocation;
@@ -73,11 +72,11 @@ public class AdvancedAction extends GameCommand
     // Method to check if the action can be executed based on current game state
     public boolean canExecute(Player player, Map<String, Location> map) throws GameError {
         this.player = player;
-        this.currentLocation = map.get(player.getCurrentLocation());
-        map.get(player.getCurrentLocation()).setAllEntities();
+        this.storeroom = getEngineMap().get(player.getCurrentLocation());
+        getEngineMap().get(player.getCurrentLocation()).setAllEntities();
         this.locationEntities = map.get(player.getCurrentLocation()).entityList;
         this.playerEntities = player.getInventory();
-        currentLocation.setAllEntities();
+        storeroom.setAllEntities();
         doesSubjectsExist();
         //TODO - cannot activate action twice! blow horn two times duplicates!!
         this.storeroom = map.get("storeroom");
@@ -117,7 +116,7 @@ public class AdvancedAction extends GameCommand
         return narration + "\n";
     }
 
-    private void consumeEntities() {
+    private void consumeEntities() throws GameError {
         for (String item : getConsumed()) {
             if (item.equalsIgnoreCase("health")) {
                 player.decreaseHealth();
@@ -127,13 +126,51 @@ public class AdvancedAction extends GameCommand
                 }
                 break;
             }
-            if (player.getInventory().containsKey(item)) {
-                player.getInventory().remove(item);
-            } else if (getEngineMap().get(player.currentLocation) != null) {
-                getEngineMap().get(player.currentLocation).removeEntity(item);
+            GameEntity entityToMove = null;
+            for(Location location: getEngineMap().values()){
+                if(location.getName().equalsIgnoreCase("storeroom")){
+                    break;
+                }
+                if(location.getEntityForProduce(item)){
+                    entityToMove = location.getEntity(item);
+                    break;
+                }
             }
+            if (player.getInventory().containsKey(item)) {
+                if (entityToMove == null) {
+                    entityToMove = player.getInventory().get(item);
+                }
+                player.getInventory().remove(item);
+            }
+            addEntityToStore(entityToMove);
+//            else if (getEngineMap().get(player.currentLocation) != null) {
+//                getEngineMap().get(player.currentLocation).removeEntity(item);
+//            }
         }
     }
+
+    private void addEntityToStore(GameEntity storedEntity) throws GameError {
+        GameEntityType entityType = storedEntity.getType();
+        String name = storedEntity.getName();
+        String description = storedEntity.getDescription();
+        switch (entityType) {
+            case ARTEFACT:
+                this.storeroom.addArtefact(new Artefact(name, description));
+                this.storeroom.setAllEntities();
+                break;
+            case FURNITURE:
+                this.storeroom.addFurniture(new Furniture(name, description));
+                this.storeroom.setAllEntities();
+                break;
+            case CHARACTER:
+                this.storeroom.addCharacters(new Character(name, description));
+                this.storeroom.setAllEntities();
+                break;
+            default:
+                throw new GameError("Unknown Artefact type!");
+        }
+    }
+
 
     private void resetPlayer(){
         if(!player.getInventory().isEmpty()){
@@ -165,11 +202,11 @@ public class AdvancedAction extends GameCommand
                     break;
                 }
             }
-//            GameEntity storedEntity = this.storeroom.setEntityForProduce(item);
             if (entityToMove != null) {
                 addEntityToLocation(entityToMove);
             } else if (engine.getMap().containsKey(item)) {
-                currentLocation.pathTo.add(item);
+                getEngineMap().get(player.getCurrentLocation()).pathTo.add(item);
+//                storeroom.pathTo.add(item);
             } else {
                 throw new GameError("Produced entity does not exist in Location or Player Inventory!\n");
             }
@@ -182,16 +219,16 @@ public class AdvancedAction extends GameCommand
         String description = storedEntity.getDescription();
         switch (entityType) {
             case ARTEFACT:
-                currentLocation.addArtefact(new Artefact(name, description));
-                currentLocation.setAllEntities();
+                storeroom.addArtefact(new Artefact(name, description));
+                storeroom.setAllEntities();
                 break;
             case FURNITURE:
-                currentLocation.addFurniture(new Furniture(name, description));
-                currentLocation.setAllEntities();
+                storeroom.addFurniture(new Furniture(name, description));
+                storeroom.setAllEntities();
                 break;
             case CHARACTER:
-                currentLocation.addCharacters(new Character(name, description));
-                currentLocation.setAllEntities();
+                storeroom.addCharacters(new Character(name, description));
+                storeroom.setAllEntities();
                 break;
             default:
                 throw new GameError("Unknown Artefact type!");

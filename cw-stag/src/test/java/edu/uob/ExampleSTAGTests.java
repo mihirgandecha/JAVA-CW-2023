@@ -73,6 +73,7 @@ class ExampleSTAGTests {
         sendCommandToServer("simon: health");
         response = sendCommandToServer("simon: fight with elf");
         response = response.toLowerCase();
+        System.out.println(response);
         assertEquals("you died and lost all of your items, you must return to the start of the game\n", response);
         response = sendCommandToServer("simon: look");
         assertTrue(response.toLowerCase().contains("cabin"));
