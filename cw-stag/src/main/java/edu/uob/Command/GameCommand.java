@@ -35,9 +35,9 @@ public abstract class GameCommand {
     }
 
     public void setResetPlayer(Player playerReset){
-        if(engine.getGamePlayers().containsKey(playerReset.getPlayerName())){
-            engine.getGamePlayers().remove(playerReset.getPlayerName());
-            engine.getGamePlayers().put(playerReset.getPlayerName(), playerReset);
+        if(engine.getPlayerMap().containsKey(playerReset.getPlayerName())){
+            engine.getPlayerMap().remove(playerReset.getPlayerName());
+            engine.getPlayerMap().put(playerReset.getPlayerName(), playerReset);
             this.player = playerReset;
         }
     }
