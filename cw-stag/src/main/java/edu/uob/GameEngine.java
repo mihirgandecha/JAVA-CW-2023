@@ -5,10 +5,11 @@ import edu.uob.Command.*;
 import java.util.*;
 
 public class GameEngine {
-    private Map<String, Player> GamePlayers;
+    //TODO initialise here and make final
+    private final Map<String, Player> GamePlayers;
     private Player player;
-    private String entitiesFile;
-    private String actionsFile;
+    private final String entitiesFile;
+    private final String actionsFile;
     private Map<String, Location> map;
 
     private HashMap<String, HashSet<AdvancedAction>> actions;
@@ -18,10 +19,11 @@ public class GameEngine {
     private ArrayList<String> entities;
     public List<String> command;
 
-    public GameEngine(String entitiesFile, String actionsFile, Map<String, Player> GamePlayers) throws Exception {
-        this.GamePlayers = GamePlayers;
+    public GameEngine(String entitiesFile, String actionsFile) throws Exception {
         this.entitiesFile = entitiesFile;
         this.actionsFile = actionsFile;
+        this.GamePlayers = new HashMap<>();
+
         this.map = processEntitiesFile();
         this.entities = new ArrayList<>();
         for(Location location : map.values()) {
@@ -33,6 +35,10 @@ public class GameEngine {
         }
         this.actions = processActionsFile();
         setAdvancedActions();
+   }
+
+   public Map<String, Player> getPlayerMap(){
+        return GamePlayers;
    }
 
    public void setPlayer(Player setPlayer){
@@ -241,7 +247,4 @@ public class GameEngine {
         this.GamePlayers.put(player.getPlayerName(), player);
     }
 
-    public void updatePlayer(Map<String, Player> gamePlayers) {
-        this.GamePlayers = gamePlayers;
-    }
 }
