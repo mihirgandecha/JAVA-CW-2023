@@ -78,7 +78,6 @@ class ExampleSTAGTests {
         assertTrue(response.toLowerCase().contains("cabin"));
     }
 
-
     @Test
     void testExampleScript() {
         String response = sendCommandToServer("simon: inv");
