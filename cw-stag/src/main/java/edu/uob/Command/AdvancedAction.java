@@ -73,7 +73,7 @@ public class AdvancedAction extends GameCommand
         this.player = player;
         this.currentLocation = getEngineMap().get(player.getCurrentLocation());
         getEngineMap().get(player.getCurrentLocation()).setAllEntities();
-        this.locationEntities = map.get(player.getCurrentLocation()).entityList;
+        this.locationEntities = map.get(player.getCurrentLocation()).getEntityList();
         this.playerEntities = player.getInventory();
         doesSubjectsExist();
         this.storeroom = map.get("storeroom");

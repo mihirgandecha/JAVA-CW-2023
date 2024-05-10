@@ -10,7 +10,7 @@ public class GameEngine {
     private Player player;
     private final String entitiesFile;
     private final String actionsFile;
-    private Map<String, Location> map;
+    private final Map<String, Location> map;
 
     private HashMap<String, HashSet<AdvancedAction>> actions;
     private String firstLocation;
@@ -29,7 +29,7 @@ public class GameEngine {
         for(Location location : map.values()) {
             location.setAllEntities();
             this.entities.add(location.getName());
-            for(GameEntity gameEntity: location.entityList){
+            for(GameEntity gameEntity: location.getEntityList()){
                 this.entities.add(gameEntity.getName());
             }
         }

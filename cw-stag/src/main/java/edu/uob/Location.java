@@ -9,24 +9,23 @@ import java.util.List;
  */
 
 public class Location extends GameEntity {
-  public String location;
+  public String locationName;
   public String description;
   public List<Artefact> artefacts;
   public List<Character> characters;
   public List<Furniture> furnitures;
   public ArrayList<String> pathTo;
-  public List<GameEntity> entityList;
+  private List<GameEntity> entityList;
 
   public Location(String name, String description) {
     //saving locations itself as Game Entity
     super(name, description, GameEntityType.LOCATION);
-    this.location = name;
+    this.locationName = name;
     this.description = description;
     this.artefacts = new ArrayList<>();
     this.characters = new ArrayList<>();
     this.furnitures = new ArrayList<>();
     this.pathTo = new ArrayList<>();
-    setAllEntities();
   }
 
   public void addArtefact(Artefact artefact) {
@@ -102,18 +101,19 @@ public class Location extends GameEntity {
   }
 
   public void setAllEntities() {
-    this.entityList = new ArrayList<>();
-    this.entityList.addAll(this.artefacts);
-    this.entityList.addAll(this.characters);
-    this.entityList.addAll(this.furnitures);
+    this.setEntityList(new ArrayList<>());
+    this.getEntityList().addAll(this.artefacts);
+    this.getEntityList().addAll(this.characters);
+    this.getEntityList().addAll(this.furnitures);
   }
 
   private String addPrefixIfNeeded(String description) {
-//    if(!description.startsWith("A ")){
-//      return "A " + description;
-//    }
+    if(!description.startsWith("a ") && !description.startsWith("A ")){
+      return "A " + description;
+    }
     return description;
   }
+
 
   public String getAllEntitiesToString(){
     return getArtefactsToString() + getCharactersToString() + getFurnitureToString();
@@ -126,15 +126,15 @@ public class Location extends GameEntity {
 
     // Remove the entity from the main entity list only if it's removed from one of the specialized lists
     if (removedFromArtefacts || removedFromCharacters || removedFromFurniture) {
-      entityList.removeIf(entity -> entity.getName().equalsIgnoreCase(entityName));
+      getEntityList().removeIf(entity -> entity.getName().equalsIgnoreCase(entityName));
     }
   }
 
   public boolean getEntityForProduce(String item) {
-    if(this.entityList == null){
+    if(this.getEntityList() == null){
       setAllEntities();
     }
-    for (GameEntity entity : entityList) {
+    for (GameEntity entity : getEntityList()) {
       if (entity.getName().equalsIgnoreCase(item)) {
         return true;
       }
@@ -143,7 +143,7 @@ public class Location extends GameEntity {
   }
 
   public GameEntity getEntity(String entityName) {
-    for (GameEntity entity : entityList) {
+    for (GameEntity entity : getEntityList()) {
       if (entity.getName().equalsIgnoreCase(entityName)) {
         removeEntity(entityName);
         return entity;
@@ -154,13 +154,20 @@ public class Location extends GameEntity {
 
 
   public GameEntity setEntityForProduce(String item) {
-    for (GameEntity entity : entityList) {
+    for (GameEntity entity : getEntityList()) {
       if (entity.getName().equalsIgnoreCase(item)) {
-        entityList.remove(entity);
+        getEntityList().remove(entity);
         return entity;
       }
     }
     return null;
   }
 
+  public List<GameEntity> getEntityList() {
+    return entityList;
+  }
+
+  public void setEntityList(List<GameEntity> entityList) {
+    this.entityList = entityList;
+  }
 }

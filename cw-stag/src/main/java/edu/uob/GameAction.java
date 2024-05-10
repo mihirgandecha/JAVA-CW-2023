@@ -64,7 +64,7 @@ public class GameAction
         }
         // Check if required consumed items are available
         for (String item : consumed) {
-            if (!player.getInventory().containsKey(item) && !currentLocation.entityList.contains(item)) {
+            if (!player.getInventory().containsKey(item) && !currentLocation.getEntityList().contains(item)) {
                 return false;
             }
         }
