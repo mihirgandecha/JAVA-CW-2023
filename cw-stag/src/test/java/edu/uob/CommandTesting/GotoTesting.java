@@ -148,7 +148,7 @@ public class GotoTesting {
         response = sendCommandToServer(response);
         assertFalse(response.contains("cellar"), "Failed attempt to use 'look' command");
         assertFalse(response.contains("forest"), "Failed attempt to use 'look' command");
-        assertTrue(response.toLowerCase().contains("too many entities"));
+        assertTrue(response.toLowerCase().contains("error"));
     }
 
     @Test

@@ -42,8 +42,8 @@ public class Drop extends GameCommand {
         }
         player.getInventory().remove(requestedArtefact);
         currentLocation.addArtefact(artefact);
-        getEngine().getMap().remove(currentLocation.location);
-        getEngine().getMap().put(currentLocation.location, currentLocation);
+        getEngine().getMap().remove(currentLocation.locationName);
+        getEngine().getMap().put(currentLocation.locationName, currentLocation);
     }
 
     @Override

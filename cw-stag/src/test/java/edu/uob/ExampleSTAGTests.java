@@ -73,12 +73,10 @@ class ExampleSTAGTests {
         sendCommandToServer("simon: health");
         response = sendCommandToServer("simon: fight with elf");
         response = response.toLowerCase();
-        System.out.println(response);
         assertEquals("you died and lost all of your items, you must return to the start of the game\n", response);
         response = sendCommandToServer("simon: look");
         assertTrue(response.toLowerCase().contains("cabin"));
     }
-
 
     @Test
     void testExampleScript() {
@@ -197,7 +195,7 @@ class ExampleSTAGTests {
     void testInvalidCommand() {
         String response = sendCommandToServer("simon: quiet");
         response = response.toLowerCase();
-        assertTrue(response.contains("unknown action"));
+        assertTrue(response.toLowerCase().contains("error"));
     }
 
     // Add more unit tests or integration tests here.

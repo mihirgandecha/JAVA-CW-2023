@@ -51,7 +51,7 @@ public class GetTesting {
     @Test
     void testGet() {
         String response;
-        sendCommandToServer("simon: get potion");
+        response = sendCommandToServer("simon: get potion");
         response = sendCommandToServer("simon: inv");
         response = response.toLowerCase();
         assertTrue(response.contains("potion"), "Did not see the potion in the inventory after an attempt was made to get it");

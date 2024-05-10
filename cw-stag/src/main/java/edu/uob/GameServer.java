@@ -16,7 +16,6 @@ import java.util.Map;
 public final class GameServer {
 
   private static final char END_OF_TRANSMISSION = 4;
-  private Map<String, Player> GamePlayers;
   public GameEngine GameEngine;
   private final String entitiesFileString;
   private final String actionsFileString;
@@ -63,47 +62,27 @@ public final class GameServer {
    */
   public String handleCommand(String command) {
     try {
-      initializeGamePlayers();
+      if (GameEngine == null) {
+        GameEngine = new GameEngine(this.entitiesFileString, this.actionsFileString);
+      }
       Tokeniser tokeniser = new Tokeniser(command);
       String username = tokeniser.getUsername();
       List<String> tokens = tokeniser.getTokens();
-      //Check if player already exists:
       Player player = addOrRetrievePlayer(username);
-      //Process Command:
-      if (GameEngine == null) {
-        GameEngine = new GameEngine(this.entitiesFileString, this.actionsFileString, GamePlayers);
-      }
-      GameEngine.updatePlayer(GamePlayers);
-      GameEngine.setPlayer(player);
       return GameEngine.execute(tokens, username);
     } catch (Exception e) {
       return e.getMessage();
     }
   }
 
-  private String getPlayersNameToString(String username){
-    StringBuilder sb = new StringBuilder();
-    for(Player player : GamePlayers.values()){
-      if(!player.equals(username)){
-        sb.append(player.getPlayerName() + "\n");
-      }
-    }
-    return sb.toString();
-  }
-
-  private void initializeGamePlayers() {
-    if (GamePlayers == null) {
-      GamePlayers = new HashMap<>();
-    }
-  }
-
   private Player addOrRetrievePlayer(String username) {
     Player player;
-    if(GamePlayers.containsKey(username)) {
-      player = GamePlayers.get(username);
+    if(GameEngine.getPlayerMap().containsKey(username)) {
+      player = GameEngine.getPlayerMap().get(username);
     } else {
       player = new Player(username);
-      GamePlayers.put(username, player);
+      GameEngine.setPlayer(player);
+      GameEngine.setNewPlayer(player);
     }
     return player;
   }

@@ -17,8 +17,7 @@ public class GraphvizParser {
     public ArrayList<Graph> clusters;
     Map<String, Location> gameMap;
     private ArrayList<String> locationNames;
-    private HashMap<String, GameEntity> entityList;
-    public Node firstNode;
+    private Node firstNode;
 
     public GraphvizParser(String entityFilePath) throws Exception {
         this.entityFilePath = Paths.get(entityFilePath);
@@ -43,10 +42,6 @@ public class GraphvizParser {
     public boolean doesDOTFileExist() {
         File f = new File(String.valueOf(entityFilePath));
         return f.exists() && !f.isDirectory();
-    }
-
-    public ArrayList<Graph> getWholeDocumentGraphList() {
-        return p.getGraphs();
     }
 
     public void setWholeDocument() {
@@ -100,7 +95,7 @@ public class GraphvizParser {
         }
     }
 
-    private Location createLocationFromNode(Node node) throws Exception {
+    private Location createLocationFromNode(Node node) {
         return new Location(node.getId().getId(), node.getAttribute("description"));
     }
 
@@ -150,7 +145,6 @@ public class GraphvizParser {
         for(Graph graph : nodes) {
             for(Node node: graph.getNodes(true)){
                 String type = graph.getId().toString();
-//                ArrayList<Node> node1 = nodes.get(0).getNodes(true);
                 String name = node.getId().getId().toString();
                 String description = node.getAttribute("description");
                 if (type.contains("artefact")) {
@@ -168,6 +162,10 @@ public class GraphvizParser {
             size++;
         }
         return location;
+    }
+
+    public String getFirstLocation(){
+        return this.firstNode.getId().getId();
     }
 
 }

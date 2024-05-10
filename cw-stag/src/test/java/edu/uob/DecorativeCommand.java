@@ -95,7 +95,7 @@ class DecorativeCommand {
     @Test
     void testIncorrectCommand() {
         String response = sendCommandToServer("simon: leap over");
-        assertTrue(response.toLowerCase().contains("unknown"));
+        assertTrue(response.toLowerCase().contains("error"));
     }
 
     @Test

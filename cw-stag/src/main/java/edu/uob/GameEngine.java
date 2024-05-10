@@ -3,36 +3,52 @@ package edu.uob;
 import edu.uob.Command.*;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class GameEngine {
-    private Map<String, Player> GamePlayers;
+    //TODO initialise here and make final
+    private final Map<String, Player> GamePlayers;
     private Player player;
-    private String entitiesFile;
-    private String actionsFile;
-    private Map<String, Location> map;
-    private AdvancedAction advancedAction;
-    private HashMap<String, HashSet<AdvancedAction>> actions;
-    private String firstLocation;
-    private Set<String> advancedActionsNames;
-    private Set<String> basicActionsNames;
-    private ArrayList<String> entities;
-    public List<String> command;
+    private final String entitiesFile;
+    private final String actionsFile;
+    private final Map<String, Location> map;
 
-    public GameEngine(String entitiesFile, String actionsFile, Map<String, Player> GamePlayers) throws Exception {
-        this.GamePlayers = GamePlayers;
+    private String firstLocation;
+    private static final Set<String> BASIC_ACTIONS_NAMES = Collections.unmodifiableSet(
+            new HashSet<>(Arrays.asList("get", "look", "inv", "inventory", "goto", "drop", "health"))
+    );
+    private final Set<String> advancedActionsNames;
+    private final ArrayList<String> allLocationsGameEntities;
+    private final HashMap<String, HashSet<AdvancedAction>> actions;
+    public List<String> command = new ArrayList<>();
+    private boolean priorityCmnd = false;
+    private boolean commandUsingAdvancedAction;
+
+    public GameEngine(String entitiesFile, String actionsFile) throws Exception {
         this.entitiesFile = entitiesFile;
         this.actionsFile = actionsFile;
+        this.GamePlayers = new HashMap<>();
         this.map = processEntitiesFile();
-        this.entities = new ArrayList<>();
+        this.allLocationsGameEntities = setAllLocationsGameEntities();
+        this.actions = processActionsFile();
+        this.advancedActionsNames = new HashSet<>();
+        setAdvancedActions();
+   }
+
+    private ArrayList<String> setAllLocationsGameEntities() {
+        ArrayList<String> GameEntities = new ArrayList<>();
         for(Location location : map.values()) {
             location.setAllEntities();
-            this.entities.add(location.getName());
-            for(GameEntity gameEntity: location.entityList){
-                this.entities.add(gameEntity.getName());
+            GameEntities.add(location.getName());
+            for(GameEntity gameEntity: location.getEntityList()){
+                GameEntities.add(gameEntity.getName());
             }
         }
-        this.actions = processActionsFile();
-        setAdvancedActions();
+        return GameEntities;
+    }
+
+    public Map<String, Player> getPlayerMap(){
+        return GamePlayers;
    }
 
    public void setPlayer(Player setPlayer){
@@ -41,20 +57,13 @@ public class GameEngine {
 
     // Add action commands from the XML file to Set
     private void setAdvancedActions() {
-        this.advancedActionsNames = new HashSet<>();
         this.advancedActionsNames.addAll(actions.keySet());
-        this.basicActionsNames = new HashSet<>();
-        this.basicActionsNames.addAll(Arrays.asList("get", "look", "inv", "inventory", "goto", "drop", "health"));
     }
 
     private Map<String, Location> processEntitiesFile() throws Exception {
         GraphvizParser p = new GraphvizParser(this.entitiesFile);
-        this.firstLocation = p.firstNode.getId().getId();
+        this.firstLocation = p.getFirstLocation();
         return p.getGameMap();
-    }
-
-    public String getFirstLocation() {
-        return this.firstLocation;
     }
 
     public Map<String, Player> getGamePlayers() {
@@ -62,83 +71,167 @@ public class GameEngine {
     }
 
     private HashMap<String, HashSet<AdvancedAction>> processActionsFile() throws GameError {
+        AdvancedAction advancedAction;
         DocumentParser p = new DocumentParser(this, player, this.actionsFile);
-        this.advancedAction = p.getActionsState();
-        this.advancedAction.setFirstLocation(this.firstLocation);
+        advancedAction = p.getActionsState();
+        advancedAction.setFirstLocation(this.firstLocation);
         return p.getGameActions();
     }
 
     public String execute(List<String> cleanCommand, String playerName) throws Exception {
-        setGamePlayers(playerName);
+        setGamePlayer(playerName);
         checkCommand(cleanCommand);
         return executeCommand(this.command).toString();
     }
 
-    public ArrayList<String> getEntities(){
-        return this.entities;
+    public ArrayList<String> getAllLocationsGameEntities(){
+        return this.allLocationsGameEntities;
     }
 
     public HashMap<String, HashSet<AdvancedAction>> getActions() {
         return actions;
     }
 
-    private void setGamePlayers(String playerName) {
+    private void setGamePlayer(String playerName) {
         this.player = GamePlayers.get(playerName);
-        setFirstLocation();
+        setCurrentLocation();
     }
 
     private void checkCommand(List<String> cleanCommand) throws GameError {
+        this.command.clear();
+        this.priorityCmnd = false;
+        this.commandUsingAdvancedAction = false;
+        //First strip any words that are not a GameEntity or Action:
+        List<String> filteredCommand = normalizeAndFilterCommand(cleanCommand);
+        // Extract possible actions and entities from the filtered command
+        List<String> possibleEntities = getCommandEntityList(filteredCommand);
+        List<String> possibleActions = getActionsFromCommand(filteredCommand);
+        //Check command has at least one action
+        if(possibleActions.isEmpty()) throw new GameError("Command Requires at least one action!");
+        //If the command is inv | health | look -> prioritise and execute
+        List<String> primaryAction = selectPrimaryActions(possibleActions);
+        if(this.priorityCmnd && primaryAction.size() == 1) {
+            if(!possibleEntities.isEmpty()) {
+                throw new GameError("Priority commands cannot have defined entities!");
+            }
+            this.command.add(primaryAction.get(0));
+            return;
+        }
+        if(possibleEntities.isEmpty()) throw new GameError("Command Requires at least one entity!");
+        //Check if get or drop if executable:
+        if(possibleActions.size() == 1 && possibleActions.get(0).equals("get") && possibleEntities.size() == 1) {
+            this.command.add(primaryAction.get(0));
+            this.command.add(possibleEntities.get(0));
+            return;
+        }
+        else{
+           primaryAction.remove("get");
+        }
+        if(possibleActions.size() == 1 && possibleActions.get(0).equals("drop") && possibleEntities.size() == 1) {
+            this.command.add(primaryAction.get(0));
+            this.command.add(possibleEntities.get(0));
+            return;
+        }
+        else{
+            primaryAction.remove("drop");
+        }
+
+        if(possibleActions.size() == 1 && possibleActions.get(0).equals("goto") && possibleEntities.size() == 1) {
+            this.command.add(primaryAction.get(0));
+            this.command.add(possibleEntities.get(0));
+            return;
+        }
+        else{
+            primaryAction.remove("goto");
+        }
+        if(possibleActions.isEmpty()) throw new GameError("Command Requires at least one action!");
+        if(possibleEntities.isEmpty()) throw new GameError("Command Requires at least one entity!");
+        //Else return advanced action:
+        this.command.add(possibleActions.get(0));
+        this.command.addAll(possibleEntities);
+    }
+
+    private List<String> normalizeAndFilterCommand(List<String> rawCommand) {
+        List<String> normalizedCommand = new ArrayList<>();
+        for (String token : rawCommand) {
+            String normalizedToken = token.trim().toLowerCase();
+            if (BASIC_ACTIONS_NAMES.contains(normalizedToken) ||
+                    advancedActionsNames.contains(normalizedToken) ||
+                    allLocationsGameEntities.contains(normalizedToken)) {
+                normalizedCommand.add(normalizedToken);
+            }
+        }
+        return normalizedCommand;
+    }
+
+    private List<String> getActionsFromCommand(List<String> cleanCommand) throws GameError {
+        List<String> possibleAction = new ArrayList<>();
+        for (String token : cleanCommand) {
+            String trimmedToken = token.trim();
+            if (BASIC_ACTIONS_NAMES.contains(trimmedToken)) {
+                possibleAction.add(trimmedToken);
+            } else if (this.advancedActionsNames.contains(trimmedToken)) {
+                possibleAction.add(trimmedToken);
+                this.commandUsingAdvancedAction = true;
+            }
+        }
+        return possibleAction;
+    }
+
+    private List<String> getCommandEntityList(List<String> cleanCommand) {
         List<String> possibleEntities = new ArrayList<>();
         for(String token : cleanCommand) {
-            if(this.entities.contains(token.trim())) {
+            if(this.allLocationsGameEntities.contains(token.trim())) {
                 possibleEntities.add(token.trim());
             }
         }
-        boolean checkAdvanced = false;
-        List<String> possibleAction = new ArrayList<>();
-        for(String token : cleanCommand) {
-            if(this.basicActionsNames.contains(token.trim())){
-                possibleAction.add(token.trim());
-            } else if(this.advancedActionsNames.contains(token.trim())) {
-                possibleAction.add(token.trim());
-                checkAdvanced = true;
+        return possibleEntities;
+    }
+
+    private List<String> selectPrimaryActions(List<String> possibleActions) throws GameError {
+        if (possibleActions.isEmpty()) {
+            throw new GameError("Require at least one action!");
+        }
+        // Give priority to specific actions like "look", "inventory", etc.
+        List<String> prioritizedActions = List.of("look", "inventory", "inv", "health");
+        for (String prioritisedAction : prioritizedActions) {
+            if (possibleActions.contains(prioritisedAction)) {
+                this.priorityCmnd = true;
+                return List.of(prioritisedAction);
             }
         }
-        if(possibleAction.isEmpty()) throw new GameError("Unknown action");
-        if (!checkAdvanced) {
-            String action = possibleAction.get(0);
-            if ((action.contains("look") || action.contains("inv") || action.contains("health")) && possibleEntities.size() >=1) {
-                throw new GameError("You can't specify any entities with this command.");
-            }
-            if (possibleEntities.size() == 0) {
-                if (!(action.contains("look") || action.contains("inv") || action.contains("health"))) {
-                    throw new GameError("You need to specify at least one entity");
-                }
-            } else if (possibleEntities.size() > 1) {
-                throw new GameError("Too many entities for a basic command!");
-            }
-        }
-        if(checkAdvanced) {
+        // If no prioritised action is found, return all available actions
+        return possibleActions;
+    }
+
+    private void validateCommand(String primaryAction, List<String> possibleEntities) throws GameError {
+        boolean isBasicActionWithoutEntities = Stream.of("look", "inventory", "inv", "health").anyMatch(primaryAction::equalsIgnoreCase);
+        // Check built-in command rules
+        if (isBasicActionWithoutEntities && !possibleEntities.isEmpty()) {
+            throw new GameError("You can't specify any entities with this command.");
+        } else if (!isBasicActionWithoutEntities && possibleEntities.isEmpty()) {
+            throw new GameError("You need to specify at least one entity.");
+        } else if (!this.commandUsingAdvancedAction && possibleEntities.size() > 1) {
+            throw new GameError("Too many entities for a basic command!");
+        } else if (this.commandUsingAdvancedAction) {
             HashSet<String> narrations = new HashSet<>();
             HashSet<AdvancedAction> actionsList = new HashSet<>();
-            int size = possibleEntities.size();
-            for(int i = 0; i < size; i++) {
-                actionsList.addAll(this.actions.get(possibleAction.get(i)));
-            }
-            for(AdvancedAction action : actionsList) {
+            actionsList.addAll(this.actions.getOrDefault(primaryAction, new HashSet<>()));
+
+            for (AdvancedAction action : actionsList) {
                 narrations.add(action.getNarration());
-                if(narrations.size() > 1) throw new GameError("Too many Game Actions!");
-                for(String entitie : possibleEntities) {
-                    if(!action.getSubjects().contains(entitie)) {
-                        throw new GameError("Invalid Entity: " + entitie);
+                if (narrations.size() > 1) {
+                    throw new GameError("Too many Game Actions!");
+                }
+                for (String entity : possibleEntities) {
+                    if (!action.getSubjects().contains(entity)) {
+                        throw new GameError("Invalid Entity: " + entity);
                     }
                 }
             }
         }
-        this.command = new ArrayList<>();
-        this.command.add(possibleAction.get(0));
-        this.command.addAll(possibleEntities);
     }
+
 
     private String executeCommand(List<String> commandList) throws Exception {
         String[] words = commandList.toArray(new String[commandList.size()]);
@@ -208,7 +301,7 @@ public class GameEngine {
         throw new GameError("Unknown Command: " + command);
     }
 
-    public void setFirstLocation() {
+    public void setCurrentLocation() {
         if(this.player.getCurrentLocation() == null){
             this.player.setLocation(this.firstLocation);
         }
@@ -243,7 +336,4 @@ public class GameEngine {
         this.GamePlayers.put(player.getPlayerName(), player);
     }
 
-    public void updatePlayer(Map<String, Player> gamePlayers) {
-        this.GamePlayers = gamePlayers;
-    }
 }
