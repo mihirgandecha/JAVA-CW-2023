@@ -55,7 +55,7 @@ public class GameEngine {
 
     private Map<String, Location> processEntitiesFile() throws Exception {
         GraphvizParser p = new GraphvizParser(this.entitiesFile);
-        this.firstLocation = p.firstNode.getId().getId();
+        this.firstLocation = p.getFirstLocation();
         return p.getGameMap();
     }
 

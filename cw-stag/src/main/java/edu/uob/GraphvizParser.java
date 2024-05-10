@@ -18,7 +18,7 @@ public class GraphvizParser {
     Map<String, Location> gameMap;
     private ArrayList<String> locationNames;
     private HashMap<String, GameEntity> entityList;
-    public Node firstNode;
+    private Node firstNode;
 
     public GraphvizParser(String entityFilePath) throws Exception {
         this.entityFilePath = Paths.get(entityFilePath);
@@ -168,6 +168,10 @@ public class GraphvizParser {
             size++;
         }
         return location;
+    }
+
+    public String getFirstLocation(){
+        return this.firstNode.getId().getId();
     }
 
 }
