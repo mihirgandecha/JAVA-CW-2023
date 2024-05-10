@@ -20,10 +20,8 @@ public class AdvancedAction extends GameCommand
     private Location storeroom;
     private List<GameEntity> locationEntities;
     private HashMap<String, Artefact> playerEntities;
-    private Player player;
-    private Map<String, Location> map;
     private boolean resetActivated = false;
-    private String firstLocation;
+
     private Location currentLocation;
 
     public AdvancedAction(GameEngine gameEngine, Player player, String basicCommand) {
@@ -78,10 +76,8 @@ public class AdvancedAction extends GameCommand
         this.locationEntities = map.get(player.getCurrentLocation()).entityList;
         this.playerEntities = player.getInventory();
         doesSubjectsExist();
-        //TODO - cannot activate action twice! blow horn two times duplicates!!
         this.storeroom = map.get("storeroom");
         this.storeroom.setAllEntities();
-        this.map = map;
         return true;
     }
 
@@ -145,9 +141,6 @@ public class AdvancedAction extends GameCommand
             if(entityToMove != null){
                 addEntityToStore(entityToMove);
             }
-//            else if (getEngineMap().get(player.currentLocation) != null) {
-//                getEngineMap().get(player.currentLocation).removeEntity(item);
-//            }
         }
     }
 
@@ -187,7 +180,8 @@ public class AdvancedAction extends GameCommand
     }
 
     public void setFirstLocation(String location){
-        this.firstLocation = location;
+        String firstLocation;
+        firstLocation = location;
     }
 
 

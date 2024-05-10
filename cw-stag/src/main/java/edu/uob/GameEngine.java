@@ -10,7 +10,7 @@ public class GameEngine {
     private String entitiesFile;
     private String actionsFile;
     private Map<String, Location> map;
-    private AdvancedAction advancedAction;
+
     private HashMap<String, HashSet<AdvancedAction>> actions;
     private String firstLocation;
     private Set<String> advancedActionsNames;
@@ -53,18 +53,15 @@ public class GameEngine {
         return p.getGameMap();
     }
 
-    public String getFirstLocation() {
-        return this.firstLocation;
-    }
-
     public Map<String, Player> getGamePlayers() {
         return GamePlayers;
     }
 
     private HashMap<String, HashSet<AdvancedAction>> processActionsFile() throws GameError {
+        AdvancedAction advancedAction;
         DocumentParser p = new DocumentParser(this, player, this.actionsFile);
-        this.advancedAction = p.getActionsState();
-        this.advancedAction.setFirstLocation(this.firstLocation);
+        advancedAction = p.getActionsState();
+        advancedAction.setFirstLocation(this.firstLocation);
         return p.getGameActions();
     }
 
@@ -107,11 +104,12 @@ public class GameEngine {
         if(possibleAction.isEmpty()) throw new GameError("Unknown action");
         if (!checkAdvanced) {
             String action = possibleAction.get(0);
-            if ((action.contains("look") || action.contains("inv") || action.contains("health")) && possibleEntities.size() >=1) {
+            boolean b = action.contains("look") || action.contains("inv") || action.contains("health");
+            if (b && possibleEntities.size() >=1) {
                 throw new GameError("You can't specify any entities with this command.");
             }
-            if (possibleEntities.size() == 0) {
-                if (!(action.contains("look") || action.contains("inv") || action.contains("health"))) {
+            if (possibleEntities.isEmpty()) {
+                if (!b) {
                     throw new GameError("You need to specify at least one entity");
                 }
             } else if (possibleEntities.size() > 1) {
