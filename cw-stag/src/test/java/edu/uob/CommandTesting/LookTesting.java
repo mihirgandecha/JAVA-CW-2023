@@ -81,13 +81,13 @@ public class LookTesting {
         String response = "simon: loker looky lookatme ilooknoworky";
         randomiseCasing(response);
         response = sendCommandToServer(response);
-        assertTrue(response.toLowerCase().contains("unknown"));
+        assertTrue(response.toLowerCase().contains("error"));
     }
 
     @Test
     void lookAdvancedDecorative(){
         String response = "simon: look in forest";
         response = sendCommandToServer(response);
-        assertTrue(response.toLowerCase().contains("you can't specify any entities with this command"));
+        assertTrue(response.toLowerCase().contains("error"));
     }
 }

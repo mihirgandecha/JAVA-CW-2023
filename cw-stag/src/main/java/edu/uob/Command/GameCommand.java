@@ -47,7 +47,7 @@ public abstract class GameCommand {
     }
 
     public ArrayList<String> getEntityList(){
-        return this.engine.getEntities();
+        return this.engine.getAllLocationsGameEntities();
     }
 
     public List<String> getCommand(){

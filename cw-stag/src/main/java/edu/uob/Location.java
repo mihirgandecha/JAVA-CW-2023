@@ -105,6 +105,9 @@ public class Location extends GameEntity {
     this.getEntityList().addAll(this.artefacts);
     this.getEntityList().addAll(this.characters);
     this.getEntityList().addAll(this.furnitures);
+//    this.entityList.addAll(this.furnitures);
+//    this.entityList.addAll(this.artefacts);
+//    this.entityList.addAll(this.characters);
   }
 
   private String addPrefixIfNeeded(String description) {
