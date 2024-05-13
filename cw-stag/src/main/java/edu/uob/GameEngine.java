@@ -156,14 +156,36 @@ public class GameEngine {
         }
         // Give priority to specific actions like "look", "inventory", etc.
         List<String> prioritizedActions = List.of("look", "inventory", "inv", "health");
-        for (String prioritisedAction : prioritizedActions) {
-            if (possibleActions.contains(prioritisedAction)) {
-                this.priorityCommand = true;
-                return List.of(prioritisedAction);
+        List<String> foundActions = new ArrayList<>();
+        for (String action : possibleActions) {
+            for (String prioritizedAction : prioritizedActions) {
+                if (action.equalsIgnoreCase(prioritizedAction)) {
+                    foundActions.add(action);
+                }
             }
         }
-        // If no prioritised action is found, return all available actions
-        return possibleActions;
+        if (foundActions.isEmpty()) {
+            // If no prioritised action is found, return all available actions
+            return possibleActions;
+        } else {
+            // Check if any prioritized action occurs more than once
+            if(foundActions.size() > 1) {
+                throw new GameError("A prioritised action appears more than once: " + possibleActions);
+            }
+            this.priorityCommand = true;
+            // Since a prioritised action was found, and it is unique, return it
+            return foundActions;
+        }
+
+
+//        for (String prioritisedAction : prioritizedActions) {
+//            if (possibleActions.toString().equalsIgnoreCase(prioritisedAction)) {
+//                this.priorityCommand = true;
+//                return List.of(prioritisedAction);
+//            }
+//        }
+//        // If no prioritised action is found, return all available actions
+//        return possibleActions;
     }
 
     private boolean tryExecuteSingleActionCommand(String action, List<String> primaryAction, List<String> possibleActions, List<String> possibleEntities) {

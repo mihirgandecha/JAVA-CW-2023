@@ -133,4 +133,11 @@ public class InventoryTesting {
         response = sendCommandToServer("mihir: open inventory for cabin");
         assertTrue(response.toLowerCase().contains("error"));
     }
+
+    @Test
+    void inventoryCommandExtraneous(){
+        String response = sendCommandToServer("mihir: get axe");
+        response = sendCommandToServer("mihir: inv inventory");
+        assertTrue(response.toLowerCase().contains("error"));
+    }
 }

@@ -44,6 +44,11 @@ public class HealthTesting {
         return randomiseCaseForName.toString();
     }
 
+    @Test
+    void healthCommandExtraneous(){
+        String response = sendCommandToServer("mihir: look health");
+        assertTrue(response.toLowerCase().contains("error"));
+    }
 
     @Test
     void healthAndMultiplayerDeathPasses() {
