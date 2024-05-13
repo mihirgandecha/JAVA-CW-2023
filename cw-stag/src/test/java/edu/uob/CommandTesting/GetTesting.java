@@ -119,4 +119,17 @@ public class GetTesting {
         response = sendCommandToServer(response);
         assertTrue(response.toLowerCase().contains("error"));
     }
+
+    //TODO: should this be False?
+    @Test
+    void getCommandExtraneous(){
+        String response = sendCommandToServer("mihir: geT The AxE, GoBliN iS ChaSing Me! gET IT QUICKLY!!!");
+        assertFalse(response.toLowerCase().contains("error"));
+    }
+
+    @Test
+    void getCommandExtraneous2(){
+        String response = sendCommandToServer("mihir: get the TrapDoor");
+        assertTrue(response.toLowerCase().contains("error"));
+    }
 }
