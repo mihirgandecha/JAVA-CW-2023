@@ -5,11 +5,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.io.IOException;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -86,7 +84,7 @@ class ExampleSTAGTests {
         //Initial look
         response = sendCommandToServer("simon: look");
         response = response.toLowerCase();
-        assertTrue(Arrays.asList("cabin", "potion", "axe", "trapdoor", "forest").stream().allMatch(response::contains));
+        assertTrue(Stream.of("cabin", "potion", "axe", "trapdoor", "forest").allMatch(response::contains));
 
         // Check inventory after picking axe
         response = sendCommandToServer("simon: inv");
@@ -103,7 +101,7 @@ class ExampleSTAGTests {
         //Look - check axe not in cabin location
         response = sendCommandToServer("simon: look");
         response = response.toLowerCase();
-        assertTrue(Arrays.asList("cabin", "potion", "trapdoor", "forest").stream().allMatch(response::contains));
+        assertTrue(Stream.of("cabin", "potion", "trapdoor", "forest").allMatch(response::contains));
 
         //Pickup Potion
         response = sendCommandToServer("simon: get potion");
@@ -112,7 +110,7 @@ class ExampleSTAGTests {
         //Look - check potion not in cabin location
         response = sendCommandToServer("simon: look");
         response = response.toLowerCase();
-        assertTrue(Arrays.asList("cabin", "trapdoor", "forest").stream().allMatch(response::contains));
+        assertTrue(Stream.of("cabin", "trapdoor", "forest").allMatch(response::contains));
 
         // Check inventory after picking potion with 'inventory'
         response = sendCommandToServer("simon: inv");
@@ -121,7 +119,7 @@ class ExampleSTAGTests {
         //Goto - check player is moved
         response = sendCommandToServer("simon: goto forest");
         response = response.toLowerCase();
-        assertTrue(Arrays.asList("forest", "key", "cabin").stream().allMatch(response::contains));
+        assertTrue(Stream.of("forest", "key", "cabin").allMatch(response::contains));
 
         response = sendCommandToServer("simon: chop tree");
         assertEquals("you cut down the tree with the axe\n", response.toLowerCase());
@@ -134,7 +132,7 @@ class ExampleSTAGTests {
         //Goto cabin now having key
         response = sendCommandToServer("simon: goto cabin");
         response = response.toLowerCase();
-        assertTrue(Arrays.asList("cabin", "trapdoor", "forest").stream().allMatch(response::contains));
+        assertTrue(Stream.of("cabin", "trapdoor", "forest").allMatch(response::contains));
 
         //Check advanced Action: trapdoor can be opened as player holds key
         response = sendCommandToServer("simon: open trapdoor");
@@ -147,7 +145,7 @@ class ExampleSTAGTests {
         //TODO need to remove trapdoor?
         response = sendCommandToServer("simon: goto cellar");
         response = response.toLowerCase();
-        assertTrue(Arrays.asList("cellar", "elf", "cabin").stream().allMatch(response::contains));
+        assertTrue(Stream.of("cellar", "elf", "cabin").allMatch(response::contains));
     }
 
     @Test
@@ -244,7 +242,7 @@ class ExampleSTAGTests {
         response = sendCommandToServer("mihir: inv");
         response = sendCommandToServer("mihir: look");
         response = sendCommandToServer("mihir: chop axe");
-
+        assertTrue(response.toLowerCase().contains("you cut down the tree with the axe"));
     }
 
     @Test
@@ -290,10 +288,10 @@ class ExampleSTAGTests {
             [Test Multiplayer] -> is game players reset?
                 [Test server] -> only config is loaded into GameServer EACH TIME server is restarted, thats all! //TODO test this happens!
                 [Test server] -> TODO arg length, null commands, decorative, if command is repeated, if command has username again?
-            [Test client: Username] -> what happens when no username is sent as an arguement, what is an appropriate username that wont cause conflicts (ie maybe no punctuation, what if its a game action?
+            [Test client: Username] -> what happens when no username is sent as an argument, what is an appropriate username that wont cause conflicts (ie maybe no punctuation, what if its a game action?
             [Test server: Command] -> decorative commands
             [Test client/server] -> server should remain operational (ie test for handling Game Error), however should GameClient? TODO: surround client in try/catch!
-            [Test client]: -> flood server with high volume of commandss in short period to test high-load situation //TODO is there a delay?
+            [Test client]: -> flood server with high volume of commands in short period to test high-load situation //TODO is there a delay?
             [Test client] -> TODO run multiple clients ESSENTIAL!!! threading?
             [Test server]: TODO disconnect client, is server still running?
             TODO file handling
