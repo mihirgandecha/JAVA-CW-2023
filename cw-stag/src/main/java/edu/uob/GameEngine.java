@@ -51,7 +51,12 @@ public class GameEngine {
     private Map<String, Location> processEntitiesFile() throws Exception {
         GraphvizParser p = new GraphvizParser(this.entitiesFile);
         this.firstLocation = p.getFirstLocation();
-        return p.getGameMap();
+        Map<String, Location> gameMap = p.getGameMap();
+        if(!gameMap.containsKey("storeroom")){
+            Location storeroom = new Location("storeroom", "Storage for any entities not placed in the game");
+            gameMap.put("storeroom", storeroom);
+        }
+        return gameMap;
     }
 
     public Map<String, Player> getPlayerMap() {
@@ -102,15 +107,13 @@ public class GameEngine {
             this.command.add(primaryAction.get(0));
             return;
         }
-        if(possibleEntities.isEmpty()) throw new GameError("Command Requires at least one entity!");
         // Handle single action commands (get, drop, goto)
         if (tryExecuteSingleActionCommand("get", primaryAction, possibleActions, possibleEntities)
                 || tryExecuteSingleActionCommand("drop", primaryAction, possibleActions, possibleEntities)
                 || tryExecuteSingleActionCommand("goto", primaryAction, possibleActions, possibleEntities)) {
             return;
         }
-        if(possibleActions.isEmpty()) throw new GameError("Command Requires at least one action!");
-        if(possibleEntities.isEmpty()) throw new GameError("Command Requires at least one entity!");
+        if(possibleActions.isEmpty() && possibleEntities.isEmpty()) throw new GameError("Get, Drop and Goto commands can only have one trigger action, and require only one Game Entity!");
         //Else return advanced action:
         this.command.add(possibleActions.get(0));
         this.command.addAll(possibleEntities);
@@ -156,20 +159,29 @@ public class GameEngine {
         if (possibleActions.isEmpty()) {
             throw new GameError("Require at least one action!");
         }
-        // Give priority to specific actions like "look", "inventory", etc.
         List<String> prioritizedActions = List.of("look", "inventory", "inv", "health");
-        for (String prioritisedAction : prioritizedActions) {
-            if (possibleActions.contains(prioritisedAction)) {
-                this.priorityCommand = true;
-                return List.of(prioritisedAction);
+        List<String> foundActions = new ArrayList<>();
+        for (String action : possibleActions) {
+            for (String prioritizedAction : prioritizedActions) {
+                if (action.equalsIgnoreCase(prioritizedAction)) {
+                    foundActions.add(action);
+                }
             }
         }
-        // If no prioritised action is found, return all available actions
-        return possibleActions;
+        if (foundActions.isEmpty()) {
+            return possibleActions;
+        } else {
+            if(foundActions.size() > 1) {
+                throw new GameError("A prioritised action appears more than once: " + possibleActions);
+            }
+            this.priorityCommand = true;
+            return foundActions;
+        }
     }
 
-    private boolean tryExecuteSingleActionCommand(String action, List<String> primaryAction, List<String> possibleActions, List<String> possibleEntities) {
-        if (possibleActions.size() == 1 && possibleActions.get(0).equals(action) && possibleEntities.size() == 1) {
+    private boolean tryExecuteSingleActionCommand(String action, List<String> primaryAction, List<String> possibleActions, List<String> possibleEntities) throws GameError {
+        if (possibleActions.size() == 1 && possibleActions.get(0).equals(action)) {
+            if(possibleEntities.size() != 1) throw new GameError("Cannot have more than one entity for command: " + action);
             this.command.add(primaryAction.get(0));
             this.command.add(possibleEntities.get(0));
             return true;

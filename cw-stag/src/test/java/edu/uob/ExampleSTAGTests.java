@@ -5,11 +5,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.io.IOException;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -86,7 +84,7 @@ class ExampleSTAGTests {
         //Initial look
         response = sendCommandToServer("simon: look");
         response = response.toLowerCase();
-        assertTrue(Arrays.asList("cabin", "potion", "axe", "trapdoor", "forest").stream().allMatch(response::contains));
+        assertTrue(Stream.of("cabin", "potion", "axe", "trapdoor", "forest").allMatch(response::contains));
 
         // Check inventory after picking axe
         response = sendCommandToServer("simon: inv");
@@ -103,7 +101,7 @@ class ExampleSTAGTests {
         //Look - check axe not in cabin location
         response = sendCommandToServer("simon: look");
         response = response.toLowerCase();
-        assertTrue(Arrays.asList("cabin", "potion", "trapdoor", "forest").stream().allMatch(response::contains));
+        assertTrue(Stream.of("cabin", "potion", "trapdoor", "forest").allMatch(response::contains));
 
         //Pickup Potion
         response = sendCommandToServer("simon: get potion");
@@ -112,7 +110,7 @@ class ExampleSTAGTests {
         //Look - check potion not in cabin location
         response = sendCommandToServer("simon: look");
         response = response.toLowerCase();
-        assertTrue(Arrays.asList("cabin", "trapdoor", "forest").stream().allMatch(response::contains));
+        assertTrue(Stream.of("cabin", "trapdoor", "forest").allMatch(response::contains));
 
         // Check inventory after picking potion with 'inventory'
         response = sendCommandToServer("simon: inv");
@@ -121,7 +119,7 @@ class ExampleSTAGTests {
         //Goto - check player is moved
         response = sendCommandToServer("simon: goto forest");
         response = response.toLowerCase();
-        assertTrue(Arrays.asList("forest", "key", "cabin").stream().allMatch(response::contains));
+        assertTrue(Stream.of("forest", "key", "cabin").allMatch(response::contains));
 
         response = sendCommandToServer("simon: chop tree");
         assertEquals("you cut down the tree with the axe\n", response.toLowerCase());
@@ -134,7 +132,7 @@ class ExampleSTAGTests {
         //Goto cabin now having key
         response = sendCommandToServer("simon: goto cabin");
         response = response.toLowerCase();
-        assertTrue(Arrays.asList("cabin", "trapdoor", "forest").stream().allMatch(response::contains));
+        assertTrue(Stream.of("cabin", "trapdoor", "forest").allMatch(response::contains));
 
         //Check advanced Action: trapdoor can be opened as player holds key
         response = sendCommandToServer("simon: open trapdoor");
@@ -147,7 +145,7 @@ class ExampleSTAGTests {
         //TODO need to remove trapdoor?
         response = sendCommandToServer("simon: goto cellar");
         response = response.toLowerCase();
-        assertTrue(Arrays.asList("cellar", "elf", "cabin").stream().allMatch(response::contains));
+        assertTrue(Stream.of("cellar", "elf", "cabin").allMatch(response::contains));
     }
 
     @Test
@@ -244,7 +242,7 @@ class ExampleSTAGTests {
         response = sendCommandToServer("mihir: inv");
         response = sendCommandToServer("mihir: look");
         response = sendCommandToServer("mihir: chop axe");
-
+        assertTrue(response.toLowerCase().contains("you cut down the tree with the axe"));
     }
 
     @Test
@@ -269,27 +267,20 @@ class ExampleSTAGTests {
         assertFalse(response.toLowerCase().contains("key"), "Mihir should not have the key picked up by Simon.");
     }
 
-    //Currently: 31 Failures/53 tests -> 22 Tests Passed/53 (Goto fixed bugs)
-    //Objective by Tuesday (need 55-60% to not use extension): 35Passed/53 -> 13 additional tests
-    //TODO: Read through docs carefullY! Pick out any features I've missed! Write down features below.
-    //!TODO 1. Decorative command handling!!! [Guess 5 tests] {get the axe!}
-    //TODO: 2. Write tests for Fully pass testing of basic files + Completing Game
-        //TODO: Ensure Health functionality working by modifying Advanced Actions to use Super instead [Guess 5 tests]
-        //TODO: Ensure Multiplayer functionality working in tests [Guess 5 tests]
-        //TODO: (Q) Ask file handling logic correct
-    //TODO: 2. Write tests for Fully pass testing of extended files + Completing Game
-
+    //Currently: Monday13thMay: 38Passed/53 -> 15 Failures
+    //Due next Monday therefore AIM: Wednesday complete TODO find out testing days -> less that 10 test failures then submit after he runs last test (ie no changes after)
+    //TODO: 1. Read through docs carefullyY! Pick out any features I've missed! Write down features below.
 
     //Advanced:
-    //TODO: For any file given, integration test build so every situation is tested
-    //TODO: Make my own entity/action files! (just one more but add more later)
-    //TODO: Get someone else to play
+    //TODO: 2. Make my own entity/action files!!!:
+        // TODO: Handling things like producing in currently location logic
+
+    //Before Submitting:
     //TODO: Code cleanup - find out approx lines of code + try match
-    //TODO: Gitignore definitely cleaned
     //TODO: Code Quality - following last feedback
     //TODO: 100% code coverage testing
 
-    /*[FEATURES]:
+    /*[TESTS]:
         T2: Game Engine:
             Server always running, however: "When a client connects to the server, the server accepts the connection and assigns a unique identifier to the client to distinguish it from other clients."
             ie for every new player -> assigns a unique identifier to the client? Does this mean new port?
@@ -297,15 +288,149 @@ class ExampleSTAGTests {
             [Test Multiplayer] -> is game players reset?
                 [Test server] -> only config is loaded into GameServer EACH TIME server is restarted, thats all! //TODO test this happens!
                 [Test server] -> TODO arg length, null commands, decorative, if command is repeated, if command has username again?
-            [Test client: Username] -> what happens when no username is sent as an arguement, what is an appropriate username that wont cause conflicts (ie maybe no punctuation, what if its a game action?
+            [Test client: Username] -> what happens when no username is sent as an argument, what is an appropriate username that wont cause conflicts (ie maybe no punctuation, what if its a game action?
             [Test server: Command] -> decorative commands
             [Test client/server] -> server should remain operational (ie test for handling Game Error), however should GameClient? TODO: surround client in try/catch!
-            [Test client]: -> flood server with high volume of commandss in short period to test high-load situation //TODO is there a delay?
+            [Test client]: -> flood server with high volume of commands in short period to test high-load situation //TODO is there a delay?
             [Test client] -> TODO run multiple clients ESSENTIAL!!! threading?
             [Test server]: TODO disconnect client, is server still running?
             TODO file handling
+
+T4 Game Entities:
+- locations can only be rooms,environment that exist (ie in .dot file)
+- artefacts: only thing that can be collected into player inv
+- furniture - cannot be collected by player; part of location
+- characters - cannot be collected by player; part of .dot
+- player - user in the game
+
+
+Locations:
+- paths to other locations (what if no path?)/possible for paths to be one-way
+- characters, artefacts, furniture in a location
+
+T5 loading Entities:
+- using jpgd parser?
+- extracting graphviz objects? -> DS?
+- using abstract class?
+- Entities CANNOT contain SPACES!
+- all entities need a name and description!
+- no duplicate entities! door + door does not work, however door + trapdoor works!
+- starting point is correct?
+- entities that have no location being stored in storeroom?
+
+ASSUME entity files are in VALID form!
+
+
+T6: Game Actions
+- no you may assume???
+
+- test at least ONE trigger phrase (initiating the action)
+- test at least ONE subject entities 
+	- are ALL subjects available in:
+		i. player.getInventory().contain(subject_entity_needed))
+		ii. available in CURRENT.LOCATION?
+	- when acted does produce store artefact in player.inventory, however char,furniture,location does not work?
+
+- (opt)consumed enties - eaten up by action
+- (opt)produced enties - generated by action
+- AT LEAST ONE narration for EACH action
+
+- each trigger keyphrase are NOT unique (probs missing!!!)
+	- ie OPEN door <- can be one action
+	- OPEN backdoor <- could be another action
+
+- trigger phrase CANNOT contain names of entities (lock lock with key)
+	- WHY is this a challenge???
+
+- I/O (eg get key door open)
+	- GET requires AT LEAST one subject entity
+	- OPEN says that it needs entity door + key entity 
+		- entity door is not Artefact type, therefore must be in location
+		- entity door is Artefact, check player Inv FIRST, THEN c.location
+	- If true -> produce/consume; else gameerror
+
+
+Produce:
+- moves game.entity FROM ITS position in MAP (inc storeroom) -> c.location entity_list
+	Methods:
+	- findGameEntityPosition, if found return string location; if false GameError
+	- placeIntoCurrentLocation -> C.Location to update TYPE_LIST -> ENTITY_LIST (NEVER playerInv) -> return narration
+
+Consume:
+- moves game.entity FROM ITS position in MAP (inc storeroom) -> storeroom
+- if CO-LOCATION: - moves game.entity FROM ITS position in MAP (inc storeroom) -> c.location entity_list HOWEVER if game.entity in c.location + is Subject
+ - ie open lock with key -> NO CO-LOCATION means once key is used it is moved to storeroom, no longer able to be used
+- CO-LOCATION ON COULD means if key is required again???  
+
+	Methods:
+	- findGameEntityPosition, if found return string location; if false GameError
+	- placeIntoCurrentLocation -> C.Location to update TYPE_LIST -> ENTITY_LIST (NEVER playerInv) -> return narration
+
+if game.entity in another players inventory -> out of bounds
+
+as unlock key produces location -> consume location should REMOVE path! TEST!!
+
+
+
+T7: Loading Actions:
+- using JAXP?
+- using DocumentBuilder? -> DS same used?
+
+Data Struct:
+- are duplicate actions being handled?
+	- ie if open door == swing door, are duplicate removed?
+	- if open door and open backdoor (2 different actions) BUT currently have backdoor as subject valid -> is action triggered?
+
+ACTION FILES ARE VALID!!!
+
+
+
+T8: Command Flexibility:
+
+1. Case insensitive
+	- is door && DOOR in same game? -> GameError
+	- input -> case insensitive -> output (lowercase)
+
+2. Decorated Commands
+	- chop tree with axe; please chop the tree with axe -> additional words == TRUE
+
+3. Words Ordering
+	- chop tree with axe == use axe to chop tree TRUE
+
+4. Partial Commands:
+	- unlock trapdoor with key == TRUE (if both trigger words!) ie handle AT LEAST ONE TRIGGER WORD, ignore the rest
+	
+5. EXTRANEOUS Entities:
+	- AT LEAST ONE TRIGGER PHRASE + ONE SUBJECT! 
+	- ^ ignored for look, health, inv, inventory
+	- open potion with hammer == false! 2 subjects input - ONLY 1 needed!
+	- get key from forest == false! 2 subjects input - ONLY 1 needed!
+
+therefore look get == true; look get forest == false (NO subjects needed!)
+1. check if basic command (inv/health/look) 
+	- from command are there any subjects, if yes return false!
+2. get/drop - if subjects > 1:
+		return false
+3. custom action - if subject > REQUIRED_SUBJECT_COUNT:
+		return false
+
+!!!
+6. Ambiguous Command:
+	- look goto forest; look is valid, goto forest is valid, return false!
+	- open door trapdoor (2 different actions with door in one subject, trapdoor in the other)
+		- return there is more than one 'open' action possible - which one do you want to perform ?
+
+7. Composite Command:
+	- look + goto forest SHOULD NOT BE SUPPORTED! ie perform look first, then goto -> return error! 
+
+8. GameError
+	- using inv and look to test for assertTrue/assertFalse
+	- different GameError for different situations?
+
+
 
     */
 
 
 }
+

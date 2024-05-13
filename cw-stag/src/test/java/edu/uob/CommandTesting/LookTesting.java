@@ -9,8 +9,7 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LookTesting {
 
@@ -88,6 +87,22 @@ public class LookTesting {
     void lookAdvancedDecorative(){
         String response = "simon: look in forest";
         response = sendCommandToServer(response);
+        assertTrue(response.toLowerCase().contains("error"));
+    }
+
+
+    @Test
+    void lookCommandExtraneous(){
+        //Duplicate no error however >1 trigger word is error
+        String response = sendCommandToServer("mihir: look LoOk");
+        assertFalse(response.toLowerCase().contains("error"));
+        response = sendCommandToServer("mihir: look inv");
+        assertTrue(response.toLowerCase().contains("error"));
+    }
+
+    @Test
+    void lookCommandExtraneous2(){
+        String response = sendCommandToServer("mihir: have a look if there is a potion");
         assertTrue(response.toLowerCase().contains("error"));
     }
 }

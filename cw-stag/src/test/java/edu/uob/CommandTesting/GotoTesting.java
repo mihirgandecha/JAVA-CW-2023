@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Random;
 
-import static javax.swing.text.html.parser.DTDConstants.NUMBERS;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GotoTesting {
@@ -160,5 +159,32 @@ public class GotoTesting {
         assertTrue(response.toLowerCase().contains("key"));
         assertTrue(response.toLowerCase().contains("tree"));
         assertTrue(response.toLowerCase().contains("cabin"));
+    }
+
+    @Test
+    void extraneousGotoInvalid(){
+        String response = "mihir: goto axe";
+        randomiseCasing(response);
+        response = sendCommandToServer(response);
+        assertTrue(response.toLowerCase().contains("error"));
+    }
+
+    @Test
+    void extraneousGotoInvalid2(){
+        String response = "mihir: goto storeroom";
+        randomiseCasing(response);
+        response = sendCommandToServer(response);
+        assertTrue(response.toLowerCase().contains("error"));
+    }
+
+    @Test
+    void extraneousGotoInvalid3(){
+        sendCommandToServer("mihir: goto forest");
+        sendCommandToServer("mihir: get key");
+        sendCommandToServer("mihir: goto cabin");
+        sendCommandToServer("mihir: unlock trapdoor");
+        String response = "mihir: goto cabin and then forest";
+        response = sendCommandToServer(response);
+        assertTrue(response.toLowerCase().contains("error"));
     }
 }
