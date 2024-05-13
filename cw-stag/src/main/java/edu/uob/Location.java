@@ -47,7 +47,7 @@ public class Location extends GameEntity {
     StringBuilder s = new StringBuilder();
     for(Artefact artefact: this.artefacts) {
       String modifiedDescription = addPrefixIfNeeded(artefact.getDescription());
-      s.append(modifiedDescription).append("\n");
+      s.append(modifiedDescription).append(" [ARTEFACT]\n");
     }
     return s.toString();
   }
@@ -71,7 +71,7 @@ public class Location extends GameEntity {
     StringBuilder s = new StringBuilder();
     for(Character character: this.characters) {
       String modifiedDescription = addPrefixIfNeeded(character.getDescription());
-      s.append(modifiedDescription + "\n");
+      s.append(modifiedDescription + " [CHARACTER]\n");
     }
     return s.toString();
   }
@@ -95,7 +95,7 @@ public class Location extends GameEntity {
     StringBuilder s = new StringBuilder();
     for(Furniture furniture : this.furnitures) {
       String modifiedDescription = addPrefixIfNeeded(furniture.getDescription());
-      s.append(modifiedDescription + "\n");
+      s.append(modifiedDescription + " [FURNITURE]\n");
     }
     return s.toString();
   }
@@ -105,9 +105,6 @@ public class Location extends GameEntity {
     this.getEntityList().addAll(this.artefacts);
     this.getEntityList().addAll(this.characters);
     this.getEntityList().addAll(this.furnitures);
-//    this.entityList.addAll(this.furnitures);
-//    this.entityList.addAll(this.artefacts);
-//    this.entityList.addAll(this.characters);
   }
 
   private String addPrefixIfNeeded(String description) {

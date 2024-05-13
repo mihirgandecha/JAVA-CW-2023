@@ -34,10 +34,10 @@ public class Look extends GameCommand {
     }
 
     private void setPathToString(){
-        this.builder.append("You can access from here: " + "\n");
+        this.builder.append("\n" + "You can access from here: " + "\n");
         ArrayList<String> paths = this.location.pathTo;
         for (String path : paths) {
-            this.builder.append(path + "\n");
+            this.builder.append(path + " [LOCATION]\n");
         }
     }
 
