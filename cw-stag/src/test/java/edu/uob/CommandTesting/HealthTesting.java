@@ -51,6 +51,12 @@ public class HealthTesting {
     }
 
     @Test
+    void healthCommandExtraneous2(){
+        String response = sendCommandToServer("mihir: potion health");
+        assertTrue(response.toLowerCase().contains("error"));
+    }
+
+    @Test
     void healthAndMultiplayerDeathPasses() {
         String response;
         response = sendCommandToServer("simon: goto forest");

@@ -99,4 +99,10 @@ public class LookTesting {
         response = sendCommandToServer("mihir: look inv");
         assertTrue(response.toLowerCase().contains("error"));
     }
+
+    @Test
+    void lookCommandExtraneous2(){
+        String response = sendCommandToServer("mihir: have a look if there is a potion");
+        assertTrue(response.toLowerCase().contains("error"));
+    }
 }
