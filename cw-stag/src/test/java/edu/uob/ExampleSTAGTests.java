@@ -269,27 +269,20 @@ class ExampleSTAGTests {
         assertFalse(response.toLowerCase().contains("key"), "Mihir should not have the key picked up by Simon.");
     }
 
-    //Currently: 31 Failures/53 tests -> 22 Tests Passed/53 (Goto fixed bugs)
-    //Objective by Tuesday (need 55-60% to not use extension): 35Passed/53 -> 13 additional tests
-    //TODO: Read through docs carefullY! Pick out any features I've missed! Write down features below.
-    //!TODO 1. Decorative command handling!!! [Guess 5 tests] {get the axe!}
-    //TODO: 2. Write tests for Fully pass testing of basic files + Completing Game
-        //TODO: Ensure Health functionality working by modifying Advanced Actions to use Super instead [Guess 5 tests]
-        //TODO: Ensure Multiplayer functionality working in tests [Guess 5 tests]
-        //TODO: (Q) Ask file handling logic correct
-    //TODO: 2. Write tests for Fully pass testing of extended files + Completing Game
-
+    //Currently: Monday13thMay: 38Passed/53 -> 15 Failures
+    //Due next Monday therefore AIM: Wednesday complete TODO find out testing days -> less that 10 test failures then submit after he runs last test (ie no changes after)
+    //TODO: 1. Read through docs carefullyY! Pick out any features I've missed! Write down features below.
 
     //Advanced:
-    //TODO: For any file given, integration test build so every situation is tested
-    //TODO: Make my own entity/action files! (just one more but add more later)
-    //TODO: Get someone else to play
+    //TODO: 2. Make my own entity/action files!!!:
+        // TODO: Handling things like producing in currently location logic
+
+    //Before Submitting:
     //TODO: Code cleanup - find out approx lines of code + try match
-    //TODO: Gitignore definitely cleaned
     //TODO: Code Quality - following last feedback
     //TODO: 100% code coverage testing
 
-    /*[FEATURES]:
+    /*[TESTS]:
         T2: Game Engine:
             Server always running, however: "When a client connects to the server, the server accepts the connection and assigns a unique identifier to the client to distinguish it from other clients."
             ie for every new player -> assigns a unique identifier to the client? Does this mean new port?
@@ -304,7 +297,6 @@ class ExampleSTAGTests {
             [Test client] -> TODO run multiple clients ESSENTIAL!!! threading?
             [Test server]: TODO disconnect client, is server still running?
             TODO file handling
-
     */
 
 
