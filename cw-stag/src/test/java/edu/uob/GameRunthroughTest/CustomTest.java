@@ -53,7 +53,18 @@ public class CustomTest {
 
     @Test
     void chopElfInHalf(){
-        String response = sendCommandToServer("mihir: goto storeroom");
-        assertTrue(response.toLowerCase().contains("you are in storage for any entities not placed in the game. you can see:"));
+        sendCommandToServer("mihir: goto forest");
+        sendCommandToServer("mihir: get key");
+        sendCommandToServer("mihir: goto cabin");
+        sendCommandToServer("mihir: unlock trapdoor");
+        sendCommandToServer("mihir: get axe");
+        sendCommandToServer("mihir: goto cellar");
+        String response = sendCommandToServer("mihir: chop elf");
+        assertTrue(response.toLowerCase().contains("gave you some gold"));
+        response = sendCommandToServer("mihir: look");
+        System.out.println(response);
+        assertTrue(response.toLowerCase().contains("pot of gold"));
+        response = sendCommandToServer("mihir: rest");
+        System.out.println(response);
     }
 }

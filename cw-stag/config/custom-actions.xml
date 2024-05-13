@@ -91,6 +91,36 @@
 
     <action>
         <triggers>
+            <keyphrase>rest</keyphrase>
+        </triggers>
+        <subjects>
+        </subjects>
+        <consumed>
+        </consumed>
+        <produced>
+            <entity>health</entity>
+            <entity>health</entity>
+        </produced>
+        <narration>You take a longer rest</narration>
+    </action>
+
+
+    <action>
+        <triggers>
+            <keyphrase>rest</keyphrase>
+        </triggers>
+        <subjects>
+        </subjects>
+        <consumed>
+        </consumed>
+        <produced>
+            <entity>health</entity>
+        </produced>
+        <narration>You take a break for a big</narration>
+    </action>
+
+    <action>
+        <triggers>
             <keyphrase>pay</keyphrase>
         </triggers>
         <subjects>

@@ -75,18 +75,22 @@ public class AdvancedAction extends GameCommand
         getEngineMap().get(player.getCurrentLocation()).setAllEntities();
         this.locationEntities = map.get(player.getCurrentLocation()).getEntityList();
         this.playerEntities = player.getInventory();
-        doesSubjectsExist();
         this.storeroom = map.get("storeroom");
         this.storeroom.setAllEntities();
-        return true;
+        if(doesSubjectsExist()){
+            return true;
+        }
+        return false;
     }
 
-    private void doesSubjectsExist() throws GameError {
+    private boolean doesSubjectsExist() throws GameError {
         for(String subject : subjects){
             if(!checkLocationForEntity(subject) && !checkInventoryForEntity(subject)){
-                throw new GameError("Game Subject does not exist in Location or Player Inventory!\n");
+                return false;
+//                throw new GameError("Game Subject does not exist in Location or Player Inventory!\n");
             }
         }
+        return true;
     }
 
     private boolean checkLocationForEntity(String entityToCheck){
@@ -120,16 +124,16 @@ public class AdvancedAction extends GameCommand
                     resetPlayer();
                     this.resetActivated = true;
                 }
-                break;
+                continue;
             }
             GameEntity entityToMove = null;
             for(Location location: getEngineMap().values()){
                 if(location.getName().equalsIgnoreCase("storeroom")){
-                    break;
+                    continue;
                 }
                 if(location.getEntityForProduce(item)){
                     entityToMove = location.getEntity(item);
-                    break;
+                    continue;
                 }
             }
             if (player.getInventory().containsKey(item)) {
@@ -189,20 +193,19 @@ public class AdvancedAction extends GameCommand
         for (String item : getProduced()) {
             if (item.equalsIgnoreCase("health")) {
                 player.increaseHealth();
-                break;
+                continue;
             }
             GameEntity entityToMove = null;
             for(Location location: getEngineMap().values()){
                 if(location.getEntityForProduce(item)){
                     entityToMove = location.getEntity(item);
-                    break;
+                    continue;
                 }
             }
             if (entityToMove != null) {
                 addEntityToLocation(entityToMove);
             } else if (engine.getMap().containsKey(item)) {
                 getEngineMap().get(player.getCurrentLocation()).pathTo.add(item);
-//                storeroom.pathTo.add(item);
             } else {
                 throw new GameError("Produced entity does not exist in Location or Player Inventory!\n");
             }

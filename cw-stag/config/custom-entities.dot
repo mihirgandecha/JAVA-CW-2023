@@ -66,6 +66,24 @@ digraph layout {
             }
         }
 
+        subgraph cluster999 {
+        node [shape = "none"];
+        storeroom [description = "Storage for any entities not placed in the game"]
+        subgraph characters {
+        node [shape = "ellipse"];
+        lumberjack [description = "A burly wood cutter"];
+        }
+        subgraph artefacts {
+        node [shape = "diamond"];
+        log [description = "A heavy wooden log"];
+        shovel [description = "A sturdy shovel"];
+        gold [description = "A big pot of gold"];
+        }
+        subgraph furniture {
+        node [shape = "hexagon"];
+        hole [description = "A deep hole in the ground"];
+        }
+        }
     }
 
     subgraph paths {
@@ -73,6 +91,7 @@ digraph layout {
         cabin -> storeroom;
         forest -> cabin;
         cellar -> cabin;
+        cellar -> storeroom;
         forest -> riverbank
         riverbank -> forest
         clearing -> riverbank

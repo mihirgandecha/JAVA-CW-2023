@@ -113,7 +113,7 @@ public class GameEngine {
                 || tryExecuteSingleActionCommand("goto", primaryAction, possibleActions, possibleEntities)) {
             return;
         }
-        if(possibleActions.isEmpty() || possibleEntities.isEmpty()) throw new GameError("Get, Drop and Goto commands can only have one trigger action, and require only one Game Entity!");
+        if(possibleActions.isEmpty() && possibleEntities.isEmpty()) throw new GameError("Get, Drop and Goto commands can only have one trigger action, and require only one Game Entity!");
         //Else return advanced action:
         this.command.add(possibleActions.get(0));
         this.command.addAll(possibleEntities);
@@ -179,8 +179,9 @@ public class GameEngine {
         }
     }
 
-    private boolean tryExecuteSingleActionCommand(String action, List<String> primaryAction, List<String> possibleActions, List<String> possibleEntities) {
-        if (possibleActions.size() == 1 && possibleActions.get(0).equals(action) && possibleEntities.size() == 1) {
+    private boolean tryExecuteSingleActionCommand(String action, List<String> primaryAction, List<String> possibleActions, List<String> possibleEntities) throws GameError {
+        if (possibleActions.size() == 1 && possibleActions.get(0).equals(action)) {
+            if(possibleEntities.size() != 1) throw new GameError("Cannot have more than one entity for command: " + action);
             this.command.add(primaryAction.get(0));
             this.command.add(possibleEntities.get(0));
             return true;
