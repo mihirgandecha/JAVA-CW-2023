@@ -67,4 +67,87 @@ public class CustomTest {
         response = sendCommandToServer("mihir: rest");
         System.out.println(response);
     }
+
+    @Test
+    void handleActionIsNotPartOfXMLFile(){
+        String response = sendCommandToServer("mihir: getTO storeroom");
+        assertTrue(response.toLowerCase().contains("[error]command requires at least one valid action"));
+    }
+
+    @Test
+    void handleNoSubjectIsValid(){
+
+    }
+
+    @Test
+    void handleMissingSubjectIsInvalid(){
+
+    }
+
+    @Test
+    void handleNoConsumedIsValid(){
+
+    }
+
+    @Test
+    void handleNoProducedIsValid(){
+
+    }
+
+    @Test
+    void handleTriggerWordAsProducedIsInvalid(){
+
+    }
+
+    @Test
+    void handleConsumedDuplicateGameEntityIsInvalid(){
+
+    }
+
+    @Test
+    void handleProducedDuplicateGameEntityIsInvalid(){
+
+    }
+
+    @Test
+    void handleConsumingLocationIsValid(){
+
+    }
+
+    @Test
+    void handleConsumingWithNoSubjectIsValid(){
+
+    }
+
+    @Test
+    void handleConsumingMultipleCharactersIsValid(){
+
+    }
+
+    @Test
+    void handleMultipleActionsValidTriggerWordsWithOneThatHasCorrectSubjectsIsTriggered(){
+
+    }
+
+    //TODO: Check
+    //Can do rest and rest?
+    @Test
+    void handleOneWordActionWithNoSubjectsIsInvalid(){
+
+    }
+
+    @Test
+    void handleAmbiguousCommandsWithValidSubjectsYetMultipleActionsIsInvalid(){
+
+    }
+
+    @Test
+    void handleWrongCurrentLocationIsInvalid(){
+
+    }
+
+    @Test
+    void handleCoLocationIsValid(){
+
+    }
 }

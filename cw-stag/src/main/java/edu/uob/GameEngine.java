@@ -99,7 +99,7 @@ public class GameEngine {
         List<String> possibleEntities = getCommandEntityList(filteredCommand);
         List<String> possibleActions = getActionsFromCommand(filteredCommand);
         //Check command has at least one action
-        if(possibleActions.isEmpty()) throw new GameError("Command Requires at least one action!");
+        if(possibleActions.isEmpty()) throw new GameError("Command Requires at least one VALID action!");
         //If the command is inv | health | look -> prioritise and execute
         List<String> primaryAction = selectPrimaryActions(possibleActions);
         if(this.priorityCommand && primaryAction.size() == 1) {
