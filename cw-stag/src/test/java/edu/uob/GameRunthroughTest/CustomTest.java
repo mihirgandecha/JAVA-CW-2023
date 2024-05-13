@@ -62,9 +62,101 @@ public class CustomTest {
         String response = sendCommandToServer("mihir: chop elf");
         assertTrue(response.toLowerCase().contains("gave you some gold"));
         response = sendCommandToServer("mihir: look");
-        System.out.println(response);
         assertTrue(response.toLowerCase().contains("pot of gold"));
         response = sendCommandToServer("mihir: rest");
-        System.out.println(response);
+    }
+
+    @Test
+    void handleActionIsNotPartOfXMLFile(){
+        String response = sendCommandToServer("mihir: getTO storeroom");
+        assertTrue(response.toLowerCase().contains("[error]command requires at least one valid action"));
+    }
+
+    @Test
+    void handleCommandWithNoSubjectIsValid(){
+        String response = sendCommandToServer("mihir: easter egg");
+        assertTrue(response.toLowerCase().contains("you summon the secret silver sword for health"));
+        response = sendCommandToServer("mihir: health");
+        assertTrue(response.toLowerCase().contains("2"));
+        response = sendCommandToServer("mihir: easter egg");
+        assertTrue(response.toLowerCase().contains("you summon the secret silver sword for health"));
+    }
+
+    @Test
+    void handleGameEntityNotInStoreroomIsInvalid(){
+        String response = sendCommandToServer("mihir: death");
+        assertTrue(response.toLowerCase().contains("error"));
+    }
+
+    @Test
+    void handleMissingSubjectIsInvalid(){
+
+    }
+
+    @Test
+    void handleNoConsumedIsValid(){
+
+    }
+
+    @Test
+    void handleNoProducedIsValid(){
+
+    }
+
+    @Test
+    void handleTriggerWordAsProducedIsInvalid(){
+
+    }
+
+    @Test
+    void handleConsumedDuplicateGameEntityIsInvalid(){
+
+    }
+
+    @Test
+    void handleProducedDuplicateGameEntityIsInvalid(){
+
+    }
+
+    @Test
+    void handleConsumingLocationIsValid(){
+
+    }
+
+    @Test
+    void handleConsumingWithNoSubjectIsValid(){
+
+    }
+
+    @Test
+    void handleConsumingMultipleCharactersIsValid(){
+
+    }
+
+    @Test
+    void handleMultipleActionsValidTriggerWordsWithOneThatHasCorrectSubjectsIsTriggered(){
+
+    }
+
+    //TODO: Check
+    //Can do rest and rest?
+    @Test
+    void handleOneWordActionWithNoSubjectsIsInvalid(){
+
+    }
+
+    @Test
+    void handleAmbiguousCommandsWithValidSubjectsYetMultipleActionsIsInvalid(){
+
+    }
+
+    @Test
+    void handleWrongCurrentLocationIsInvalid(){
+
+    }
+
+    @Test
+    void handleCoLocationIsValid(){
+
     }
 }

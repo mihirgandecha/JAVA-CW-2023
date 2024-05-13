@@ -94,12 +94,12 @@ public class GameEngine {
 
     private void checkCommand(List<String> cleanCommand) throws GameError {
         //First strip any words that are not a GameEntity or Action:
-        List<String> filteredCommand = normalizeAndFilterCommand(cleanCommand);
+        List<String> filteredCommand = filterCommandForDecorativeWords(cleanCommand);
         // Extract possible actions and entities from the filtered command
-        List<String> possibleEntities = getCommandEntityList(filteredCommand);
+        List<String> possibleEntities = getEntitiesFromCommand(filteredCommand);
         List<String> possibleActions = getActionsFromCommand(filteredCommand);
         //Check command has at least one action
-        if(possibleActions.isEmpty()) throw new GameError("Command Requires at least one action!");
+        if(possibleActions.isEmpty()) throw new GameError("Command Requires at least one VALID action!");
         //If the command is inv | health | look -> prioritise and execute
         List<String> primaryAction = selectPrimaryActions(possibleActions);
         if(this.priorityCommand && primaryAction.size() == 1) {
@@ -119,36 +119,72 @@ public class GameEngine {
         this.command.addAll(possibleEntities);
     }
 
-    private List<String> normalizeAndFilterCommand(List<String> rawCommand) {
-        List<String> normalizedCommand = new ArrayList<>();
-        for (String token : rawCommand) {
-            String normalizedToken = token.trim().toLowerCase();
-            if (BASIC_ACTIONS_NAMES.contains(normalizedToken) ||
-                    advancedActionsNames.contains(normalizedToken) ||
-                    allLocationsGameEntities.contains(normalizedToken)) {
-                normalizedCommand.add(normalizedToken);
+    private List<String> filterCommandForDecorativeWords(List<String> rawCommand) {
+        List<String> filteredWords = new ArrayList<>();
+        int i = 0;
+        while (i < rawCommand.size()) {
+            String token = rawCommand.get(i).trim().toLowerCase();
+            String multiWordToken = getMultiWordToken(rawCommand, i);
+            if (multiWordToken != null) {
+                filteredWords.add(multiWordToken);
+                i++;
+            } else if (isActionOrEntityCheckingAll(token)) {
+                filteredWords.add(token);
+            }
+            i++;
+        }
+        return filteredWords;
+    }
+
+    private String getMultiWordToken(List<String> rawCommand, int index) {
+        if (index < rawCommand.size() - 1) {
+            String token = rawCommand.get(index).trim().toLowerCase();
+            String nextToken = rawCommand.get(index + 1).trim().toLowerCase();
+            String combinedToken = token + " " + nextToken;
+            if (isActionOrEntityCheckingAll(combinedToken)) {
+                return combinedToken;
             }
         }
-        return normalizedCommand;
+        return null;
+    }
+
+    //Helper Functions for Action:
+    private boolean isBuiltInAction(String token) {
+        return BASIC_ACTIONS_NAMES.contains(token);
+    }
+
+    private boolean isAdvancedAction(String token) {
+        return advancedActionsNames.contains(token);
+    }
+
+    private boolean isAction(String token) {
+        return isBuiltInAction(token) || isAdvancedAction(token);
+    }
+
+    //Helper Functions for Entity:
+    private boolean isGameEntity(String token) {
+        return allLocationsGameEntities.contains(token);
+    }
+
+    //Helper combining all:
+    private boolean isActionOrEntityCheckingAll(String token) {
+        return isAction(token) || isGameEntity(token);
     }
 
     private List<String> getActionsFromCommand(List<String> cleanCommand) {
         List<String> possibleAction = new ArrayList<>();
         for (String token : cleanCommand) {
-            String trimmedToken = token.trim();
-            if (BASIC_ACTIONS_NAMES.contains(trimmedToken)) {
-                possibleAction.add(trimmedToken);
-            } else if (this.advancedActionsNames.contains(trimmedToken)) {
-                possibleAction.add(trimmedToken);
+            if(isAction(token.trim())) {
+                possibleAction.add(token.trim());
             }
         }
         return possibleAction;
     }
 
-    private List<String> getCommandEntityList(List<String> cleanCommand) {
+    private List<String> getEntitiesFromCommand(List<String> cleanCommand) {
         List<String> possibleEntities = new ArrayList<>();
         for(String token : cleanCommand) {
-            if(this.allLocationsGameEntities.contains(token.trim())) {
+            if(isGameEntity(token.trim())){
                 possibleEntities.add(token.trim());
             }
         }
@@ -156,9 +192,6 @@ public class GameEngine {
     }
 
     private List<String> selectPrimaryActions(List<String> possibleActions) throws GameError {
-        if (possibleActions.isEmpty()) {
-            throw new GameError("Require at least one action!");
-        }
         List<String> prioritizedActions = List.of("look", "inventory", "inv", "health");
         List<String> foundActions = new ArrayList<>();
         for (String action : possibleActions) {
@@ -190,7 +223,6 @@ public class GameEngine {
             return false;
         }
     }
-
 
     private String executeCommand(List<String> commandList) throws Exception {
         String[] words = commandList.toArray(new String[0]);
