@@ -88,18 +88,6 @@ public class DropTesting {
     }
 
     @Test
-    void testDropCMDInvalid(){
-        String response = "mihir: get coin";
-        response = sendCommandToServer(response);
-        response = sendCommandToServer("mihir: drop axe");
-        assertTrue(response.toLowerCase().contains("error"));
-        response = sendCommandToServer("mihir: inv");
-        assertTrue(response.toLowerCase().contains("coin"));
-        response = sendCommandToServer("mihir: look");
-        assertFalse(response.toLowerCase().contains("coin"), "Failed");
-    }
-
-    @Test
     void testDropCMDCaseInsensitive(){
         String response = "mihir: get coin";
         response = randomiseCasing(response);
@@ -124,4 +112,37 @@ public class DropTesting {
         response = sendCommandToServer("mihir: look");
         assertTrue(response.toLowerCase().contains("coin"));
     }
+
+    @Test
+    void testDropCMDInvalid1(){
+        String response = "mihir: get coin";
+        response = sendCommandToServer(response);
+        response = sendCommandToServer("mihir: drop axe");
+        assertTrue(response.toLowerCase().contains("error"));
+        response = sendCommandToServer("mihir: inv");
+        assertTrue(response.toLowerCase().contains("coin"));
+        response = sendCommandToServer("mihir: look");
+        assertFalse(response.toLowerCase().contains("coin"), "Failed");
+    }
+
+    @Test
+    void testDropCMDInvalid2() {
+        String response = sendCommandToServer("mihir: drop trapdoor");
+        assertTrue(response.toLowerCase().contains("error"));
+    }
+
+    @Test
+    void testDropCMDInvalid3() {
+        String response = sendCommandToServer("mihir: drop axe");
+        assertTrue(response.toLowerCase().contains("error"));
+    }
+
+    @Test
+    void testDropCMDInvalid4() {
+        sendCommandToServer("mihir: get axe");
+        sendCommandToServer("mihir: get potion");
+        String response = sendCommandToServer("mihir: drop axe and potion");
+        assertTrue(response.toLowerCase().contains("error"));
+    }
+
 }

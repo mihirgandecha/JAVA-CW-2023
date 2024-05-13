@@ -102,15 +102,13 @@ public class GameEngine {
             this.command.add(primaryAction.get(0));
             return;
         }
-        if(possibleEntities.isEmpty()) throw new GameError("Command Requires at least one entity!");
         // Handle single action commands (get, drop, goto)
         if (tryExecuteSingleActionCommand("get", primaryAction, possibleActions, possibleEntities)
                 || tryExecuteSingleActionCommand("drop", primaryAction, possibleActions, possibleEntities)
                 || tryExecuteSingleActionCommand("goto", primaryAction, possibleActions, possibleEntities)) {
             return;
         }
-        if(possibleActions.isEmpty()) throw new GameError("Command Requires at least one action!");
-        if(possibleEntities.isEmpty()) throw new GameError("Command Requires at least one entity!");
+        if(possibleActions.isEmpty() || possibleEntities.isEmpty()) throw new GameError("Get, Drop and Goto commands can only have one trigger action, and require only one Game Entity!");
         //Else return advanced action:
         this.command.add(possibleActions.get(0));
         this.command.addAll(possibleEntities);
