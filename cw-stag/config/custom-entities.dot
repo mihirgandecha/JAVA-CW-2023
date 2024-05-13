@@ -78,6 +78,7 @@ digraph layout {
         log [description = "A heavy wooden log"];
         shovel [description = "A sturdy shovel"];
         gold [description = "A big pot of gold"];
+        sword [description = "The almighty silver sword"];
         }
         subgraph furniture {
         node [shape = "hexagon"];

@@ -199,7 +199,9 @@ public class AdvancedAction extends GameCommand
             for(Location location: getEngineMap().values()){
                 if(location.getEntityForProduce(item)){
                     entityToMove = location.getEntity(item);
-                    continue;
+                }
+                if(entityToMove != null){
+                    addEntityToStore(entityToMove);
                 }
             }
             if (entityToMove != null) {
@@ -207,7 +209,7 @@ public class AdvancedAction extends GameCommand
             } else if (engine.getMap().containsKey(item)) {
                 getEngineMap().get(player.getCurrentLocation()).pathTo.add(item);
             } else {
-                throw new GameError("Produced entity does not exist in Location or Player Inventory!\n");
+                throw new GameError("Produced entity does not exist in Any Location or Player Inventory!\n");
             }
         }
     }

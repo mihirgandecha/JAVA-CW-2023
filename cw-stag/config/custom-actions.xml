@@ -104,6 +104,35 @@
         <narration>You take a longer rest</narration>
     </action>
 
+    <action>
+        <triggers>
+            <keyphrase>easter egg</keyphrase>
+        </triggers>
+        <subjects>
+        </subjects>
+        <consumed>
+            <entity>health</entity>
+        </consumed>
+        <produced>
+            <entity>sword</entity>
+        </produced>
+        <narration>You summon the secret silver sword for health</narration>
+    </action>
+
+    <action>
+        <triggers>
+            <keyphrase>death</keyphrase>
+        </triggers>
+        <subjects>
+        </subjects>
+        <consumed>
+            <entity>health</entity>
+        </consumed>
+        <produced>
+            <entity>death</entity>
+        </produced>
+        <narration>You summon death</narration>
+    </action>
 
     <action>
         <triggers>

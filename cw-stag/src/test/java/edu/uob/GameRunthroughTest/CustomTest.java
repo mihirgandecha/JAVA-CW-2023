@@ -62,10 +62,8 @@ public class CustomTest {
         String response = sendCommandToServer("mihir: chop elf");
         assertTrue(response.toLowerCase().contains("gave you some gold"));
         response = sendCommandToServer("mihir: look");
-        System.out.println(response);
         assertTrue(response.toLowerCase().contains("pot of gold"));
         response = sendCommandToServer("mihir: rest");
-        System.out.println(response);
     }
 
     @Test
@@ -75,8 +73,19 @@ public class CustomTest {
     }
 
     @Test
-    void handleNoSubjectIsValid(){
+    void handleCommandWithNoSubjectIsValid(){
+        String response = sendCommandToServer("mihir: easter egg");
+        assertTrue(response.toLowerCase().contains("you summon the secret silver sword for health"));
+        response = sendCommandToServer("mihir: health");
+        assertTrue(response.toLowerCase().contains("2"));
+        response = sendCommandToServer("mihir: easter egg");
+        assertTrue(response.toLowerCase().contains("you summon the secret silver sword for health"));
+    }
 
+    @Test
+    void handleGameEntityNotInStoreroomIsInvalid(){
+        String response = sendCommandToServer("mihir: death");
+        assertTrue(response.toLowerCase().contains("error"));
     }
 
     @Test
