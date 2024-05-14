@@ -136,17 +136,33 @@ public class GameEngine {
         return filteredWords;
     }
 
+//    private String getMultiWordToken(List<String> rawCommand, int index) {
+//        if (index < rawCommand.size() - 1) {
+//            String token = rawCommand.get(index).trim().toLowerCase();
+//            String nextToken = rawCommand.get(index + 1).trim().toLowerCase();
+//            String combinedToken = token + " " + nextToken;
+//            if (isActionOrEntityCheckingAll(combinedToken)) {
+//                return combinedToken;
+//            }
+//        }
+//        return null;
+//    }
+
     private String getMultiWordToken(List<String> rawCommand, int index) {
-        if (index < rawCommand.size() - 1) {
-            String token = rawCommand.get(index).trim().toLowerCase();
-            String nextToken = rawCommand.get(index + 1).trim().toLowerCase();
-            String combinedToken = token + " " + nextToken;
+        StringBuilder tokenBuilder = new StringBuilder();
+        tokenBuilder.append(rawCommand.get(index).trim().toLowerCase());
+
+        for (int i = index + 1; i < rawCommand.size(); i++) {
+            tokenBuilder.append(" ").append(rawCommand.get(i).trim().toLowerCase());
+            String combinedToken = tokenBuilder.toString().trim();
             if (isActionOrEntityCheckingAll(combinedToken)) {
                 return combinedToken;
             }
         }
+
         return null;
     }
+
 
     //Helper Functions for Action:
     private boolean isBuiltInAction(String token) {

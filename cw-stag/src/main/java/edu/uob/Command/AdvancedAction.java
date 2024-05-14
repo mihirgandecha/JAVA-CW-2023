@@ -94,6 +94,9 @@ public class AdvancedAction extends GameCommand
     }
 
     private boolean checkLocationForEntity(String entityToCheck){
+        if(entityToCheck.equalsIgnoreCase(this.currentLocation.getName())){
+            return true;
+        }
         for(GameEntity entity : this.locationEntities){
             if(entityToCheck.equals(entity.getName())){
                 return true;
