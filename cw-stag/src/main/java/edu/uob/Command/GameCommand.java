@@ -3,7 +3,6 @@ package edu.uob.Command;
 import edu.uob.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,10 +27,6 @@ public abstract class GameCommand {
 
     public Player getPlayer() {
         return this.player;
-    }
-
-    public HashMap<String, Artefact> getPlayerInventory(){
-        return this.player.getInventory();
     }
 
     public void setResetPlayer(Player playerReset){

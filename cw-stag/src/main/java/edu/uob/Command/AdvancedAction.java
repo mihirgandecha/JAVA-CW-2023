@@ -69,7 +69,7 @@ public class AdvancedAction extends GameCommand
     }
 
     // Method to check if the action can be executed based on current game state
-    public boolean canExecute(Player player, Map<String, Location> map) throws GameError {
+    public boolean canExecute(Player player, Map<String, Location> map) {
         this.player = player;
         this.currentLocation = getEngineMap().get(player.getCurrentLocation());
         getEngineMap().get(player.getCurrentLocation()).setAllEntities();
@@ -77,17 +77,13 @@ public class AdvancedAction extends GameCommand
         this.playerEntities = player.getInventory();
         this.storeroom = map.get("storeroom");
         this.storeroom.setAllEntities();
-        if(doesSubjectsExist()){
-            return true;
-        }
-        return false;
+        return doesSubjectsExist();
     }
 
-    private boolean doesSubjectsExist() throws GameError {
+    private boolean doesSubjectsExist() {
         for(String subject : subjects){
             if(!checkLocationForEntity(subject) && !checkInventoryForEntity(subject)){
                 return false;
-//                throw new GameError("Game Subject does not exist in Location or Player Inventory!\n");
             }
         }
         return true;

@@ -16,15 +16,7 @@ public class Get extends GameCommand {
         setup();
     }
 
-    private void setArtefactName() throws GameError {
-//        if (basicCommand.startsWith("get ")) {
-//            String[] commandParts = basicCommand.split(" ");
-//            if(commandParts.length > 1) {
-//                this.requestedArtefact = commandParts[1];
-//            } else {
-//                throw new GameError("Unknown get command!");
-//            }
-//        }
+    private void setArtefactName() {
         List<String> command = getCommand();
         for (String part : command) {
             if(getEntityList().contains(part)) {

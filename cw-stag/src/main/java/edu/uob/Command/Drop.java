@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Drop extends GameCommand {
-    private Location currentLocation;
+    private final Location currentLocation;
     private String requestedArtefact;
 
     public Drop(GameEngine gameEngine, Player player, String basicCommand) throws GameError {
@@ -16,7 +16,7 @@ public class Drop extends GameCommand {
         executeDrop();
     }
 
-    private void parseArtefactName() throws GameError {
+    private void parseArtefactName() {
         List<String> command = getCommand();
         for (String part : command) {
             if(getEntityList().contains(part)) {
@@ -24,14 +24,6 @@ public class Drop extends GameCommand {
                 break;
             }
         }
-//        if (basicCommand.startsWith("drop ")) {
-//            String[] commandParts = basicCommand.split(" ");
-//            if(commandParts.length > 1) {
-//                this.requestedArtefact = commandParts[1];
-//            } else {
-//                throw new GameError("Unknown drop command!");
-//            }
-//        }
     }
 
     private void executeDrop() throws GameError {

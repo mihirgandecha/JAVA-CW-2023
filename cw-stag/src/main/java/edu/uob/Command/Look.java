@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Look extends GameCommand {
     StringBuilder builder = new StringBuilder();
-    private String name;
+    private final String name;
     private Location location;
 
     public Look(GameEngine gameEngine, Player player, String args) throws GameError {

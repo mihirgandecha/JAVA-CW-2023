@@ -5,8 +5,8 @@ import edu.uob.*;
 import java.util.ArrayList;
 
 public class Goto extends GameCommand {
-    private String currentLocation;
-    private String goLocation;
+    private final String currentLocation;
+    private final String goLocation;
     private StringBuilder builder;
     private Location location;
 
@@ -14,7 +14,6 @@ public class Goto extends GameCommand {
         super(gameEngine, player, basicCommand);
         this.builder = new StringBuilder();
         this.currentLocation = player.getCurrentLocation();
-        //TODO Compilation Error! possible this escape before subclass is fully initialised
         this.goLocation = getCommand().get(1);
         executeMove();
     }

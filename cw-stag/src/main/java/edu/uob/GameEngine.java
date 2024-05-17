@@ -28,15 +28,15 @@ public class GameEngine {
    }
 
     private ArrayList<String> setAllLocationsGameEntities() {
-        ArrayList<String> GameEntities = new ArrayList<>();
+        ArrayList<String> gameEntities = new ArrayList<>();
         for(Location location : map.values()) {
             location.setAllEntities();
-            GameEntities.add(location.getName());
+            gameEntities.add(location.getName());
             for(GameEntity gameEntity: location.getEntityList()){
-                GameEntities.add(gameEntity.getName());
+                gameEntities.add(gameEntity.getName());
             }
         }
-        return GameEntities;
+        return gameEntities;
     }
 
    public void setPlayer(Player setPlayer){
@@ -135,18 +135,6 @@ public class GameEngine {
         }
         return filteredWords;
     }
-
-//    private String getMultiWordToken(List<String> rawCommand, int index) {
-//        if (index < rawCommand.size() - 1) {
-//            String token = rawCommand.get(index).trim().toLowerCase();
-//            String nextToken = rawCommand.get(index + 1).trim().toLowerCase();
-//            String combinedToken = token + " " + nextToken;
-//            if (isActionOrEntityCheckingAll(combinedToken)) {
-//                return combinedToken;
-//            }
-//        }
-//        return null;
-//    }
 
     private String getMultiWordToken(List<String> rawCommand, int index) {
         StringBuilder tokenBuilder = new StringBuilder();
