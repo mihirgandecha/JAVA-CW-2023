@@ -26,7 +26,7 @@ public class Get extends GameCommand {
         }
     }
 
-    public void setup() throws Exception {
+    public void setup() throws GameError {
         Artefact artefact = getEngine().pickupArtefact(player.getCurrentLocation(), requestedArtefact);
         if(artefact == null) {
             throw new GameError("Artefact fetched is null");

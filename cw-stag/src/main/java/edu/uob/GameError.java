@@ -1,6 +1,4 @@
 package edu.uob;
-
-import java.io.IOException;
 import java.io.Serial;
 
 public class GameError extends Exception {

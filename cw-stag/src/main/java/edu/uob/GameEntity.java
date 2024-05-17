@@ -2,9 +2,9 @@ package edu.uob;
 
 public class GameEntity
 {
-    private String name;
-    private String description;
-    private GameEntityType type;
+    private final String name;
+    private final String description;
+    private final GameEntityType type;
 
     public GameEntity(String name, String description, GameEntityType type)
     {

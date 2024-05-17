@@ -36,7 +36,7 @@ public class Goto extends GameCommand {
 
     private void setLocationToString() {
         String description = this.location.getDescription();
-        this.builder.append("You are in " + description + ". You can see: " + "\n");
+        this.builder.append("You are in ").append(description).append(". You can see: ").append("\n");
     }
 
     private void setEntitiesDescriptionToString(){
@@ -47,7 +47,7 @@ public class Goto extends GameCommand {
         this.builder.append("\n" + "You can access from here: " + "\n");
         ArrayList<String> paths = this.location.pathTo;
         for (String path : paths) {
-            this.builder.append(path + " [LOCATION]\n");
+            this.builder.append(path).append(" [LOCATION]\n");
         }
     }
 

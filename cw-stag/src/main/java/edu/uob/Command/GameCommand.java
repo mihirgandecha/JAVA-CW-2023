@@ -1,8 +1,5 @@
 package edu.uob.Command;
-
 import edu.uob.*;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,12 +38,12 @@ public abstract class GameCommand {
         return this.basicCommand;
     }
 
-    public ArrayList<String> getEntityList(){
+    public List<String> getEntityList(){
         return this.engine.getAllLocationsGameEntities();
     }
 
     public List<String> getCommand(){
-        return engine.command;
+        return engine.commandToExecute;
     }
 
     @Override

@@ -7,21 +7,15 @@ import java.util.*;
 
 public class AdvancedAction extends GameCommand
 {
-    //INPUT
     private List<String> triggers;
-    //List of entities NECESSARY
     private List<String> subjects;
-    //List of entities that are REMOVED
     private List<String> consumed;
-    //List of entities that are CREATED
     private List<String> produced;
-    //OUTPUT to console
     private String narration;
     private Location storeroom;
     private List<GameEntity> locationEntities;
     private HashMap<String, Artefact> playerEntities;
     private boolean resetActivated = false;
-
     private Location currentLocation;
 
     public AdvancedAction(GameEngine gameEngine, Player player, String basicCommand) {
@@ -32,7 +26,7 @@ public class AdvancedAction extends GameCommand
         return triggers;
     }
 
-    public void setTriggers(ArrayList<String> triggers) {
+    public void setTriggers(List<String> triggers) {
         this.triggers = triggers;
     }
 
@@ -40,7 +34,7 @@ public class AdvancedAction extends GameCommand
         return subjects;
     }
 
-    public void setSubjects(ArrayList<String> subjects) {
+    public void setSubjects(List<String> subjects) {
         this.subjects = subjects;
     }
 
@@ -48,7 +42,7 @@ public class AdvancedAction extends GameCommand
         return consumed;
     }
 
-    public void setConsumed(ArrayList<String> consumed) {
+    public void setConsumed(List<String> consumed) {
         this.consumed = consumed;
     }
 
@@ -56,7 +50,7 @@ public class AdvancedAction extends GameCommand
         return produced;
     }
 
-    public void setProduced(ArrayList<String> produced) {
+    public void setProduced(List<String> produced) {
         this.produced = produced;
     }
 
@@ -117,33 +111,47 @@ public class AdvancedAction extends GameCommand
 
     private void consumeEntities() throws GameError {
         for (String item : getConsumed()) {
-            if (item.equalsIgnoreCase("health")) {
-                player.decreaseHealth();
-                if(player.isPlayerDead()){
-                    resetPlayer();
-                    this.resetActivated = true;
-                }
+            if (handleHealthItem(item)) continue;
+            GameEntity entityToMove = findEntityToMove(item);
+            handleInventory(item, entityToMove);
+        }
+    }
+
+    private boolean handleHealthItem(String item) {
+        if (item.equalsIgnoreCase("health")) {
+            player.decreaseHealth();
+            if (player.isPlayerDead()) {
+                resetPlayer();
+                this.resetActivated = true;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private GameEntity findEntityToMove(String item) {
+        GameEntity entityToMove = null;
+        for (Location location : getEngineMap().values()) {
+            if (location.getName().equalsIgnoreCase("storeroom")) {
                 continue;
             }
-            GameEntity entityToMove = null;
-            for(Location location: getEngineMap().values()){
-                if(location.getName().equalsIgnoreCase("storeroom")){
-                    continue;
-                }
-                if(location.getEntityForProduce(item)){
-                    entityToMove = location.getEntity(item);
-                    continue;
-                }
+            if (location.getEntityForProduce(item)) {
+                entityToMove = location.getEntity(item);
+                break;
             }
-            if (player.getInventory().containsKey(item)) {
-                if (entityToMove == null) {
-                    entityToMove = player.getInventory().get(item);
-                }
-                player.getInventory().remove(item);
+        }
+        return entityToMove;
+    }
+
+    private void handleInventory(String item, GameEntity entityToMove) throws GameError {
+        if (player.getInventory().containsKey(item)) {
+            if (entityToMove == null) {
+                entityToMove = player.getInventory().get(item);
             }
-            if(entityToMove != null){
-                addEntityToStore(entityToMove);
-            }
+            player.getInventory().remove(item);
+        }
+        if (entityToMove != null) {
+            addEntityToStore(entityToMove);
         }
     }
 
@@ -181,12 +189,6 @@ public class AdvancedAction extends GameCommand
         Player resetPlayer = new Player(player.getPlayerName());
         setResetPlayer(resetPlayer);
     }
-
-    public void setFirstLocation(String location){
-        String firstLocation;
-        firstLocation = location;
-    }
-
 
     private void produceEntities() throws GameError {
         for (String item : getProduced()) {
@@ -233,21 +235,5 @@ public class AdvancedAction extends GameCommand
             default:
                 throw new GameError("Unknown Artefact type!");
         }
-    }
-
-    public void setTriggers(List<String> triggers) {
-        this.triggers = triggers;
-    }
-
-    public void setSubjects(List<String> subjects) {
-        this.subjects = subjects;
-    }
-
-    public void setConsumed(List<String> consumed) {
-        this.consumed = consumed;
-    }
-
-    public void setProduced(List<String> produced) {
-        this.produced = produced;
     }
 }

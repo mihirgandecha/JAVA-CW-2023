@@ -34,10 +34,6 @@ public class Player {
         this.health --;
     }
 
-    public void resetHealth(){
-        this.health = MAXIMUM_HEALTH;
-    }
-
     public boolean isPlayerDead(){
         return this.health <= 0;
     }
