@@ -54,12 +54,20 @@ public class GameAction
     // Method to check if the action can be executed based on current game state
     public boolean canExecute(Player player, Map<String, Location> map) {
         // Check if all required subjects are present in the player's location or inventory
-        //TODO incorrect logic for axe + chop tree!
         Location currentLocation = map.get(player.getCurrentLocation());
         if (currentLocation == null) return false;
-        for (String subject : subjects) {
-            if (!currentLocation.getAllEntitiesToString().contains(subject) && !player.getInventory().toString().contains(subject)) {
-                return false;
+        for (String item : consumed) {
+            if (!player.getInventory().containsKey(item)) {
+                boolean isItemExist = false;
+                for(GameEntity entity : currentLocation.getEntityList()){
+                    if(entity.getName().equals(item)){
+                        isItemExist = true;
+                        break;
+                    }
+                }
+                if(!isItemExist) {
+                    return false;
+                }
             }
         }
         // Check if required consumed items are available
@@ -84,7 +92,9 @@ public class GameAction
         }
         // Produce new items in the location
         for (String item : produced) {
-            currentLocation.addArtefact(new Artefact(item, item));
+            if (currentLocation != null) {
+                currentLocation.addArtefact(new Artefact(item, item));
+            }
         }
         return narration + "\n";
     }
