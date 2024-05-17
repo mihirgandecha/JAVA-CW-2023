@@ -32,7 +32,7 @@ public class Location extends GameEntity {
     this.artefacts.add(artefact);
   }
 
-  public List<Artefact> getArtefact(Artefact artefact) {
+  public List<Artefact> getArtefact() {
     return this.artefacts;
   }
 
@@ -56,7 +56,7 @@ public class Location extends GameEntity {
     this.characters.add(character);
   }
 
-  public List<Character> getCharacters(Character character) {
+  public List<Character> getCharacters() {
     return this.characters;
   }
 
@@ -71,7 +71,7 @@ public class Location extends GameEntity {
     StringBuilder s = new StringBuilder();
     for(Character character: this.characters) {
       String modifiedDescription = addPrefixIfNeeded(character.getDescription());
-      s.append(modifiedDescription + " [CHARACTER]\n");
+      s.append(modifiedDescription).append(" [CHARACTER]\n");
     }
     return s.toString();
   }
@@ -80,7 +80,7 @@ public class Location extends GameEntity {
     this.furnitures.add(furniture);
   }
 
-  public List<Furniture> getFurniture(Furniture furniture) {
+  public List<Furniture> getFurniture() {
     return this.furnitures;
   }
 
@@ -95,7 +95,7 @@ public class Location extends GameEntity {
     StringBuilder s = new StringBuilder();
     for(Furniture furniture : this.furnitures) {
       String modifiedDescription = addPrefixIfNeeded(furniture.getDescription());
-      s.append(modifiedDescription + " [FURNITURE]\n");
+      s.append(modifiedDescription).append(" [FURNITURE]\n");
     }
     return s.toString();
   }
@@ -113,7 +113,6 @@ public class Location extends GameEntity {
     }
     return description;
   }
-
 
   public String getAllEntitiesToString(){
     return getArtefactsToString() + getCharactersToString() + getFurnitureToString();
@@ -146,17 +145,6 @@ public class Location extends GameEntity {
     for (GameEntity entity : getEntityList()) {
       if (entity.getName().equalsIgnoreCase(entityName)) {
         removeEntity(entityName);
-        return entity;
-      }
-    }
-    return null;
-  }
-
-
-  public GameEntity setEntityForProduce(String item) {
-    for (GameEntity entity : getEntityList()) {
-      if (entity.getName().equalsIgnoreCase(item)) {
-        getEntityList().remove(entity);
         return entity;
       }
     }

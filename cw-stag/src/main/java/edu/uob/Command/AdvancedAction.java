@@ -26,7 +26,7 @@ public class AdvancedAction extends GameCommand
         return triggers;
     }
 
-    public void setTriggers(ArrayList<String> triggers) {
+    public void setTriggers(List<String> triggers) {
         this.triggers = triggers;
     }
 
@@ -34,7 +34,7 @@ public class AdvancedAction extends GameCommand
         return subjects;
     }
 
-    public void setSubjects(ArrayList<String> subjects) {
+    public void setSubjects(List<String> subjects) {
         this.subjects = subjects;
     }
 
@@ -42,7 +42,7 @@ public class AdvancedAction extends GameCommand
         return consumed;
     }
 
-    public void setConsumed(ArrayList<String> consumed) {
+    public void setConsumed(List<String> consumed) {
         this.consumed = consumed;
     }
 
@@ -50,7 +50,7 @@ public class AdvancedAction extends GameCommand
         return produced;
     }
 
-    public void setProduced(ArrayList<String> produced) {
+    public void setProduced(List<String> produced) {
         this.produced = produced;
     }
 

@@ -25,10 +25,6 @@ public class Tokeniser {
         return this.username;
     }
 
-    public String getCleanCommand() {
-        return this.cleanCommand;
-    }
-
     public List<String> getTokens() {
         return this.tokens;
     }
@@ -53,15 +49,6 @@ public class Tokeniser {
 
     private String validateUsername(String username) {
         return username.replaceAll("[^a-zA-Z '\\-]", "");
-    }
-
-    // Set the clean command without the username and punctuation
-    private void setCleanCommand() throws GameError {
-        if (this.tokens.size() == 2) {
-            this.cleanCommand = removePunctuation(this.tokens.get(1).trim());
-        } else {
-            throw new GameError(INCORRECT_ERROR_MSG);
-        }
     }
 
     private void setIndividualTokens() throws GameError {
