@@ -9,11 +9,18 @@ public class GameEngine {
     private final String actionsFile;
     private final Map<String, Location> map;
     private String firstLocation;
-    private static final Set<String> BASIC_ACTIONS_NAMES = Set.of("get", "look", "inv", "inventory", "goto", "drop", "health");
+    public static final String ACTION_GET = "get";
+    public static final String ACTION_LOOK = "look";
+    public static final String ACTION_INV = "inv";
+    public static final String ACTION_INVENTORY = "inventory";
+    public static final String ACTION_GOTO = "goto";
+    public static final String ACTION_DROP = "drop";
+    public static final String ACTION_HEALTH = "health";
+    private static final Set<String> BASIC_ACTIONS_NAMES = Set.of(ACTION_GET, ACTION_LOOK, ACTION_INV, ACTION_INVENTORY, ACTION_GOTO, ACTION_DROP, ACTION_HEALTH);
     private final Set<String> advancedActionsNames;
     private final ArrayList<String> allLocationsGameEntities;
     private final HashMap<String, HashSet<AdvancedAction>> actions;
-    public List<String> command = new ArrayList<>();
+    public List<String> commandToExecute = new ArrayList<>();
     private boolean priorityCommand = false;
 
     public GameEngine(String entitiesFile, String actionsFile) throws Exception {
@@ -73,10 +80,10 @@ public class GameEngine {
 
     public String execute(List<String> cleanCommand, String playerName) throws Exception {
         setGamePlayer(playerName);
-        this.command.clear();
+        this.commandToExecute.clear();
         this.priorityCommand = false;
         checkCommand(cleanCommand);
-        return executeCommand(this.command);
+        return executeCommand(this.commandToExecute);
     }
 
     public ArrayList<String> getAllLocationsGameEntities(){
@@ -93,30 +100,29 @@ public class GameEngine {
     }
 
     private void checkCommand(List<String> cleanCommand) throws GameError {
-        //First strip any words that are not a GameEntity or Action:
+        //strip any words that are not a GameEntity or Action:
         List<String> filteredCommand = filterCommandForDecorativeWords(cleanCommand);
-        // Extract possible actions and entities from the filtered command
+        //extract possible actions and entities from the filtered command
         List<String> possibleEntities = getEntitiesFromCommand(filteredCommand);
         List<String> possibleActions = getActionsFromCommand(filteredCommand);
-        //Check command has at least one action
         if(possibleActions.isEmpty()) throw new GameError("Command Requires at least one VALID action!");
-        //If the command is inv | health | look -> prioritise and execute
+        //if the command is inv | health | look -> prioritise and execute
         List<String> primaryAction = selectPrimaryActions(possibleActions);
         if(this.priorityCommand && primaryAction.size() == 1) {
             if(!possibleEntities.isEmpty()) throw new GameError("Priority commands cannot have defined entities!");
-            this.command.add(primaryAction.get(0));
+            this.commandToExecute.add(primaryAction.get(0));
             return;
         }
-        // Handle single action commands (get, drop, goto)
-        if (tryExecuteSingleActionCommand("get", primaryAction, possibleActions, possibleEntities)
-                || tryExecuteSingleActionCommand("drop", primaryAction, possibleActions, possibleEntities)
-                || tryExecuteSingleActionCommand("goto", primaryAction, possibleActions, possibleEntities)) {
+        //handle single action commands (get, drop, goto)
+        if (tryExecuteSingleActionCommand(ACTION_GET, primaryAction, possibleActions, possibleEntities)
+                || tryExecuteSingleActionCommand(ACTION_DROP, primaryAction, possibleActions, possibleEntities)
+                || tryExecuteSingleActionCommand(ACTION_GOTO, primaryAction, possibleActions, possibleEntities)) {
             return;
         }
         if(possibleActions.isEmpty() && possibleEntities.isEmpty()) throw new GameError("Get, Drop and Goto commands can only have one trigger action, and require only one Game Entity!");
         //Else return advanced action:
-        this.command.add(possibleActions.get(0));
-        this.command.addAll(possibleEntities);
+        this.commandToExecute.add(possibleActions.get(0));
+        this.commandToExecute.addAll(possibleEntities);
     }
 
     private List<String> filterCommandForDecorativeWords(List<String> rawCommand) {
@@ -196,7 +202,7 @@ public class GameEngine {
     }
 
     private List<String> selectPrimaryActions(List<String> possibleActions) throws GameError {
-        List<String> prioritizedActions = List.of("look", "inventory", "inv", "health");
+        List<String> prioritizedActions = List.of(ACTION_LOOK, ACTION_INV, ACTION_INVENTORY, ACTION_HEALTH);
         List<String> foundActions = new ArrayList<>();
         for (String action : possibleActions) {
             for (String prioritizedAction : prioritizedActions) {
@@ -219,8 +225,8 @@ public class GameEngine {
     private boolean tryExecuteSingleActionCommand(String action, List<String> primaryAction, List<String> possibleActions, List<String> possibleEntities) throws GameError {
         if (possibleActions.size() == 1 && possibleActions.get(0).equals(action)) {
             if(possibleEntities.size() != 1) throw new GameError("Cannot have more than one entity for command: " + action);
-            this.command.add(primaryAction.get(0));
-            this.command.add(possibleEntities.get(0));
+            this.commandToExecute.add(primaryAction.get(0));
+            this.commandToExecute.add(possibleEntities.get(0));
             return true;
         } else {
             primaryAction.remove(action);
@@ -231,36 +237,36 @@ public class GameEngine {
     private String executeCommand(List<String> commandList) throws Exception {
         String[] words = commandList.toArray(new String[0]);
         String actionWord = words[0].trim();
-        String command = commandList.toString();
+        String commandToString = commandList.toString();
         boolean printMultiplayer = playerMap.size() > 1;
-        if (command.contains("look")) {
-            Look look = new Look(this, player, command);
+        if (commandToString.contains(ACTION_LOOK)) {
+            Look look = new Look(this, player, commandToString);
             if(printMultiplayer){
                 return look + multiplayerToString();
             }
             return look.toString();
-        } else if (command.contains("get")) {
-            Get get = new Get(this, player, command);
+        } else if (commandToString.contains(ACTION_GET)) {
+            Get get = new Get(this, player, commandToString);
             return get.toString();
-        } else if (command.contains("inv")) {
-            Inventory inv = new Inventory(this, player, command);
+        } else if (commandToString.contains(ACTION_INV)) {
+            Inventory inv = new Inventory(this, player, commandToString);
             return inv.toString();
-        } else if (command.contains("goto")) {
-            Goto aGoto = new Goto(this, player, command);
+        } else if (commandToString.contains(ACTION_GOTO)) {
+            Goto aGoto = new Goto(this, player, commandToString);
             if(printMultiplayer){
                 return aGoto + multiplayerToString();
             }
             return aGoto.toString();
-        } else if (command.contains("drop")) {
-            Drop drop = new Drop(this, player, command);
+        } else if (commandToString.contains(ACTION_DROP)) {
+            Drop drop = new Drop(this, player, commandToString);
             return drop.toString();
-        } else if(command.contains("health")){
+        } else if(commandToString.contains(ACTION_HEALTH)){
             String health = String.valueOf(player.getHealth());
             return "Player health " + health;
         } else if (this.advancedActionsNames.contains(actionWord)){
             return handleGameAction(commandList);
         } else{
-            throw new GameError("Unknown command: " + command);
+            throw new GameError("Unknown command: " + commandToString);
         }
     }
 
@@ -269,7 +275,7 @@ public class GameEngine {
         String checkLocation = this.player.getCurrentLocation();
         for(Player p: playerMap.values()){
             if(!checkLocation.isEmpty() && !p.getPlayerName().equals(this.player.getPlayerName()) && checkLocation.equalsIgnoreCase(p.getCurrentLocation())){
-                stringBuilder.append(p.getPlayerName() + "\n");
+                stringBuilder.append(p.getPlayerName()).append("\n");
             }
         }
         if (!stringBuilder.isEmpty()) {
@@ -314,7 +320,7 @@ public class GameEngine {
         if (foundArtefact == null) {
             throw new GameError("Artefact not found.");
         }
-        // If found, remove the artifact from the location
+        // If found, remove the artefact from the location
         artefacts.remove(foundArtefact);
         return foundArtefact;
     }

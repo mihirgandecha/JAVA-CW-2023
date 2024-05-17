@@ -46,7 +46,7 @@ public abstract class GameCommand {
     }
 
     public List<String> getCommand(){
-        return engine.command;
+        return engine.commandToExecute;
     }
 
     @Override
