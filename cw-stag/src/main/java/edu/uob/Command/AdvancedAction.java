@@ -7,21 +7,15 @@ import java.util.*;
 
 public class AdvancedAction extends GameCommand
 {
-    //INPUT
     private List<String> triggers;
-    //List of entities NECESSARY
     private List<String> subjects;
-    //List of entities that are REMOVED
     private List<String> consumed;
-    //List of entities that are CREATED
     private List<String> produced;
-    //OUTPUT to console
     private String narration;
     private Location storeroom;
     private List<GameEntity> locationEntities;
     private HashMap<String, Artefact> playerEntities;
     private boolean resetActivated = false;
-
     private Location currentLocation;
 
     public AdvancedAction(GameEngine gameEngine, Player player, String basicCommand) {
@@ -195,12 +189,6 @@ public class AdvancedAction extends GameCommand
         Player resetPlayer = new Player(player.getPlayerName());
         setResetPlayer(resetPlayer);
     }
-
-    public void setFirstLocation(String location){
-        String firstLocation;
-        firstLocation = location;
-    }
-
 
     private void produceEntities() throws GameError {
         for (String item : getProduced()) {

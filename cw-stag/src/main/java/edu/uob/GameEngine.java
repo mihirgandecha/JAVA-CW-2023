@@ -9,6 +9,8 @@ public class GameEngine {
     private final String actionsFile;
     private final Map<String, Location> map;
     private String firstLocation;
+    private static final String STORE_ROOM_NAME = "storeroom";
+    private static final String STORE_ROOM_DESCRIPTION = "Storage for any entities not placed in the game";
     public static final String ACTION_GET = "get";
     public static final String ACTION_LOOK = "look";
     public static final String ACTION_INV = "inv";
@@ -59,9 +61,9 @@ public class GameEngine {
         GraphvizParser p = new GraphvizParser(this.entitiesFile);
         this.firstLocation = p.getFirstLocation();
         Map<String, Location> gameMap = p.getGameMap();
-        if(!gameMap.containsKey("storeroom")){
-            Location storeroom = new Location("storeroom", "Storage for any entities not placed in the game");
-            gameMap.put("storeroom", storeroom);
+        if(!gameMap.containsKey(STORE_ROOM_NAME)){
+            Location storeroom = new Location(STORE_ROOM_NAME, STORE_ROOM_DESCRIPTION);
+            gameMap.put(STORE_ROOM_NAME, storeroom);
         }
         return gameMap;
     }
@@ -74,7 +76,6 @@ public class GameEngine {
         AdvancedAction advancedAction;
         DocumentParser p = new DocumentParser(this, player, this.actionsFile);
         advancedAction = p.getActionsState();
-        advancedAction.setFirstLocation(this.firstLocation);
         return p.getGameActions();
     }
 
@@ -153,12 +154,9 @@ public class GameEngine {
                 return combinedToken;
             }
         }
-
         return null;
     }
 
-
-    //Helper Functions for Action:
     private boolean isBuiltInAction(String token) {
         return BASIC_ACTIONS_NAMES.contains(token);
     }
@@ -171,12 +169,10 @@ public class GameEngine {
         return isBuiltInAction(token) || isAdvancedAction(token);
     }
 
-    //Helper Functions for Entity:
     private boolean isGameEntity(String token) {
         return allLocationsGameEntities.contains(token);
     }
 
-    //Helper combining all:
     private boolean isActionOrEntityCheckingAll(String token) {
         return isAction(token) || isGameEntity(token);
     }
@@ -332,5 +328,4 @@ public class GameEngine {
     public void setNewPlayer(Player player) {
         this.playerMap.put(player.getPlayerName(), player);
     }
-
 }
